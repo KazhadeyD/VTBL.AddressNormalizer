@@ -36,10 +36,11 @@ namespace VTBL.AddressNormalizer.Infrastructure.BuildingUnit
             }
 
             var match = PureNumericRangeRegex.Match(trimmed);
+            // start == end — не диапазон, а идентификатор вида «5-5» (корпус: пом:5-5).
             if (!match.Success
                 || !int.TryParse(match.Groups["start"].Value, out var start)
                 || !int.TryParse(match.Groups["end"].Value, out var end)
-                || end < start
+                || end <= start
                 || end - start > maxSpan)
             {
                 yield return trimmed;

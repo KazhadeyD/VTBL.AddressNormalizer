@@ -283,6 +283,16 @@ namespace VTBL.AddressNormalizer.UnitTests.Canonicalization.BuildingUnit
         }
 
         [Fact]
+        public void Parse_PremiseDegenerateNumericRange_KeepsLiteral()
+        {
+            var location = AddressNormalizerTestHost.Parser.Parse("ПОМЕЩЕНИЕ 5-5");
+            var canonical = AddressNormalizerTestHost.Canonicalizer.ToCanonical(location);
+
+            Assert.Equal("5-5", location.Premises.Single());
+            Assert.Equal("пом:5-5", canonical);
+        }
+
+        [Fact]
         public void Parse_PremiseWithLetterSuffix_DoesNotExpandAsRange()
         {
             var location = AddressNormalizerTestHost.Parser.Parse("пом. 35-Н");

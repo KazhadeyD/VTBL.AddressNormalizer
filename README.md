@@ -21,7 +21,7 @@ dotnet run --project VTBL.AddressNormalizer.Console -- unit "КВАРТИРА 83
 
 Режимы: без аргументов (обе секции), `address`, `unit`, `help`; второй аргумент — произвольная строка.
 
-**Требования:** .NET Framework `4.6.2`, совместимый .NET SDK/MSBuild для сборки SDK-style проектов, Docker Compose (для MSSQL).
+**Требования:** .NET `5.0` runtime, .NET SDK (6+ подойдёт для сборки), Docker Compose (для MSSQL).
 
 ## Архитектура
 
@@ -176,17 +176,25 @@ Init-скрипты: `docker/mssql/init/`.
 
 | Проект | TFM | Роль |
 |--------|-----|------|
-| `VTBL.AddressNormalizer.Abstractions` | `net462` | Интерфейсы, DTO, модели домена |
-| `VTBL.AddressNormalizer.Infrastructure` | `net462` | Реализации, `AddressNormalizerFactory` |
-| `VTBL.AddressNormalizer.Console` | `net462` | Тонкий хост, демо |
-| `VTBL.AddressNormalizer.UnitTests` | `net462` | xUnit |
+| `VTBL.AddressNormalizer.Abstractions` | `net5.0` | Интерфейсы, DTO, модели домена |
+| `VTBL.AddressNormalizer.Infrastructure` | `net5.0` | Реализации, `AddressNormalizerFactory` |
+| `VTBL.AddressNormalizer.Console` | `net5.0` | Тонкий хост, демо |
+| `VTBL.AddressNormalizer.UnitTests` | `net5.0` | xUnit |
 | `docker-compose.yml` | — | MSSQL 2022 + init |
 
 ## История изменений
 
+### 21.07.2026 — возврат на net5.0 (SDK-style)
+
+- Все проекты решения переведены с `net462` (classic csproj) на `net5.0` + `Sdk="Microsoft.NET.Sdk"`
+- Удалены `App.config` (Framework startup), ручные `AssemblyInfo.cs`; `InternalsVisibleTo` перенесён в `.csproj` Infrastructure
+- `Newtonsoft.Json` сохранён (вариант A+C) — JSON-контракт без смены сериализатора
+- `dotnet build` / `dotnet test` на `.NETCoreApp,Version=v5.0`
+
 ### 21.07.2026 — BuildingUnit: раскрытие числовых диапазонов в типизированных маркерах
 
 - `BuildingUnitNumericRangeExpander`: `пом. 35-38` → `пом:35|пом:36|пом:37|пом:38`
+- Вырожденный `N-N` (`ПОМЕЩЕНИЕ 5-5`) не раскрывается → `пом:5-5` (идентификатор, не span)
 - Включено для эт/пом/ком/оф/раб.м/ч.п/кв/каб; исключение: краткая комната `К. 5-20` и суффиксы `35-Н`
 - «Голые» диапазоны в остатке по-прежнему → `диап:` (контракт corpus)
 
