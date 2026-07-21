@@ -35,6 +35,17 @@ namespace VTBL.AddressNormalizer.Infrastructure.BuildingAddress
             RegexOptions.CultureInvariant | RegexOptions.Compiled);
 
         /// <summary>
+        /// Ведущий почтовый индекс РФ: «600001, …» или «индекс 600001, …».
+        /// </summary>
+        private static readonly Regex LeadingPostalIndexLabelRegex = new Regex(
+            @"^(?:индекс|index)\s*:?\s*\d{6}\s*,\s*",
+            RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Compiled);
+
+        private static readonly Regex LeadingPostalIndexRegex = new Regex(
+            @"^\d{6}\s*,\s*",
+            RegexOptions.CultureInvariant | RegexOptions.Compiled);
+
+        /// <summary>
         /// Препроцессит входную строку.
         /// </summary>
         /// <param name="input">Сырая строка.</param>
@@ -49,8 +60,19 @@ namespace VTBL.AddressNormalizer.Infrastructure.BuildingAddress
             text = WhitespaceRegex.Replace(text, " ");
             text = text.Replace("№", "номер");
             text = text.Replace(';', ',');
+            text = StripLeadingPostalIndex(text);
 
             return new PreprocessResult(text, hadExplicitDelimiters);
+        }
+
+        private static string StripLeadingPostalIndex(string text)
+        {
+            if (string.IsNullOrEmpty(text))
+                return text;
+
+            text = LeadingPostalIndexLabelRegex.Replace(text, string.Empty);
+            text = LeadingPostalIndexRegex.Replace(text, string.Empty);
+            return text;
         }
     }
 }

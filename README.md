@@ -11,7 +11,15 @@
 dotnet build VTBL.AddressNormalizer.sln
 dotnet test VTBL.AddressNormalizer.sln          # 168+ тестов
 dotnet run --project VTBL.AddressNormalizer.Console
+dotnet run --project VTBL.AddressNormalizer.Console -- address
+dotnet run --project VTBL.AddressNormalizer.Console -- unit "КВАРТИРА 837"
 ```
+
+**Демо Console** прогоняет sample-наборы:
+- **BuildingAddress** — extract indoor-хвоста + читаемый канон строения
+- **BuildingUnit** — parse помещения → category + canonical + JSON + SHA256
+
+Режимы: без аргументов (обе секции), `address`, `unit`, `help`; второй аргумент — произвольная строка.
 
 **Требования:** .NET Framework `4.6.2`, совместимый .NET SDK/MSBuild для сборки SDK-style проектов, Docker Compose (для MSSQL).
 
@@ -175,6 +183,17 @@ Init-скрипты: `docker/mssql/init/`.
 | `docker-compose.yml` | — | MSSQL 2022 + init |
 
 ## История изменений
+
+### 21.07.2026 — отсечение ведущего почтового индекса (BuildingAddress)
+
+- `AddressPreprocessor`: удаление ведущего индекса РФ (`600001, …`, `индекс 600001, …`) до extract/canonical
+- Тест и demo-sample: адрес Владимир, ул. Студеная Гора
+
+### 21.07.2026 — демо Console (BuildingAddress + BuildingUnit)
+
+- Console: две секции демо — адрес строения и внутренние помещения
+- CLI: `address` / `unit` / `help`, опционально произвольная строка вторым аргументом
+- Sample-наборы из unit-тестов; BuildingUnit дополнительно показывает `Category`
 
 ### 21.07.2026 — отказ от Microsoft.Extensions.DependencyInjection
 

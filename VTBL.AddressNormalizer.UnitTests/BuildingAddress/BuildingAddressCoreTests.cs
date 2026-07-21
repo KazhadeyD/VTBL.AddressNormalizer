@@ -21,6 +21,9 @@ namespace VTBL.AddressNormalizer.UnitTests.BuildingAddress
         [InlineData("г Москва, ул Сухонская, д 11", "г Москва, ул Сухонская, д 11")]
         [InlineData("г Москва ул Сухонская д 11 кв 89", "г Москва ул Сухонская д 11")]
         [InlineData("г Москва, ул Сухонская, д 11, кв 89, оф 12", "г Москва, ул Сухонская, д 11")]
+        [InlineData(
+            "600001, Владимирская область, г. Владимир, ул. Студеная Гора, д.44 А, офис 318",
+            "Владимирская область, г. Владимир, ул. Студеная Гора, д.44 А")]
         public void Extract_ReturnsExpected(string input, string expected)
         {
             Assert.Equal(expected, _extractor.Extract(input));
@@ -108,6 +111,20 @@ namespace VTBL.AddressNormalizer.UnitTests.BuildingAddress
             var second = _normalizer.Normalize(input);
             Assert.Equal(first.Canonical, second.Canonical);
             Assert.Equal("г Санкт-Петербург, Невский пр-кт, д 1, корп 2, стр 3", first.Canonical);
+        }
+
+        [Fact]
+        public void Normalize_StripsLeadingPostalIndexAndIndoor()
+        {
+            const string input = "600001, Владимирская область, г. Владимир, ул. Студеная Гора, д.44 А, офис 318";
+            var result = _normalizer.Normalize(input);
+
+            Assert.Equal(
+                "Владимирская область, г. Владимир, ул. Студеная Гора, д.44 А",
+                result.Extracted);
+            Assert.Equal(
+                "Владимирская обл, г Владимир, ул Студеная Гора, Д44 А",
+                result.Canonical);
         }
 
         [Fact]

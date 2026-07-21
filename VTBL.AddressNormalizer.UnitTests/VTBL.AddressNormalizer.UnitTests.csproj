@@ -65,7 +65,19 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="**\*.cs" Exclude="bin\**;obj\**" />
+    <Compile Include="AddressNormalizerTestHost.cs" />
+    <Compile Include="BuildingAddress\BuildingAddressCoreTests.cs" />
+    <Compile Include="BuildingAddress\IndoorMarkerPatternsContractTests.cs" />
+    <Compile Include="Canonicalization\BuildingUnit\BuildingUnitNormalizerTests.cs" />
+    <Compile Include="Canonicalization\BuildingUnit\BuildingUnitParserFullTests.cs" />
+    <Compile Include="Canonicalization\BuildingUnit\BuildingUnitParserSlashChainTests.cs" />
+    <Compile Include="Canonicalization\BuildingUnit\BuildingUnitParserTests.cs" />
+    <Compile Include="Canonicalization\BuildingUnit\BuildingUnitSampleCases.cs" />
+    <Compile Include="Canonicalization\CanonicalHashTests.cs" />
+    <Compile Include="Canonicalization\FieldAdapters\Crm\CrmNewFlatClassifierTests.cs" />
+    <Compile Include="Canonicalization\FieldAdapters\Crm\CrmNewFlatNormalizerTests.cs" />
+    <Compile Include="Composition\AddressNormalizerFactoryTests.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
