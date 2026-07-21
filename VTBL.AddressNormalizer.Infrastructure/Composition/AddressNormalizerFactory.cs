@@ -73,7 +73,7 @@ namespace VTBL.AddressNormalizer.Infrastructure.Composition
         /// <summary>CRM-адаптер для <c>new_flat</c>.</summary>
         public static ICrmNewFlatNormalizer CrmNewFlatNormalizer => CrmNewFlatNormalizerLazy.Value;
 
-        /// <summary>Extract indoor-хвоста из полного адреса.</summary>
+        /// <summary>Extract outdoor/indoor (<see cref="IBuildingLocationExtractor.ExtractSplit"/>) и outdoor-only Extract.</summary>
         public static IBuildingLocationExtractor BuildingLocationExtractor => BuildingLocationExtractorLazy.Value;
 
         /// <summary>Канонизатор building location.</summary>

@@ -1,0 +1,53 @@
+2026-07-21 23:16:14.1002 Info Registered target NLog.Targets.ConsoleTarget(Name=console)
+2026-07-21 23:16:14.1081 Info Registered target NLog.Targets.FileTarget(Name=file)
+2026-07-21 23:16:14.1081 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.3.4.2778. Product version: 5.3.4+73d83d3161d31288ca5c554cc50d27b6bed5f28b. GlobalAssemblyCache: False
+2026-07-21 23:16:14.1296 Info Validating config: TargetNames=console, file, ConfigItems=31, FilePath=E:\Visual Studio\Projects\VTBL.AddressNormalizer\VTBL.AddressNormalizer.WebApi\NLog.config
+2026-07-21 23:16:14.1419 Info Configuration initialized.
+2026-07-21 23:25:58.9068 Info Registered target NLog.Targets.ConsoleTarget(Name=console)
+2026-07-21 23:25:58.9068 Info Registered target NLog.Targets.FileTarget(Name=file)
+2026-07-21 23:25:58.9216 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.3.4.2778. Product version: 5.3.4+73d83d3161d31288ca5c554cc50d27b6bed5f28b. GlobalAssemblyCache: False
+2026-07-21 23:25:58.9326 Info Validating config: TargetNames=console, file, ConfigItems=31, FilePath=E:\Visual Studio\Projects\VTBL.AddressNormalizer\VTBL.AddressNormalizer.WebApi\NLog.config
+2026-07-21 23:25:58.9326 Info Configuration initialized.
+2026-07-21 23:29:23.1574 Info Configuration file change detected! Reloading in 1000ms...
+2026-07-21 23:29:23.4155 Info Configuration file change detected! Reloading in 1000ms...
+2026-07-21 23:29:24.5040 Info Reloading configuration...
+2026-07-21 23:29:24.5202 Warn NLog configuration failed to reload Exception: System.IO.IOException: The process cannot access the file 'E:\Visual Studio\Projects\VTBL.AddressNormalizer\VTBL.AddressNormalizer.WebApi\NLog.config' because it is being used by another process.
+   at System.IO.FileStream.ValidateFileHandle(SafeFileHandle fileHandle)
+   at System.IO.FileStream.CreateFileOpenHandle(FileMode mode, FileShare share, FileOptions options)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize)
+   at System.Xml.XmlDownloadManager.GetStream(Uri uri, ICredentials credentials, IWebProxy proxy)
+   at System.Xml.XmlUrlResolver.GetEntity(Uri absoluteUri, String role, Type ofObjectToReturn)
+   at System.Xml.XmlTextReaderImpl.FinishInitUriString()
+   at System.Xml.XmlTextReaderImpl..ctor(String uriStr, XmlReaderSettings settings, XmlParserContext context, XmlResolver uriResolver)
+   at System.Xml.XmlReader.Create(String inputUri)
+   at NLog.Internal.Fakeables.AppEnvironmentWrapper.LoadXmlFile(String path)
+   at NLog.Config.XmlLoggingConfiguration.CreateFileReader(String fileName)
+   at NLog.Config.XmlLoggingConfiguration.LoadFromXmlFile(String fileName)
+   at NLog.Config.XmlLoggingConfiguration.Reload()
+   at NLog.Config.LoggingConfigurationWatchableFileLoader.ReloadConfigOnTimer(Object state)
+2026-07-21 23:35:55.2819 Info Registered target NLog.Targets.ConsoleTarget(Name=console)
+2026-07-21 23:35:55.2819 Info Registered target NLog.Targets.FileTarget(Name=file)
+2026-07-21 23:35:55.3023 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.3.4.2778. Product version: 5.3.4+73d83d3161d31288ca5c554cc50d27b6bed5f28b. GlobalAssemblyCache: False
+2026-07-21 23:35:55.3168 Info Validating config: TargetNames=console, file, ConfigItems=33, FilePath=E:\Visual Studio\Projects\VTBL.AddressNormalizer\VTBL.AddressNormalizer.WebApi\NLog.config
+2026-07-21 23:35:55.3303 Info Configuration initialized.
+2026-07-21 23:52:05.1976 Info Registered target NLog.Targets.ConsoleTarget(Name=console)
+2026-07-21 23:52:05.1976 Info Registered target NLog.Targets.FileTarget(Name=file)
+2026-07-21 23:52:05.2137 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.3.4.2778. Product version: 5.3.4+73d83d3161d31288ca5c554cc50d27b6bed5f28b. GlobalAssemblyCache: False
+2026-07-21 23:52:05.2137 Info Validating config: TargetNames=console, file, ConfigItems=33, FilePath=E:\Visual Studio\Projects\VTBL.AddressNormalizer\VTBL.AddressNormalizer.WebApi\NLog.config
+2026-07-21 23:52:05.2383 Info Configuration initialized.
+2026-07-21 23:56:37.0073 Info Registered target NLog.Targets.ConsoleTarget(Name=console)
+2026-07-21 23:56:37.0245 Info Registered target NLog.Targets.FileTarget(Name=file)
+2026-07-21 23:56:37.0389 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.3.4.2778. Product version: 5.3.4+73d83d3161d31288ca5c554cc50d27b6bed5f28b. GlobalAssemblyCache: False
+2026-07-21 23:56:37.0577 Info Validating config: TargetNames=console, file, ConfigItems=33, FilePath=E:\Visual Studio\Projects\VTBL.AddressNormalizer\VTBL.AddressNormalizer.WebApi\NLog.config
+2026-07-21 23:56:37.0821 Info Configuration initialized.
+2026-07-22 00:02:32.1058 Info Registered target NLog.Targets.ConsoleTarget(Name=console)
+2026-07-22 00:02:32.1058 Info Registered target NLog.Targets.FileTarget(Name=file)
+2026-07-22 00:02:32.1212 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.3.4.2778. Product version: 5.3.4+73d83d3161d31288ca5c554cc50d27b6bed5f28b. GlobalAssemblyCache: False
+2026-07-22 00:02:32.1212 Info Validating config: TargetNames=console, file, ConfigItems=33, FilePath=E:\Visual Studio\Projects\VTBL.AddressNormalizer\VTBL.AddressNormalizer.WebApi\NLog.config
+2026-07-22 00:02:32.1445 Info Configuration initialized.
+2026-07-22 00:03:45.4195 Info Registered target NLog.Targets.ConsoleTarget(Name=console)
+2026-07-22 00:03:45.4321 Info Registered target NLog.Targets.FileTarget(Name=file)
+2026-07-22 00:03:45.4321 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.3.4.2778. Product version: 5.3.4+73d83d3161d31288ca5c554cc50d27b6bed5f28b. GlobalAssemblyCache: False
+2026-07-22 00:03:45.4559 Info Validating config: TargetNames=console, file, ConfigItems=33, FilePath=E:\Visual Studio\Projects\VTBL.AddressNormalizer\VTBL.AddressNormalizer.WebApi\NLog.config
+2026-07-22 00:03:45.4753 Info Configuration initialized.

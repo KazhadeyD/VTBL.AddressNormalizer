@@ -48,6 +48,36 @@ namespace VTBL.AddressNormalizer.UnitTests.BuildingAddress
             var input = "г Москва, ул Квартирная, д 11";
             Assert.Equal("г Москва, ул Квартирная, д 11", _extractor.Extract(input));
         }
+
+        [Fact]
+        public void ExtractSplit_WithIndoor_ReturnsOutdoorAndIndoorFromMarker()
+        {
+            const string input = "г Москва, ул Сухонская, д 11, кв 89";
+
+            var split = _extractor.ExtractSplit(input);
+
+            Assert.NotNull(split);
+            Assert.Equal("г Москва, ул Сухонская, д 11", split.Outdoor);
+            Assert.Equal("кв 89", split.Indoor);
+            Assert.Equal(_extractor.Extract(input), split.Outdoor);
+        }
+
+        [Fact]
+        public void ExtractSplit_NullInput_ReturnsNonNullEmptyParts()
+        {
+            var split = _extractor.ExtractSplit(null);
+
+            Assert.NotNull(split);
+            Assert.Equal(string.Empty, split.Outdoor);
+            Assert.Equal(string.Empty, split.Indoor);
+        }
+
+        [Fact]
+        public void Extract_DelegatesToExtractSplitOutdoor()
+        {
+            const string input = "г Москва, ул Сухонская, д 11, офис 15";
+            Assert.Equal(_extractor.ExtractSplit(input).Outdoor, _extractor.Extract(input));
+        }
     }
 
     public class BuildingAddressCanonicalizerTests
@@ -82,6 +112,12 @@ namespace VTBL.AddressNormalizer.UnitTests.BuildingAddress
             Assert.Equal("г Москва, ул Сухонская, д 11, кв 89", result.Original);
             Assert.Equal("г Москва, ул Сухонская, д 11", result.Extracted);
             Assert.Equal("г Москва, ул Сухонская, д 11", result.Canonical);
+
+            // TC-E2E-01: Extracted без регрессии; Indoor от маркера (не от cutIndex).
+            var split = AddressNormalizerFactory.BuildingLocationExtractor.ExtractSplit(
+                "г Москва, ул Сухонская, д 11, кв 89");
+            Assert.Equal(result.Extracted, split.Outdoor);
+            Assert.Equal("кв 89", split.Indoor);
         }
 
         [Theory]

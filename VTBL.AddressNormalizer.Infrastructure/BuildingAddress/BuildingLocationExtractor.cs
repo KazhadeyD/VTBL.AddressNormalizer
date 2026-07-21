@@ -5,6 +5,7 @@ namespace VTBL.AddressNormalizer.Infrastructure.BuildingAddress
 {
     /// <summary>
     /// Извлечение локации здания из полного адреса (отсечение indoor-хвоста).
+    /// Поддерживает <see cref="ExtractSplit"/> (outdoor + indoor) и <see cref="Extract"/> (= Outdoor).
     /// </summary>
     public sealed class BuildingLocationExtractor : IBuildingLocationExtractor
     {
@@ -13,26 +14,32 @@ namespace VTBL.AddressNormalizer.Infrastructure.BuildingAddress
             RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Compiled);
 
         /// <inheritdoc />
-        public string Extract(string input)
+        public BuildingLocationExtractionResult ExtractSplit(string input)
         {
             var preprocessed = AddressPreprocessor.Preprocess(input);
             var text = preprocessed.Text;
             if (string.IsNullOrEmpty(text))
-                return string.Empty;
+                return new BuildingLocationExtractionResult(string.Empty, string.Empty);
 
             var housePos = FindHouseMarkerIndex(text);
             var indoorMatch = IndoorMarkerRegistry.FindFirstMatch(text);
 
             if (indoorMatch == null)
-                return TrimTrailingDelimiters(text);
+                return new BuildingLocationExtractionResult(TrimTrailingDelimiters(text), string.Empty);
+
+            // Indoor всегда от индекса маркера, не от cutIndex (иначе ведущая ','/';'/ws).
+            var indoor = text.Substring(indoorMatch.Index);
 
             if (housePos >= 0 && indoorMatch.Index < housePos)
-                return string.Empty;
+                return new BuildingLocationExtractionResult(string.Empty, indoor);
 
             var cutIndex = ComputeCutIndex(text, indoorMatch);
-            var result = cutIndex <= 0 ? string.Empty : text.Substring(0, cutIndex);
-            return TrimTrailingDelimiters(result);
+            var outdoorRaw = cutIndex <= 0 ? string.Empty : text.Substring(0, cutIndex);
+            return new BuildingLocationExtractionResult(TrimTrailingDelimiters(outdoorRaw), indoor);
         }
+
+        /// <inheritdoc />
+        public string Extract(string input) => ExtractSplit(input).Outdoor;
 
         private static int FindHouseMarkerIndex(string text)
         {
