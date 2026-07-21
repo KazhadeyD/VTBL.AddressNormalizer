@@ -1,5 +1,4 @@
 using VTBL.AddressNormalizer.Abstractions.BuildingAddress;
-using VTBL.AddressNormalizer.Infrastructure.Composition;
 using Xunit;
 
 namespace VTBL.AddressNormalizer.UnitTests.BuildingAddress
@@ -10,7 +9,7 @@ namespace VTBL.AddressNormalizer.UnitTests.BuildingAddress
     public class BuildingLocationExtractorSplitTests
     {
         private readonly IBuildingLocationExtractor _extractor =
-            AddressNormalizerFactory.BuildingLocationExtractor;
+            AddressNormalizerTestHost.BuildingLocationExtractor;
 
         [Theory]
         [InlineData("г Москва, ул Сухонская, д 11, кв 89", "г Москва, ул Сухонская, д 11", "кв 89")]

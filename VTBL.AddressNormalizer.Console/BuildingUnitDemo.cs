@@ -1,5 +1,4 @@
 using VTBL.AddressNormalizer.Abstractions.BuildingUnit;
-using VTBL.AddressNormalizer.Infrastructure.Composition;
 
 namespace VTBL.AddressNormalizer.Console
 {
@@ -35,8 +34,8 @@ namespace VTBL.AddressNormalizer.Console
         {
             DemoConsoleWriter.WriteTitle("BuildingUnit — внутренние помещения");
 
-            var normalizer = AddressNormalizerFactory.BuildingUnitNormalizer;
-            var classifier = AddressNormalizerFactory.BuildingUnitClassifier;
+            var normalizer = DemoServices.BuildingUnitNormalizer;
+            var classifier = DemoServices.BuildingUnitClassifier;
             var inputs = string.IsNullOrWhiteSpace(customInput) ? Samples : new[] { customInput };
 
             for (var i = 0; i < inputs.Length; i++)

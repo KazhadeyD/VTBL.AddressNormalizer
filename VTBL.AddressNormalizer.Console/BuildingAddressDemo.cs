@@ -1,5 +1,4 @@
 using VTBL.AddressNormalizer.Abstractions.BuildingAddress;
-using VTBL.AddressNormalizer.Infrastructure.Composition;
 
 namespace VTBL.AddressNormalizer.Console
 {
@@ -42,7 +41,7 @@ namespace VTBL.AddressNormalizer.Console
         {
             DemoConsoleWriter.WriteTitle("BuildingAddress — адрес строения");
 
-            var normalizer = AddressNormalizerFactory.BuildingAddressNormalizer;
+            var normalizer = DemoServices.BuildingAddressNormalizer;
             var inputs = string.IsNullOrWhiteSpace(customInput) ? Samples : new[] { customInput };
 
             for (var i = 0; i < inputs.Length; i++)

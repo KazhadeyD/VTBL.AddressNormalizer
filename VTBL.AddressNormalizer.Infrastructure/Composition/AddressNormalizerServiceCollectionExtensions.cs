@@ -16,8 +16,8 @@ namespace VTBL.AddressNormalizer.Infrastructure.Composition
     public static class AddressNormalizerServiceCollectionExtensions
     {
         /// <summary>
-        /// Регистрирует singleton-реализации ядра AddressNormalizer (тот же граф, что у
-        /// <see cref="AddressNormalizerFactory"/>). Для хостов с DI (например WebApi).
+        /// Регистрирует singleton-реализации ядра AddressNormalizer.
+        /// Единый composition root для WebApi, Console и тестов.
         /// </summary>
         /// <param name="services">Коллекция DI.</param>
         /// <returns>Та же коллекция для цепочки вызовов.</returns>

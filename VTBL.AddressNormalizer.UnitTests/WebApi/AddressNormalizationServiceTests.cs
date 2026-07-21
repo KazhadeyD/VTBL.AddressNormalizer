@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Logging.Abstractions;
-using VTBL.AddressNormalizer.Infrastructure.Composition;
 using VTBL.AddressNormalizer.WebApi.Models;
 using VTBL.AddressNormalizer.WebApi.Services;
 using Xunit;
@@ -22,10 +21,10 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
         private static AddressNormalizationService CreateSut() =>
             new AddressNormalizationService(
                 NullLogger<AddressNormalizationService>.Instance,
-                AddressNormalizerFactory.BuildingLocationExtractor,
-                AddressNormalizerFactory.BuildingAddressCanonicalizer,
-                AddressNormalizerFactory.BuildingUnitNormalizer,
-                AddressNormalizerFactory.CanonicalHash);
+                AddressNormalizerTestHost.BuildingLocationExtractor,
+                AddressNormalizerTestHost.BuildingAddressCanonicalizer,
+                AddressNormalizerTestHost.Normalizer,
+                AddressNormalizerTestHost.Hash);
 
         [Theory]
         [InlineData(null)]
@@ -42,9 +41,9 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
         {
             var value = _sut.NormalizeFull(SampleWithIndoor);
 
-            var split = AddressNormalizerFactory.BuildingLocationExtractor.ExtractSplit(SampleWithIndoor);
-            var outdoorCanonical = AddressNormalizerFactory.BuildingAddressCanonicalizer.ToCanonical(split.Outdoor);
-            var expectedHash = AddressNormalizerFactory.CanonicalHash.ComputeSha256(outdoorCanonical);
+            var split = AddressNormalizerTestHost.BuildingLocationExtractor.ExtractSplit(SampleWithIndoor);
+            var outdoorCanonical = AddressNormalizerTestHost.BuildingAddressCanonicalizer.ToCanonical(split.Outdoor);
+            var expectedHash = AddressNormalizerTestHost.Hash.ComputeSha256(outdoorCanonical);
 
             Assert.Null(value.FiasId);
             Assert.Equal(split.Outdoor, value.DadataOutdoor.Extracted);
@@ -89,7 +88,7 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
             const string source = "кв 10";
 
             var result = _sut.NormalizeUnit(source);
-            var expected = AddressNormalizerFactory.BuildingUnitNormalizer.Normalize(source);
+            var expected = AddressNormalizerTestHost.Normalizer.Normalize(source);
 
             Assert.Equal(expected.Canonical, result.Canonical);
             Assert.Equal(expected.Hash, result.Hash);
@@ -99,7 +98,7 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
         [Fact]
         public void ExtractOutdoor_MatchesExtractSplitOutdoor()
         {
-            var expected = AddressNormalizerFactory.BuildingLocationExtractor.ExtractSplit(SampleWithIndoor).Outdoor;
+            var expected = AddressNormalizerTestHost.BuildingLocationExtractor.ExtractSplit(SampleWithIndoor).Outdoor;
 
             Assert.Equal(expected, _sut.ExtractOutdoor(SampleWithIndoor));
         }
@@ -107,7 +106,7 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
         [Fact]
         public void Canonicalize_WithIndoor_DoesNotExtract_MatchesToCanonicalOfSource()
         {
-            var expected = AddressNormalizerFactory.BuildingAddressCanonicalizer.ToCanonical(SampleWithIndoor);
+            var expected = AddressNormalizerTestHost.BuildingAddressCanonicalizer.ToCanonical(SampleWithIndoor);
 
             Assert.Equal(expected, _sut.Canonicalize(SampleWithIndoor));
         }
@@ -246,10 +245,10 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
             public ThrowingCoreService()
                 : base(
                     NullLogger<AddressNormalizationService>.Instance,
-                    AddressNormalizerFactory.BuildingLocationExtractor,
-                    AddressNormalizerFactory.BuildingAddressCanonicalizer,
-                    AddressNormalizerFactory.BuildingUnitNormalizer,
-                    AddressNormalizerFactory.CanonicalHash)
+                    AddressNormalizerTestHost.BuildingLocationExtractor,
+                    AddressNormalizerTestHost.BuildingAddressCanonicalizer,
+                    AddressNormalizerTestHost.Normalizer,
+                    AddressNormalizerTestHost.Hash)
             {
             }
 

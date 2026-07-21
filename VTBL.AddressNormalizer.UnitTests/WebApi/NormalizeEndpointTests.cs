@@ -4,7 +4,6 @@ using System.Net.Http;
 using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
-using VTBL.AddressNormalizer.Infrastructure.Composition;
 using VTBL.AddressNormalizer.WebApi.Models;
 using Xunit;
 
@@ -58,9 +57,9 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
             var body = await response.Content.ReadAsStringAsync();
             var dto = JsonSerializer.Deserialize<NormalizeResponse>(body, WebApiTestFixture.JsonOptions);
 
-            var split = AddressNormalizerFactory.BuildingLocationExtractor.ExtractSplit(source);
-            var outdoorCanonical = AddressNormalizerFactory.BuildingAddressCanonicalizer.ToCanonical(split.Outdoor);
-            var expectedHash = AddressNormalizerFactory.CanonicalHash.ComputeSha256(outdoorCanonical);
+            var split = AddressNormalizerTestHost.BuildingLocationExtractor.ExtractSplit(source);
+            var outdoorCanonical = AddressNormalizerTestHost.BuildingAddressCanonicalizer.ToCanonical(split.Outdoor);
+            var expectedHash = AddressNormalizerTestHost.Hash.ComputeSha256(outdoorCanonical);
 
             Assert.NotNull(dto);
             Assert.Equal(source, dto.Source);

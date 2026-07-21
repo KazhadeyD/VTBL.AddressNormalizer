@@ -2,7 +2,6 @@ using System.Net;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
-using VTBL.AddressNormalizer.Infrastructure.Composition;
 using VTBL.AddressNormalizer.WebApi.Models;
 using Xunit;
 
@@ -34,7 +33,7 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
 
             var body = await response.Content.ReadAsStringAsync();
             var dto = JsonSerializer.Deserialize<UnitNormalizeResponse>(body, WebApiTestFixture.JsonOptions);
-            var expected = AddressNormalizerFactory.BuildingUnitNormalizer.Normalize(source);
+            var expected = AddressNormalizerTestHost.Normalizer.Normalize(source);
 
             Assert.NotNull(dto);
             Assert.Equal(source, dto.Source);

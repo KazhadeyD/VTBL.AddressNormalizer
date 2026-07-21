@@ -2,7 +2,6 @@ using System.Net;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
-using VTBL.AddressNormalizer.Infrastructure.Composition;
 using VTBL.AddressNormalizer.WebApi.Models;
 using Xunit;
 
@@ -24,7 +23,7 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
         public async Task Extract_ValidSource_ReturnsExtractSplitOutdoor()
         {
             const string source = "г Москва, ул Сухонская, д 11, кв 89";
-            var expected = AddressNormalizerFactory.BuildingLocationExtractor.ExtractSplit(source).Outdoor;
+            var expected = AddressNormalizerTestHost.BuildingLocationExtractor.ExtractSplit(source).Outdoor;
 
             var response = await WebApiTestFixture.PostJsonAsync(
                 _client,
@@ -44,7 +43,7 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
         public async Task Extract_IndoorOnlySource_ReturnsEmptyExtracted()
         {
             const string source = "кв 10";
-            var expected = AddressNormalizerFactory.BuildingLocationExtractor.ExtractSplit(source).Outdoor;
+            var expected = AddressNormalizerTestHost.BuildingLocationExtractor.ExtractSplit(source).Outdoor;
 
             var response = await WebApiTestFixture.PostJsonAsync(
                 _client,
@@ -65,7 +64,7 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
         public async Task Canonicalize_SourceWithIndoor_ReturnsToCanonicalWithoutExtractAndWithoutHash()
         {
             const string source = "г Москва, ул Сухонская, д 11, кв 89";
-            var expected = AddressNormalizerFactory.BuildingAddressCanonicalizer.ToCanonical(source);
+            var expected = AddressNormalizerTestHost.BuildingAddressCanonicalizer.ToCanonical(source);
 
             var response = await WebApiTestFixture.PostJsonAsync(
                 _client,

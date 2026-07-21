@@ -83,7 +83,7 @@ VTBL.AddressNormalizer.sln
 │   FieldAdapters/Crm/ ICrmNewFlatNormalizer, ICrmNewAddressNormalizer
 │
 ├── VTBL.AddressNormalizer.Infrastructure/   # реализации + composition root
-│   Composition/          AddressNormalizerFactory + AddAddressNormalizer (DI)
+│   Composition/          AddAddressNormalizer (DI)
 │   BuildingAddress/      Extractor, Canonicalizer, Normalizer
 │   BuildingUnit/         Parser, Classifier, Canonicalizer, Normalizer
 │   Shared/               IndoorMarkerPatterns, CanonicalizationPipeline
@@ -96,7 +96,7 @@ VTBL.AddressNormalizer.sln
 │   Filters/       ApiExceptionFilter (500 { error })
 │   Models/        DTO запросов/ответов (Normalize/Unit/Extract/Canonicalize/Batch)
 │   Mapping/       IndoorValueMapper → IndoorValueDto (все категории с name/values)
-│   Services/      IAddressNormalizationService + AddressNormalizationService (Factory + ILogger)
+│   Services/      IAddressNormalizationService + AddressNormalizationService (DI + ILogger)
 │   Options/       BatchOptions
 │
 └── VTBL.AddressNormalizer.UnitTests/
@@ -136,20 +136,26 @@ flowchart LR
 | `ICrmNewAddressNormalizer` | Stub: строка → BuildingAddress; сборка из полей — фаза 2 |
 | `IBuildingUnitNormalizer` | Core indoor без classify |
 
-**Composition:** `AddAddressNormalizer(IServiceCollection)` — DI-регистрация ядра (WebApi). `AddressNormalizerFactory` — тот же граф без контейнера (Console, unit-тесты).
+**Composition:** `services.AddAddressNormalizer()` — единый DI-граф ядра (WebApi, Console, тесты).
+
 ### Пример BuildingAddress
 
 ```csharp
+using Microsoft.Extensions.DependencyInjection;
 using VTBL.AddressNormalizer.Abstractions.BuildingAddress;
 using VTBL.AddressNormalizer.Infrastructure.Composition;
 
-var normalizer = AddressNormalizerFactory.BuildingAddressNormalizer;
+var services = new ServiceCollection();
+services.AddAddressNormalizer();
+var sp = services.BuildServiceProvider();
+
+var normalizer = sp.GetRequiredService<IBuildingAddressNormalizer>();
 
 var result = normalizer.Normalize("г Москва, ул Сухонская, д 11, кв 89");
 // result.Extracted  → "г Москва, ул Сухонская, д 11"
 // result.Canonical  → "г Москва, ул Сухонская, д 11"
 
-var split = AddressNormalizerFactory.BuildingLocationExtractor.ExtractSplit(
+var split = sp.GetRequiredService<IBuildingLocationExtractor>().ExtractSplit(
     "г Москва, ул Сухонская, д 11, кв 89");
 // split.Outdoor → "г Москва, ул Сухонская, д 11"
 // split.Indoor  → "кв 89"  (с индекса маркера, не с cutIndex)
@@ -158,10 +164,15 @@ var split = AddressNormalizerFactory.BuildingLocationExtractor.ExtractSplit(
 ### Пример BuildingUnit / new_flat
 
 ```csharp
+using Microsoft.Extensions.DependencyInjection;
 using VTBL.AddressNormalizer.Abstractions.FieldAdapters.Crm;
 using VTBL.AddressNormalizer.Infrastructure.Composition;
 
-var normalizer = AddressNormalizerFactory.CrmNewFlatNormalizer;
+var services = new ServiceCollection();
+services.AddAddressNormalizer();
+var sp = services.BuildServiceProvider();
+
+var normalizer = sp.GetRequiredService<ICrmNewFlatNormalizer>();
 
 var result = normalizer.Normalize("ЭТАЖ/ПОМЕЩ. АНТРЕСОЛЬ 2/I КОМ./ОФИС 17/Е9Е");
 // result.Category  → Mixed / Premise / …
@@ -209,7 +220,7 @@ dotnet test VTBL.AddressNormalizer.sln
 | CRM `new_flat` + corpus | 5001 строк `flats.csv` |
 | BuildingAddress extract / canonical / E2E | Extract, канон, end-to-end |
 | IndoorMarkerPatterns contract | sync с BuildingUnit classifier |
-| Composition | `AddressNormalizerFactory` exposes services |
+| Composition | `AddAddressNormalizer` resolves core services |
 | WebApi HTTP E2E | normalize / unit / extract / canonicalize / batch / health / Correlation Id |
 
 **257+** тестов (на 21.07.2026). Corpus gate BuildingUnit: canonical/hash не должны дрейфовать без явного решения.
@@ -247,13 +258,18 @@ Init-скрипты: `docker/mssql/init/`.
 | Проект | TFM | Роль |
 |--------|-----|------|
 | `VTBL.AddressNormalizer.Abstractions` | `net5.0` | Интерфейсы, DTO, модели домена |
-| `VTBL.AddressNormalizer.Infrastructure` | `net5.0` | Реализации, `AddressNormalizerFactory` |
+| `VTBL.AddressNormalizer.Infrastructure` | `net5.0` | Реализации, `AddAddressNormalizer` |
 | `VTBL.AddressNormalizer.Console` | `net5.0` | Тонкий хост, демо |
 | `VTBL.AddressNormalizer.WebApi` | `net5.0` | ASP.NET Core host: Health, NLog, Correlation Id, ApiExceptionFilter, controllers v1 |
 | `VTBL.AddressNormalizer.UnitTests` | `net5.0` | xUnit + WebApplicationFactory (HTTP E2E) |
 | `docker-compose.yml` | — | MSSQL 2022 + init |
 
 ## История изменений
+
+### 22.07.2026 — Удалён AddressNormalizerFactory
+
+- Единый composition root: `AddAddressNormalizer(IServiceCollection)` (WebApi, Console `DemoServices`, `AddressNormalizerTestHost`)
+- Удалены `AddressNormalizerFactory` и `AddressNormalizerFactoryTests`; добавлены `AddAddressNormalizerTests`
 
 ### 22.07.2026 — Русские сообщения AddressNormalizationService
 
@@ -263,8 +279,7 @@ Init-скрипты: `docker/mssql/init/`.
 ### 22.07.2026 — DI ядра: AddAddressNormalizer
 
 - `AddressNormalizerServiceCollectionExtensions.AddAddressNormalizer` — регистрация singleton-графа ядра в MS.DI
-- WebApi: `Startup` вызывает `AddAddressNormalizer()`; `AddressNormalizationService` получает зависимости через ctor (не через Factory)
-- `AddressNormalizerFactory` сохранён для Console и тестов без контейнера
+- WebApi: `Startup` вызывает `AddAddressNormalizer()`; `AddressNormalizationService` получает зависимости через ctor
 
 ### 22.07.2026 — Переименование ToIndoorValueDto
 

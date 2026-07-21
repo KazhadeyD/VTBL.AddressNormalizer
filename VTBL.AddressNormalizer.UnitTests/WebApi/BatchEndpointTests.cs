@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging.Abstractions;
-using VTBL.AddressNormalizer.Infrastructure.Composition;
 using VTBL.AddressNormalizer.WebApi;
 using VTBL.AddressNormalizer.WebApi.Models;
 using VTBL.AddressNormalizer.WebApi.Services;
@@ -132,9 +131,9 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
 
         private static void AssertOkValueMatchesCore(string source, NormalizeValueDto value)
         {
-            var split = AddressNormalizerFactory.BuildingLocationExtractor.ExtractSplit(source);
-            var outdoorCanonical = AddressNormalizerFactory.BuildingAddressCanonicalizer.ToCanonical(split.Outdoor);
-            var expectedHash = AddressNormalizerFactory.CanonicalHash.ComputeSha256(outdoorCanonical);
+            var split = AddressNormalizerTestHost.BuildingLocationExtractor.ExtractSplit(source);
+            var outdoorCanonical = AddressNormalizerTestHost.BuildingAddressCanonicalizer.ToCanonical(split.Outdoor);
+            var expectedHash = AddressNormalizerTestHost.Hash.ComputeSha256(outdoorCanonical);
 
             Assert.NotNull(value);
             Assert.Null(value.FiasId);
@@ -212,10 +211,10 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
                     services.AddSingleton<IAddressNormalizationService>(
                         new ThrowingCoreAddressNormalizationService(
                             NullLogger<AddressNormalizationService>.Instance,
-                            AddressNormalizerFactory.BuildingLocationExtractor,
-                            AddressNormalizerFactory.BuildingAddressCanonicalizer,
-                            AddressNormalizerFactory.BuildingUnitNormalizer,
-                            AddressNormalizerFactory.CanonicalHash));
+                            AddressNormalizerTestHost.BuildingLocationExtractor,
+                            AddressNormalizerTestHost.BuildingAddressCanonicalizer,
+                            AddressNormalizerTestHost.Normalizer,
+                            AddressNormalizerTestHost.Hash));
                 });
             }
         }

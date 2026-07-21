@@ -1,7 +1,6 @@
 using VTBL.AddressNormalizer.Abstractions.BuildingAddress;
 using VTBL.AddressNormalizer.Abstractions.Shared;
 using VTBL.AddressNormalizer.Infrastructure.BuildingAddress;
-using VTBL.AddressNormalizer.Infrastructure.Composition;
 using Xunit;
 
 namespace VTBL.AddressNormalizer.UnitTests.BuildingAddress
@@ -9,7 +8,7 @@ namespace VTBL.AddressNormalizer.UnitTests.BuildingAddress
     public class BuildingLocationExtractorTests
     {
         private readonly IBuildingLocationExtractor _extractor =
-            AddressNormalizerFactory.BuildingLocationExtractor;
+            AddressNormalizerTestHost.BuildingLocationExtractor;
 
         [Theory]
         [InlineData("г Москва, ул Сухонская, д 11, кв 89", "г Москва, ул Сухонская, д 11")]
@@ -83,7 +82,7 @@ namespace VTBL.AddressNormalizer.UnitTests.BuildingAddress
     public class BuildingAddressCanonicalizerTests
     {
         private readonly IBuildingAddressCanonicalizer _canonicalizer =
-            AddressNormalizerFactory.BuildingAddressCanonicalizer;
+            AddressNormalizerTestHost.BuildingAddressCanonicalizer;
 
         [Theory]
         [InlineData("Г. МОСКВА, УЛ. Сухонская, Д. 11", "г Москва, ул Сухонская, д 11")]
@@ -102,7 +101,7 @@ namespace VTBL.AddressNormalizer.UnitTests.BuildingAddress
     public class BuildingAddressNormalizerTests
     {
         private readonly IBuildingAddressNormalizer _normalizer =
-            AddressNormalizerFactory.BuildingAddressNormalizer;
+            AddressNormalizerTestHost.BuildingAddress;
 
         [Fact]
         public void Normalize_MainScenario_ExtractAndCanonical()
@@ -114,7 +113,7 @@ namespace VTBL.AddressNormalizer.UnitTests.BuildingAddress
             Assert.Equal("г Москва, ул Сухонская, д 11", result.Canonical);
 
             // TC-E2E-01: Extracted без регрессии; Indoor от маркера (не от cutIndex).
-            var split = AddressNormalizerFactory.BuildingLocationExtractor.ExtractSplit(
+            var split = AddressNormalizerTestHost.BuildingLocationExtractor.ExtractSplit(
                 "г Москва, ул Сухонская, д 11, кв 89");
             Assert.Equal(result.Extracted, split.Outdoor);
             Assert.Equal("кв 89", split.Indoor);
