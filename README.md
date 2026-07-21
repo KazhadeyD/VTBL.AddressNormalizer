@@ -26,7 +26,7 @@ dotnet run --project VTBL.AddressNormalizer.WebApi
 
 ## WebAPI
 
-ASP.NET Core host (`net5.0`): NLog (`nlog.config`, MDLC `CorrelationId`), Correlation Id, `ApiExceptionFilter` → 500 `{ error }`, Health, `IAddressNormalizationService` (оркестрация через `AddressNormalizerFactory`), controllers v1. **Auth отсутствует.** Порт по умолчанию — `http://localhost:5000` (`Properties/launchSettings.json`). Swagger UI — только в `Development` (`/swagger`). HTTP E2E — `UnitTests/WebApi` через `Microsoft.AspNetCore.Mvc.Testing` (Environment=Production).
+ASP.NET Core host (`net5.0`): NLog (`nlog.config`, MDLC `CorrelationId`), Correlation Id, `ApiExceptionFilter` → 500 `{ error }`, Health, `AddAddressNormalizer()` + `IAddressNormalizationService`, controllers v1. **Auth отсутствует.** Порт по умолчанию — `http://localhost:5000` (`Properties/launchSettings.json`). Swagger UI — только в `Development` (`/swagger`). HTTP E2E — `UnitTests/WebApi` через `Microsoft.AspNetCore.Mvc.Testing` (Environment=Production).
 
 ### Запуск
 
@@ -83,7 +83,7 @@ VTBL.AddressNormalizer.sln
 │   FieldAdapters/Crm/ ICrmNewFlatNormalizer, ICrmNewAddressNormalizer
 │
 ├── VTBL.AddressNormalizer.Infrastructure/   # реализации + composition root
-│   Composition/          AddressNormalizerFactory
+│   Composition/          AddressNormalizerFactory + AddAddressNormalizer (DI)
 │   BuildingAddress/      Extractor, Canonicalizer, Normalizer
 │   BuildingUnit/         Parser, Classifier, Canonicalizer, Normalizer
 │   Shared/               IndoorMarkerPatterns, CanonicalizationPipeline
@@ -136,7 +136,7 @@ flowchart LR
 | `ICrmNewAddressNormalizer` | Stub: строка → BuildingAddress; сборка из полей — фаза 2 |
 | `IBuildingUnitNormalizer` | Core indoor без classify |
 
-**Composition root:** `AddressNormalizerFactory` — singleton-сервисы без DI-контейнера (WebApi вызывает Factory только из `AddressNormalizationService`).
+**Composition:** `AddAddressNormalizer(IServiceCollection)` — DI-регистрация ядра (WebApi). `AddressNormalizerFactory` — тот же граф без контейнера (Console, unit-тесты).
 ### Пример BuildingAddress
 
 ```csharp
@@ -254,6 +254,17 @@ Init-скрипты: `docker/mssql/init/`.
 | `docker-compose.yml` | — | MSSQL 2022 + init |
 
 ## История изменений
+
+### 22.07.2026 — Русские сообщения AddressNormalizationService
+
+- Тексты ошибок валидации и batch (`source` / MaxItems / all-fail) переведены на русский
+- Контроллеры и Swagger-примеры: `тело запроса обязательно` и русские fallback/batch error
+
+### 22.07.2026 — DI ядра: AddAddressNormalizer
+
+- `AddressNormalizerServiceCollectionExtensions.AddAddressNormalizer` — регистрация singleton-графа ядра в MS.DI
+- WebApi: `Startup` вызывает `AddAddressNormalizer()`; `AddressNormalizationService` получает зависимости через ctor (не через Factory)
+- `AddressNormalizerFactory` сохранён для Console и тестов без контейнера
 
 ### 22.07.2026 — Переименование ToIndoorValueDto
 

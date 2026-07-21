@@ -11,7 +11,8 @@ using VTBL.AddressNormalizer.Infrastructure.Shared;
 namespace VTBL.AddressNormalizer.Infrastructure.Composition
 {
     /// <summary>
-    /// Composition root: singleton-экземпляры сервисов нормализации адресов без DI-контейнера.
+    /// Composition root без DI: singleton-экземпляры для Console и тестов.
+    /// Хосты с контейнером используют <see cref="AddressNormalizerServiceCollectionExtensions.AddAddressNormalizer"/>.
     /// </summary>
     public static class AddressNormalizerFactory
     {

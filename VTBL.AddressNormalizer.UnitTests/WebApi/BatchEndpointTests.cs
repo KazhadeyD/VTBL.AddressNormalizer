@@ -211,7 +211,11 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
                     services.RemoveAll<IAddressNormalizationService>();
                     services.AddSingleton<IAddressNormalizationService>(
                         new ThrowingCoreAddressNormalizationService(
-                            NullLogger<AddressNormalizationService>.Instance));
+                            NullLogger<AddressNormalizationService>.Instance,
+                            AddressNormalizerFactory.BuildingLocationExtractor,
+                            AddressNormalizerFactory.BuildingAddressCanonicalizer,
+                            AddressNormalizerFactory.BuildingUnitNormalizer,
+                            AddressNormalizerFactory.CanonicalHash));
                 });
             }
         }
@@ -219,8 +223,12 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
         private sealed class ThrowingCoreAddressNormalizationService : AddressNormalizationService
         {
             public ThrowingCoreAddressNormalizationService(
-                Microsoft.Extensions.Logging.ILogger<AddressNormalizationService> logger)
-                : base(logger)
+                Microsoft.Extensions.Logging.ILogger<AddressNormalizationService> logger,
+                VTBL.AddressNormalizer.Abstractions.BuildingAddress.IBuildingLocationExtractor locationExtractor,
+                VTBL.AddressNormalizer.Abstractions.BuildingAddress.IBuildingAddressCanonicalizer addressCanonicalizer,
+                VTBL.AddressNormalizer.Abstractions.BuildingUnit.IBuildingUnitNormalizer unitNormalizer,
+                VTBL.AddressNormalizer.Abstractions.Shared.ICanonicalHash canonicalHash)
+                : base(logger, locationExtractor, addressCanonicalizer, unitNormalizer, canonicalHash)
             {
             }
 

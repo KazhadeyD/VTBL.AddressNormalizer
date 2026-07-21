@@ -17,8 +17,15 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
         private const string SampleWithIndoor = "г Москва, ул Сухонская, д 11, кв 89";
         private const string SampleOutdoorOnly = "г Москва, ул Сухонская, д 11";
 
-        private readonly AddressNormalizationService _sut =
-            new AddressNormalizationService(NullLogger<AddressNormalizationService>.Instance);
+        private readonly AddressNormalizationService _sut = CreateSut();
+
+        private static AddressNormalizationService CreateSut() =>
+            new AddressNormalizationService(
+                NullLogger<AddressNormalizationService>.Instance,
+                AddressNormalizerFactory.BuildingLocationExtractor,
+                AddressNormalizerFactory.BuildingAddressCanonicalizer,
+                AddressNormalizerFactory.BuildingUnitNormalizer,
+                AddressNormalizerFactory.CanonicalHash);
 
         [Theory]
         [InlineData(null)]
@@ -237,7 +244,12 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
             public const string ErrorMessage = "intentional core failure";
 
             public ThrowingCoreService()
-                : base(NullLogger<AddressNormalizationService>.Instance)
+                : base(
+                    NullLogger<AddressNormalizationService>.Instance,
+                    AddressNormalizerFactory.BuildingLocationExtractor,
+                    AddressNormalizerFactory.BuildingAddressCanonicalizer,
+                    AddressNormalizerFactory.BuildingUnitNormalizer,
+                    AddressNormalizerFactory.CanonicalHash)
             {
             }
 

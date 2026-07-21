@@ -64,7 +64,7 @@ namespace VTBL.AddressNormalizer.WebApi.Controllers
             _logger.LogInformation("NormalizeFull started");
 
             if (request == null)
-                return BadRequest(new ErrorResponse { Error = "request body is required" });
+                return BadRequest(new ErrorResponse { Error = "тело запроса обязательно" });
 
             try
             {
@@ -107,7 +107,7 @@ namespace VTBL.AddressNormalizer.WebApi.Controllers
             _logger.LogInformation("NormalizeBatch started");
 
             if (request == null)
-                return BadRequest(new ErrorResponse { Error = "request body is required" });
+                return BadRequest(new ErrorResponse { Error = "тело запроса обязательно" });
 
             IReadOnlyList<string> sources = null;
             if (request.Items != null)
@@ -133,14 +133,14 @@ namespace VTBL.AddressNormalizer.WebApi.Controllers
                 case BatchOutcomeKind.AllFailValidation:
                     return new BadRequestObjectResult(new ErrorResponse
                     {
-                        Error = outcome.ErrorMessage ?? "batch request is invalid"
+                        Error = outcome.ErrorMessage ?? "некорректный batch-запрос"
                     });
 
                 case BatchOutcomeKind.AllFailException:
                 case BatchOutcomeKind.AllFailMixed:
                     return new ObjectResult(new ErrorResponse
                     {
-                        Error = outcome.ErrorMessage ?? "all batch items failed"
+                        Error = outcome.ErrorMessage ?? "все элементы batch завершились неуспешно"
                     })
                     {
                         StatusCode = StatusCodes.Status500InternalServerError
@@ -149,7 +149,7 @@ namespace VTBL.AddressNormalizer.WebApi.Controllers
                 default:
                     return new ObjectResult(new ErrorResponse
                     {
-                        Error = outcome.ErrorMessage ?? "unexpected batch outcome"
+                        Error = outcome.ErrorMessage ?? "неожиданный результат batch"
                     })
                     {
                         StatusCode = StatusCodes.Status500InternalServerError

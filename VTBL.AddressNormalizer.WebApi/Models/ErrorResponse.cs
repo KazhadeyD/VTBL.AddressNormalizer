@@ -8,7 +8,7 @@ namespace VTBL.AddressNormalizer.WebApi.Models
         /// <summary>
         /// Человекочитаемый текст ошибки.
         /// </summary>
-        /// <example>source is required</example>
+        /// <example>source должен быть непустой строкой</example>
         public string Error { get; set; }
     }
 }

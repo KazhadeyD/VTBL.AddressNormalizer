@@ -56,7 +56,7 @@ namespace VTBL.AddressNormalizer.WebApi.Controllers
             _logger.LogInformation("NormalizeUnit started");
 
             if (request == null)
-                return BadRequest(new ErrorResponse { Error = "request body is required" });
+                return BadRequest(new ErrorResponse { Error = "тело запроса обязательно" });
 
             try
             {

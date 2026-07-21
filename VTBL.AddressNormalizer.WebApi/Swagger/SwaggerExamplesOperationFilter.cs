@@ -31,7 +31,7 @@ namespace VTBL.AddressNormalizer.WebApi.Swagger
             {
                 SetJsonRequest(operation, NormalizeRequestExample);
                 SetJsonResponse(operation, "200", NormalizeResponseExample);
-                SetJsonResponse(operation, "400", ErrorExample("source is required"));
+                SetJsonResponse(operation, "400", ErrorExample("source должен быть непустой строкой"));
                 return;
             }
 
@@ -39,8 +39,8 @@ namespace VTBL.AddressNormalizer.WebApi.Swagger
             {
                 SetJsonRequest(operation, BatchRequestExample);
                 SetJsonResponse(operation, "200", BatchResponseExample);
-                SetJsonResponse(operation, "400", ErrorExample("batch items are required"));
-                SetJsonResponse(operation, "500", ErrorExample("all batch items failed"));
+                SetJsonResponse(operation, "400", ErrorExample("список items должен быть непустым и не превышать MaxItems"));
+                SetJsonResponse(operation, "500", ErrorExample("все элементы batch завершились неуспешно"));
                 return;
             }
 
@@ -48,7 +48,7 @@ namespace VTBL.AddressNormalizer.WebApi.Swagger
             {
                 SetJsonRequest(operation, UnitRequestExample);
                 SetJsonResponse(operation, "200", UnitResponseExample);
-                SetJsonResponse(operation, "400", ErrorExample("source is required"));
+                SetJsonResponse(operation, "400", ErrorExample("source должен быть непустой строкой"));
                 return;
             }
 
@@ -56,7 +56,7 @@ namespace VTBL.AddressNormalizer.WebApi.Swagger
             {
                 SetJsonRequest(operation, NormalizeRequestExample);
                 SetJsonResponse(operation, "200", ExtractResponseExample);
-                SetJsonResponse(operation, "400", ErrorExample("source is required"));
+                SetJsonResponse(operation, "400", ErrorExample("source должен быть непустой строкой"));
                 return;
             }
 
@@ -64,7 +64,7 @@ namespace VTBL.AddressNormalizer.WebApi.Swagger
             {
                 SetJsonRequest(operation, CanonicalizeRequestExample);
                 SetJsonResponse(operation, "200", CanonicalizeResponseExample);
-                SetJsonResponse(operation, "400", ErrorExample("source is required"));
+                SetJsonResponse(operation, "400", ErrorExample("source должен быть непустой строкой"));
                 return;
             }
 
@@ -205,7 +205,7 @@ namespace VTBL.AddressNormalizer.WebApi.Swagger
                     ["status"] = new OpenApiString("error"),
                     ["source"] = new OpenApiString("   "),
                     ["value"] = new OpenApiNull(),
-                    ["error"] = new OpenApiString("source is required")
+                    ["error"] = new OpenApiString("source должен быть непустой строкой")
                 }
             }
         };

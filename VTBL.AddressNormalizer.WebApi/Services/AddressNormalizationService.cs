@@ -1,32 +1,47 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
-using VTBL.AddressNormalizer.Infrastructure.Composition;
+using VTBL.AddressNormalizer.Abstractions.BuildingAddress;
+using VTBL.AddressNormalizer.Abstractions.BuildingUnit;
+using VTBL.AddressNormalizer.Abstractions.Shared;
 using VTBL.AddressNormalizer.WebApi.Mapping;
 using VTBL.AddressNormalizer.WebApi.Models;
 
 namespace VTBL.AddressNormalizer.WebApi.Services
 {
     /// <summary>
-    /// Оркестрация нормализации адреса через <see cref="AddressNormalizerFactory"/>.
+    /// Оркестрация нормализации адреса поверх сервисов ядра (DI).
     /// </summary>
     public class AddressNormalizationService : IAddressNormalizationService
     {
-        private const string InvalidSourceMessage = "source must be a non-whitespace string";
-        private const string InvalidBatchMessage = "batch items must be a non-empty list within MaxItems limit";
-        private const string ItemValidationError = "source must be a non-whitespace string";
-        private const string AllFailValidationMessage = "all batch items failed validation";
-        private const string AllFailExceptionMessage = "all batch items failed with exceptions";
-        private const string AllFailMixedMessage = "all batch items failed";
+        private const string InvalidSourceMessage = "source должен быть непустой строкой";
+        private const string InvalidBatchMessage = "список items должен быть непустым и не превышать MaxItems";
+        private const string ItemValidationError = "source должен быть непустой строкой";
+        private const string AllFailValidationMessage = "все элементы batch не прошли валидацию";
+        private const string AllFailExceptionMessage = "все элементы batch завершились с ошибкой";
+        private const string AllFailMixedMessage = "все элементы batch завершились неуспешно";
 
         private readonly ILogger<AddressNormalizationService> _logger;
+        private readonly IBuildingLocationExtractor _locationExtractor;
+        private readonly IBuildingAddressCanonicalizer _addressCanonicalizer;
+        private readonly IBuildingUnitNormalizer _unitNormalizer;
+        private readonly ICanonicalHash _canonicalHash;
 
         /// <summary>
-        /// Создаёт сервис оркестрации.
+        /// Создаёт сервис оркестрации с внедрёнными зависимостями ядра.
         /// </summary>
-        public AddressNormalizationService(ILogger<AddressNormalizationService> logger)
+        public AddressNormalizationService(
+            ILogger<AddressNormalizationService> logger,
+            IBuildingLocationExtractor locationExtractor,
+            IBuildingAddressCanonicalizer addressCanonicalizer,
+            IBuildingUnitNormalizer unitNormalizer,
+            ICanonicalHash canonicalHash)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _locationExtractor = locationExtractor ?? throw new ArgumentNullException(nameof(locationExtractor));
+            _addressCanonicalizer = addressCanonicalizer ?? throw new ArgumentNullException(nameof(addressCanonicalizer));
+            _unitNormalizer = unitNormalizer ?? throw new ArgumentNullException(nameof(unitNormalizer));
+            _canonicalHash = canonicalHash ?? throw new ArgumentNullException(nameof(canonicalHash));
         }
 
         /// <inheritdoc />
@@ -43,7 +58,7 @@ namespace VTBL.AddressNormalizer.WebApi.Services
             _logger.LogInformation("NormalizeUnit started");
             EnsureValidSource(source);
 
-            var unit = AddressNormalizerFactory.BuildingUnitNormalizer.Normalize(source);
+            var unit = _unitNormalizer.Normalize(source);
             return new UnitNormalizeResult
             {
                 Source = source,
@@ -58,7 +73,7 @@ namespace VTBL.AddressNormalizer.WebApi.Services
         {
             _logger.LogInformation("ExtractOutdoor started");
             EnsureValidSource(source);
-            return AddressNormalizerFactory.BuildingLocationExtractor.ExtractSplit(source).Outdoor;
+            return _locationExtractor.ExtractSplit(source).Outdoor;
         }
 
         /// <inheritdoc />
@@ -66,7 +81,7 @@ namespace VTBL.AddressNormalizer.WebApi.Services
         {
             _logger.LogInformation("Canonicalize started");
             EnsureValidSource(source);
-            return AddressNormalizerFactory.BuildingAddressCanonicalizer.ToCanonical(source);
+            return _addressCanonicalizer.ToCanonical(source);
         }
 
         /// <inheritdoc />
@@ -177,10 +192,10 @@ namespace VTBL.AddressNormalizer.WebApi.Services
         /// </remarks>
         protected virtual NormalizeValueDto NormalizeFullCore(string source)
         {
-            var split = AddressNormalizerFactory.BuildingLocationExtractor.ExtractSplit(source);
-            var outdoorCanonical = AddressNormalizerFactory.BuildingAddressCanonicalizer.ToCanonical(split.Outdoor);
-            var hash = AddressNormalizerFactory.CanonicalHash.ComputeSha256(outdoorCanonical);
-            var unit = AddressNormalizerFactory.BuildingUnitNormalizer.Normalize(split.Indoor);
+            var split = _locationExtractor.ExtractSplit(source);
+            var outdoorCanonical = _addressCanonicalizer.ToCanonical(split.Outdoor);
+            var hash = _canonicalHash.ComputeSha256(outdoorCanonical);
+            var unit = _unitNormalizer.Normalize(split.Indoor);
 
             return new NormalizeValueDto
             {
