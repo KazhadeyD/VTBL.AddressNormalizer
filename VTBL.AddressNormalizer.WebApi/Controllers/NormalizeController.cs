@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using VTBL.AddressNormalizer.WebApi.Models;
 using VTBL.AddressNormalizer.WebApi.Options;
@@ -20,19 +19,16 @@ namespace VTBL.AddressNormalizer.WebApi.Controllers
     {
         private readonly IAddressNormalizationService _service;
         private readonly BatchOptions _batchOptions;
-        private readonly ILogger<NormalizeController> _logger;
 
         /// <summary>
         /// Создаёт контроллер normalize/batch.
         /// </summary>
         public NormalizeController(
             IAddressNormalizationService service,
-            IOptions<BatchOptions> batchOptions,
-            ILogger<NormalizeController> logger)
+            IOptions<BatchOptions> batchOptions)
         {
             _service = service;
             _batchOptions = batchOptions.Value;
-            _logger = logger;
         }
 
         /// <summary>
@@ -61,8 +57,6 @@ namespace VTBL.AddressNormalizer.WebApi.Controllers
         public ActionResult Normalize(
             [FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] SourceRequest request)
         {
-            _logger.LogInformation("NormalizeFull started");
-
             if (request == null)
                 return BadRequest(new ErrorResponse { Error = "тело запроса обязательно" });
 
@@ -104,8 +98,6 @@ namespace VTBL.AddressNormalizer.WebApi.Controllers
         public ActionResult Batch(
             [FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] BatchNormalizeRequest request)
         {
-            _logger.LogInformation("NormalizeBatch started");
-
             if (request == null)
                 return BadRequest(new ErrorResponse { Error = "тело запроса обязательно" });
 

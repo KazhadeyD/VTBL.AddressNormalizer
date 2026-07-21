@@ -97,6 +97,11 @@ Swagger/       → примеры OpenAPI
 
 DI (`Startup`): `AddAddressNormalizer()` + `AddressNormalizationService` (singleton).
 
+**Логирование:**
+- `RequestLoggingMiddleware` — исход HTTP: method, path, **status code**, duration (2xx Info / 4xx Warning / 5xx Error); skip `/health`, `/swagger`
+- `AddressNormalizationService` — Information на старт операции, Warning на валидацию
+- `ApiExceptionFilter` — Error на unhandled
+
 ## Тесты
 
 HTTP E2E и unit orchestration: `VTBL.AddressNormalizer.UnitTests/WebApi/` (`WebApplicationFactory`, Environment=`Production`).

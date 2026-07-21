@@ -172,6 +172,7 @@ docker compose up -d
 - Актуальная структура: WebApi + DI (`AddAddressNormalizer`), без битых ссылок и дневника пайплайна
 - Пример JSON ответа normalize; русские ошибки API; 257 тестов
 - Добавлен [VTBL.AddressNormalizer.WebApi/README.md](VTBL.AddressNormalizer.WebApi/README.md)
+- Логи WebApi: `RequestLoggingMiddleware` (HTTP status) + сервис + `ApiExceptionFilter`; без дублей в контроллерах
 
 ### 22.07.2026 — DI вместо Factory
 

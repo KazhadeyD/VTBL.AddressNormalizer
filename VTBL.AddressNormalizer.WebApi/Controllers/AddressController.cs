@@ -2,7 +2,6 @@ using System;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.Extensions.Logging;
 using VTBL.AddressNormalizer.WebApi.Models;
 using VTBL.AddressNormalizer.WebApi.Services;
 
@@ -16,17 +15,13 @@ namespace VTBL.AddressNormalizer.WebApi.Controllers
     public class AddressController : ControllerBase
     {
         private readonly IAddressNormalizationService _service;
-        private readonly ILogger<AddressController> _logger;
 
         /// <summary>
         /// Создаёт контроллер address.
         /// </summary>
-        public AddressController(
-            IAddressNormalizationService service,
-            ILogger<AddressController> logger)
+        public AddressController(IAddressNormalizationService service)
         {
             _service = service;
-            _logger = logger;
         }
 
         /// <summary>
@@ -48,8 +43,6 @@ namespace VTBL.AddressNormalizer.WebApi.Controllers
         public ActionResult Extract(
             [FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] SourceRequest request)
         {
-            _logger.LogInformation("ExtractOutdoor started");
-
             if (request == null)
                 return BadRequest(new ErrorResponse { Error = "тело запроса обязательно" });
 
@@ -86,8 +79,6 @@ namespace VTBL.AddressNormalizer.WebApi.Controllers
         public ActionResult Canonicalize(
             [FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] SourceRequest request)
         {
-            _logger.LogInformation("Canonicalize started");
-
             if (request == null)
                 return BadRequest(new ErrorResponse { Error = "тело запроса обязательно" });
 

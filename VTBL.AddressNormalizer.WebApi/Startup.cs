@@ -77,6 +77,7 @@ namespace VTBL.AddressNormalizer.WebApi
             }
 
             app.UseMiddleware<CorrelationIdMiddleware>();
+            app.UseMiddleware<RequestLoggingMiddleware>();
 
             if (env.IsDevelopment())
             {

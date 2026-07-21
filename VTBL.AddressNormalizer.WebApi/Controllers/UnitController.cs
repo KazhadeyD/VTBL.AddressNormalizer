@@ -2,7 +2,6 @@ using System;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.Extensions.Logging;
 using VTBL.AddressNormalizer.WebApi.Models;
 using VTBL.AddressNormalizer.WebApi.Services;
 
@@ -16,17 +15,13 @@ namespace VTBL.AddressNormalizer.WebApi.Controllers
     public class UnitController : ControllerBase
     {
         private readonly IAddressNormalizationService _service;
-        private readonly ILogger<UnitController> _logger;
 
         /// <summary>
         /// Создаёт контроллер unit.
         /// </summary>
-        public UnitController(
-            IAddressNormalizationService service,
-            ILogger<UnitController> logger)
+        public UnitController(IAddressNormalizationService service)
         {
             _service = service;
-            _logger = logger;
         }
 
         /// <summary>
@@ -53,8 +48,6 @@ namespace VTBL.AddressNormalizer.WebApi.Controllers
         public ActionResult Normalize(
             [FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] SourceRequest request)
         {
-            _logger.LogInformation("NormalizeUnit started");
-
             if (request == null)
                 return BadRequest(new ErrorResponse { Error = "тело запроса обязательно" });
 
