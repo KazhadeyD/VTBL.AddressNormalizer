@@ -2,14 +2,16 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
+[assembly: InternalsVisibleTo("VTBL.AddressNormalizer.UnitTests")]
+
 // Общие сведения об этой сборке предоставляются следующим набором
 // набора атрибутов. Измените значения этих атрибутов для изменения сведений,
 // связанные со сборкой.
-[assembly: AssemblyTitle("AddressNormalizer.Infrastructure")]
+[assembly: AssemblyTitle("VTBL.AddressNormalizer.Infrastructure")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("AddressNormalizer.Infrastructure")]
+[assembly: AssemblyProduct("VTBL.AddressNormalizer.Infrastructure")]
 [assembly: AssemblyCopyright("Copyright ©  2026")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
