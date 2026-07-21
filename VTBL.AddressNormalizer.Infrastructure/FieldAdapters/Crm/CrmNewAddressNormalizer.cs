@@ -1,8 +1,6 @@
 using VTBL.AddressNormalizer.Abstractions.BuildingAddress;
 using VTBL.AddressNormalizer.Abstractions.FieldAdapters.Crm;
 using VTBL.AddressNormalizer.Infrastructure.BuildingAddress;
-using VTBL.AddressNormalizer.Infrastructure.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace VTBL.AddressNormalizer.Infrastructure.FieldAdapters.Crm
 {

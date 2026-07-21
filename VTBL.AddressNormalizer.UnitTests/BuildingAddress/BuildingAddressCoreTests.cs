@@ -1,8 +1,7 @@
 using VTBL.AddressNormalizer.Abstractions.BuildingAddress;
 using VTBL.AddressNormalizer.Abstractions.Shared;
 using VTBL.AddressNormalizer.Infrastructure.BuildingAddress;
-using VTBL.AddressNormalizer.Infrastructure.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection;
+using VTBL.AddressNormalizer.Infrastructure.Composition;
 using Xunit;
 
 namespace VTBL.AddressNormalizer.UnitTests.BuildingAddress
@@ -10,8 +9,7 @@ namespace VTBL.AddressNormalizer.UnitTests.BuildingAddress
     public class BuildingLocationExtractorTests
     {
         private readonly IBuildingLocationExtractor _extractor =
-            new ServiceCollection().AddAddressNormalizer().BuildServiceProvider()
-                .GetRequiredService<IBuildingLocationExtractor>();
+            AddressNormalizerFactory.BuildingLocationExtractor;
 
         [Theory]
         [InlineData("г Москва, ул Сухонская, д 11, кв 89", "г Москва, ул Сухонская, д 11")]
@@ -52,8 +50,7 @@ namespace VTBL.AddressNormalizer.UnitTests.BuildingAddress
     public class BuildingAddressCanonicalizerTests
     {
         private readonly IBuildingAddressCanonicalizer _canonicalizer =
-            new ServiceCollection().AddAddressNormalizer().BuildServiceProvider()
-                .GetRequiredService<IBuildingAddressCanonicalizer>();
+            AddressNormalizerFactory.BuildingAddressCanonicalizer;
 
         [Theory]
         [InlineData("Г. МОСКВА, УЛ. Сухонская, Д. 11", "г Москва, ул Сухонская, д 11")]
@@ -72,8 +69,7 @@ namespace VTBL.AddressNormalizer.UnitTests.BuildingAddress
     public class BuildingAddressNormalizerTests
     {
         private readonly IBuildingAddressNormalizer _normalizer =
-            new ServiceCollection().AddAddressNormalizer().BuildServiceProvider()
-                .GetRequiredService<IBuildingAddressNormalizer>();
+            AddressNormalizerFactory.BuildingAddressNormalizer;
 
         [Fact]
         public void Normalize_MainScenario_ExtractAndCanonical()

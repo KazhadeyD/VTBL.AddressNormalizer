@@ -27,8 +27,8 @@ VTBL.AddressNormalizer.sln
 │   Shared/            ITextNormalizer, ICanonicalHash, SynonymRule
 │   FieldAdapters/Crm/ ICrmNewFlatNormalizer, ICrmNewAddressNormalizer
 │
-├── VTBL.AddressNormalizer.Infrastructure/   # реализации + DI
-│   DependencyInjection/  AddAddressNormalizer()
+├── VTBL.AddressNormalizer.Infrastructure/   # реализации + composition root
+│   Composition/          AddressNormalizerFactory
 │   BuildingAddress/      Extractor, Canonicalizer, Normalizer
 │   BuildingUnit/         Parser, Classifier, Canonicalizer, Normalizer
 │   Shared/               IndoorMarkerPatterns, CanonicalizationPipeline
@@ -57,7 +57,7 @@ flowchart LR
 
 ### Когда что вызывать
 
-| Entry point (DI) | Когда |
+| Entry point | Когда |
 |------------------|--------|
 | `IBuildingAddressNormalizer` | Полный адрес: extract building location + readable canonical |
 | `IBuildingLocationExtractor` | Только отсечение indoor (UC-01) |
@@ -66,17 +66,15 @@ flowchart LR
 | `ICrmNewAddressNormalizer` | Stub: строка → BuildingAddress; сборка из полей — фаза 2 |
 | `IBuildingUnitNormalizer` | Core indoor без classify |
 
-**Регистрация:** `services.AddAddressNormalizer()`.
+**Composition root:** `AddressNormalizerFactory` — singleton-сервисы без DI-контейнера.
 
 ### Пример BuildingAddress
 
 ```csharp
 using VTBL.AddressNormalizer.Abstractions.BuildingAddress;
-using VTBL.AddressNormalizer.Infrastructure.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection;
+using VTBL.AddressNormalizer.Infrastructure.Composition;
 
-var sp = new ServiceCollection().AddAddressNormalizer().BuildServiceProvider();
-var normalizer = sp.GetRequiredService<IBuildingAddressNormalizer>();
+var normalizer = AddressNormalizerFactory.BuildingAddressNormalizer;
 
 var result = normalizer.Normalize("г Москва, ул Сухонская, д 11, кв 89");
 // result.Extracted  → "г Москва, ул Сухонская, д 11"
@@ -87,11 +85,9 @@ var result = normalizer.Normalize("г Москва, ул Сухонская, д 
 
 ```csharp
 using VTBL.AddressNormalizer.Abstractions.FieldAdapters.Crm;
-using VTBL.AddressNormalizer.Infrastructure.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection;
+using VTBL.AddressNormalizer.Infrastructure.Composition;
 
-var sp = new ServiceCollection().AddAddressNormalizer().BuildServiceProvider();
-var normalizer = sp.GetRequiredService<ICrmNewFlatNormalizer>();
+var normalizer = AddressNormalizerFactory.CrmNewFlatNormalizer;
 
 var result = normalizer.Normalize("ЭТАЖ/ПОМЕЩ. АНТРЕСОЛЬ 2/I КОМ./ОФИС 17/Е9Е");
 // result.Category  → Mixed / Premise / …
@@ -135,7 +131,7 @@ dotnet test VTBL.AddressNormalizer.sln
 | CRM `new_flat` + corpus | 5001 строк `flats.csv` |
 | BuildingAddress extract / canonical / E2E | UC-01–UC-03 |
 | IndoorMarkerPatterns contract | sync с BuildingUnit classifier |
-| DI | `AddAddressNormalizer` resolves services |
+| Composition | `AddressNormalizerFactory` exposes services |
 
 **168** тестов (на 21.07.2026). Corpus gate BuildingUnit: canonical/hash не должны дрейфовать без явного решения.
 
@@ -173,12 +169,19 @@ Init-скрипты: `docker/mssql/init/`.
 | Проект | TFM | Роль |
 |--------|-----|------|
 | `VTBL.AddressNormalizer.Abstractions` | `net462` | Интерфейсы, DTO, модели домена |
-| `VTBL.AddressNormalizer.Infrastructure` | `net462` | Реализации, DI (`AddAddressNormalizer()`) |
+| `VTBL.AddressNormalizer.Infrastructure` | `net462` | Реализации, `AddressNormalizerFactory` |
 | `VTBL.AddressNormalizer.Console` | `net462` | Тонкий хост, демо |
 | `VTBL.AddressNormalizer.UnitTests` | `net462` | xUnit |
 | `docker-compose.yml` | — | MSSQL 2022 + init |
 
 ## История изменений
+
+### 21.07.2026 — отказ от Microsoft.Extensions.DependencyInjection
+
+- Удалён `AddAddressNormalizer()` и пакеты `Microsoft.Extensions.DependencyInjection*`
+- Добавлен `AddressNormalizerFactory` — composition root с lazy singleton для net462
+- Console, тесты и README переведены на фабрику; из `App.config` убраны binding redirects DI
+- Из `UnitTests` удалены остатки MSTest (`packages/MSTest.*`); test stack — только xUnit + `Microsoft.NET.Test.Sdk`
 
 ### 21.07.2026 — миграция из AddressNormalizer
 
@@ -199,7 +202,7 @@ Init-скрипты: `docker/mssql/init/`.
 
 ### 21.07.2026 — Building Address + Abstractions/Infrastructure
 
-- Разделение на `VTBL.AddressNormalizer.Abstractions` + `VTBL.AddressNormalizer.Infrastructure` (SOLID, DI)
+- Разделение на `VTBL.AddressNormalizer.Abstractions` + `VTBL.AddressNormalizer.Infrastructure` (SOLID)
 - `IBuildingAddressNormalizer`: extract indoor-хвоста + читаемая канонизация (без hash)
 - Shared `IndoorMarkerPatterns` — delegate с `BuildingUnitClassifier`
 - BuildingUnit / CRM `new_flat` перенесены в Infrastructure; Console — тонкий хост
