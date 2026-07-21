@@ -288,12 +288,12 @@ namespace VTBL.AddressNormalizer.Infrastructure.BuildingUnit
         /// <item><description><c>ПОМЕЩЕНИЕ|ПОМЕЩ|ПОМ</c> — полная и сокращённые формы; <c>(?!\p{L})</c> после «ПОМ»
         /// не даёт съесть «ПОМЕЩ» как «ПОМ» + «ЕЩ».</description></item>
         /// <item><description><c>\.?</c> — опциональная точка после сокращения («ПОМЕЩ.»).</description></item>
-        /// <item><description><c>(?&lt;v&gt;[^,\s;]+)</c> — значение до запятой, пробела или «;»;
-        /// широкий класс, чтобы захватить «5/1А», «I», «9А/1».</description></item>
+        /// <item><description><c>(?&lt;v&gt;[^,\s;]+(?:\s*,\s*(?=\d)[^,\s;]+)*)</c> — значение до пробела или «;»;
+        /// список через «,» только если следующий фрагмент начинается с цифры («35,38»), чтобы не съесть «35, Ч.П. 1».</description></item>
         /// </list>
         /// </remarks>
         private static readonly Regex PremiseTypedRegex = new Regex(
-            @"(?<!\p{L})(?:ПОМЕЩЕНИЯ|ПОМЕЩЕНИЕ|ПОМЕЩ|ПОМ)(?!\p{L})\.?\s*(?<v>[^,\s;]+)",
+            @"(?<!\p{L})(?:ПОМЕЩЕНИЯ|ПОМЕЩЕНИЕ|ПОМЕЩ|ПОМ)(?!\p{L})\.?\s*(?<v>[^,\s;]+(?:\s*,\s*(?=\d)[^,\s;]+)*)",
             RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
         /// <summary>
@@ -371,7 +371,7 @@ namespace VTBL.AddressNormalizer.Infrastructure.BuildingUnit
         private static readonly TypedPatternDefinition[] TypedPatterns =
         {
             new TypedPatternDefinition { Regex = FloorTypedRegex, Apply = (loc, v) => AddSingleValue(loc.Floors, v) },
-            new TypedPatternDefinition { Regex = PremiseTypedRegex, Apply = (loc, v) => AddSingleValue(loc.Premises, v) },
+            new TypedPatternDefinition { Regex = PremiseTypedRegex, Apply = (loc, v) => AddMultiValue(loc.Premises, v) },
             new TypedPatternDefinition { Regex = RoomTypedRegex, Apply = (loc, v) => AddMultiValue(loc.Rooms, v) },
             new TypedPatternDefinition { Regex = ShortRoomTypedRegex, Apply = (loc, v) => AddSingleValue(loc.Rooms, v) },
             new TypedPatternDefinition { Regex = OfficeTypedRegex, Apply = (loc, v) => AddSingleValue(loc.Offices, v) },

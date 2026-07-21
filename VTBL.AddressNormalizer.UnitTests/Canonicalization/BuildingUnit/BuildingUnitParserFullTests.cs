@@ -260,5 +260,16 @@ namespace VTBL.AddressNormalizer.UnitTests.Canonicalization.BuildingUnit
             Assert.Empty(location.Unparsed);
             Assert.Equal("пом:35-н|ч.п:1|code:410", canonical);
         }
+
+        [Fact]
+        public void Parse_PremiseList_SplitsCommaSeparatedNumbers()
+        {
+            var location = AddressNormalizerTestHost.Parser.Parse("пом. 35,38");
+            var canonical = AddressNormalizerTestHost.Canonicalizer.ToCanonical(location);
+
+            Assert.Equal(new[] { "35", "38" }, location.Premises.OrderBy(v => v).ToArray());
+            Assert.Empty(location.RawCodes);
+            Assert.Equal("пом:35|пом:38", canonical);
+        }
     }
 }
