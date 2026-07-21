@@ -62,6 +62,7 @@ namespace VTBL.AddressNormalizer.Infrastructure.BuildingUnit
             text = text.Replace('\\', '/');
             text = DashGapRegex.Replace(text, "-");
             text = WhitespaceCollapseRegex.Replace(text, " ").Trim();
+            text = text.TrimEnd('.', ',', ';');
             return text;
         }
 

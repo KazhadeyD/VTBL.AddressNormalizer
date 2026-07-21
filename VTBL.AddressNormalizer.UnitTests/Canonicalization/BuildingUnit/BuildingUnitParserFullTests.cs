@@ -245,5 +245,20 @@ namespace VTBL.AddressNormalizer.UnitTests.Canonicalization.BuildingUnit
                 Assert.Contains(other, location.RawCodes);
             }
         }
+
+        [Theory]
+        [InlineData("пом. 35-Н, Ч.П. 1 (№ 410).")]
+        [InlineData("пом. 35-Н, Ч.П. 1 (№ 410)")]
+        public void Parse_PremisePartWithParenthesizedCode_IgnoresTrailingPunctuation(string input)
+        {
+            var location = AddressNormalizerTestHost.Parser.Parse(input);
+            var canonical = AddressNormalizerTestHost.Canonicalizer.ToCanonical(location);
+
+            Assert.Equal("35-Н", location.Premises.Single());
+            Assert.Equal("1", location.Parts.Single());
+            Assert.Equal("410", location.RawCodes.Single());
+            Assert.Empty(location.Unparsed);
+            Assert.Equal("пом:35-н|ч.п:1|code:410", canonical);
+        }
     }
 }

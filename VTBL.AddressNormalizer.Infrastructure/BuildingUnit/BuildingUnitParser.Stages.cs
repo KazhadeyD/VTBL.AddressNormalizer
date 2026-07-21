@@ -209,7 +209,7 @@ namespace VTBL.AddressNormalizer.Infrastructure.BuildingUnit
 
             var tokens = working.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
                 .SelectMany(token => token.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries))
-                .Select(token => token.Trim().Trim('(', ')'))
+                .Select(NormalizeResidualToken)
                 .Where(token => token.Length > 0)
                 .ToList();
 
@@ -223,6 +223,21 @@ namespace VTBL.AddressNormalizer.Infrastructure.BuildingUnit
                 else
                     location.Unparsed.Add(token);
             }
+        }
+
+        /// <summary>
+        /// Нормализует остаточный токен: скобки и хвостовая пунктуация («410).» → «410»).
+        /// </summary>
+        private static string NormalizeResidualToken(string token)
+        {
+            if (string.IsNullOrWhiteSpace(token))
+                return string.Empty;
+
+            token = token.Trim();
+            token = token.Trim('(', ')');
+            token = token.TrimEnd('.', ',', ';');
+            token = token.Trim('(', ')');
+            return token;
         }
 
         /// <summary>
