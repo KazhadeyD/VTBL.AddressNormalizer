@@ -271,5 +271,33 @@ namespace VTBL.AddressNormalizer.UnitTests.Canonicalization.BuildingUnit
             Assert.Empty(location.RawCodes);
             Assert.Equal("пом:35|пом:38", canonical);
         }
+
+        [Fact]
+        public void Parse_PremiseNumericRange_ExpandsToIndividualPremises()
+        {
+            var location = AddressNormalizerTestHost.Parser.Parse("пом. 35-38");
+            var canonical = AddressNormalizerTestHost.Canonicalizer.ToCanonical(location);
+
+            Assert.Equal(new[] { "35", "36", "37", "38" }, location.Premises.OrderBy(v => v).ToArray());
+            Assert.Equal("пом:35|пом:36|пом:37|пом:38", canonical);
+        }
+
+        [Fact]
+        public void Parse_PremiseWithLetterSuffix_DoesNotExpandAsRange()
+        {
+            var location = AddressNormalizerTestHost.Parser.Parse("пом. 35-Н");
+
+            Assert.Equal("35-Н", location.Premises.Single());
+        }
+
+        [Fact]
+        public void Parse_ShortRoomWithHyphen_DoesNotExpandAsRange()
+        {
+            var location = AddressNormalizerTestHost.Parser.Parse("К. 5-20");
+            var canonical = AddressNormalizerTestHost.Canonicalizer.ToCanonical(location);
+
+            Assert.Equal("5-20", location.Rooms.Single());
+            Assert.Equal("ком:5-20", canonical);
+        }
     }
 }

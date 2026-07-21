@@ -370,13 +370,13 @@ namespace VTBL.AddressNormalizer.Infrastructure.BuildingUnit
 
         private static readonly TypedPatternDefinition[] TypedPatterns =
         {
-            new TypedPatternDefinition { Regex = FloorTypedRegex, Apply = (loc, v) => AddSingleValue(loc.Floors, v) },
-            new TypedPatternDefinition { Regex = PremiseTypedRegex, Apply = (loc, v) => AddMultiValue(loc.Premises, v) },
-            new TypedPatternDefinition { Regex = RoomTypedRegex, Apply = (loc, v) => AddMultiValue(loc.Rooms, v) },
+            new TypedPatternDefinition { Regex = FloorTypedRegex, Apply = (loc, v) => AddSingleValue(loc.Floors, v, expandNumericRanges: true) },
+            new TypedPatternDefinition { Regex = PremiseTypedRegex, Apply = (loc, v) => AddMultiValue(loc.Premises, v, expandNumericRanges: true) },
+            new TypedPatternDefinition { Regex = RoomTypedRegex, Apply = (loc, v) => AddMultiValue(loc.Rooms, v, expandNumericRanges: true) },
             new TypedPatternDefinition { Regex = ShortRoomTypedRegex, Apply = (loc, v) => AddSingleValue(loc.Rooms, v) },
-            new TypedPatternDefinition { Regex = OfficeTypedRegex, Apply = (loc, v) => AddSingleValue(loc.Offices, v) },
-            new TypedPatternDefinition { Regex = WorkplaceTypedRegex, Apply = (loc, v) => AddSingleValue(loc.Workplaces, v) },
-            new TypedPatternDefinition { Regex = PartTypedRegex, Apply = (loc, v) => AddSingleValue(loc.Parts, v) },
+            new TypedPatternDefinition { Regex = OfficeTypedRegex, Apply = (loc, v) => AddSingleValue(loc.Offices, v, expandNumericRanges: true) },
+            new TypedPatternDefinition { Regex = WorkplaceTypedRegex, Apply = (loc, v) => AddSingleValue(loc.Workplaces, v, expandNumericRanges: true) },
+            new TypedPatternDefinition { Regex = PartTypedRegex, Apply = (loc, v) => AddSingleValue(loc.Parts, v, expandNumericRanges: true) },
         };
 
         /// <summary>

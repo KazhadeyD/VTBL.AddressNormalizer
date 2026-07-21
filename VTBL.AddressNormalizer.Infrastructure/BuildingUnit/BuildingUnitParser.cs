@@ -29,8 +29,8 @@ namespace VTBL.AddressNormalizer.Infrastructure.BuildingUnit
             ExtractBusinessCenterNotes(location, ref working);
             ExtractSlashChains(location, ref working);
 
-            ExtractTyped(location, ApartmentRegex, location.Apartments, ref working, splitValues: true);
-            ExtractTyped(location, CabinetRegex, location.Cabinets, ref working, splitValues: true);
+            ExtractTyped(location, ApartmentRegex, location.Apartments, ref working, splitValues: true, expandNumericRanges: true);
+            ExtractTyped(location, CabinetRegex, location.Cabinets, ref working, splitValues: true, expandNumericRanges: true);
             ExtractTyped(location, EntranceRegex, location.Entrances, ref working);
             ExtractBlockSection(location, ref working);
             ExtractTyped(location, BlockRegex, location.Blocks, ref working);
@@ -248,22 +248,22 @@ namespace VTBL.AddressNormalizer.Infrastructure.BuildingUnit
             switch (type)
             {
                 case "ЭТ":
-                    AddSingleValue(location.Floors, value);
+                    AddSingleValue(location.Floors, value, expandNumericRanges: true);
                     break;
                 case "ПОМЕЩ":
-                    AddMultiValue(location.Premises, value);
+                    AddMultiValue(location.Premises, value, expandNumericRanges: true);
                     break;
                 case "КОМ":
-                    AddMultiValue(location.Rooms, value);
+                    AddMultiValue(location.Rooms, value, expandNumericRanges: true);
                     break;
                 case "ОФИС":
-                    AddSingleValue(location.Offices, value);
+                    AddSingleValue(location.Offices, value, expandNumericRanges: true);
                     break;
                 case "КАБ":
-                    AddSingleValue(location.Cabinets, value);
+                    AddSingleValue(location.Cabinets, value, expandNumericRanges: true);
                     break;
                 case "РАБ":
-                    AddSingleValue(location.Workplaces, value);
+                    AddSingleValue(location.Workplaces, value, expandNumericRanges: true);
                     break;
             }
         }
@@ -289,12 +289,14 @@ namespace VTBL.AddressNormalizer.Infrastructure.BuildingUnit
         /// Извлекает типизированный сегмент по regex в целевую коллекцию модели.
         /// </summary>
         /// <param name="splitValues">При <c>true</c> дробит списки через «,»/«;».</param>
+        /// <param name="expandNumericRanges">Раскрывать чистые числовые диапазоны «N-M».</param>
         private static void ExtractTyped(
             BuildingUnitLocation location,
             System.Text.RegularExpressions.Regex regex,
             IList<string> target,
             ref string working,
-            bool splitValues = false)
+            bool splitValues = false,
+            bool expandNumericRanges = false)
         {
             working = regex.Replace(working, match =>
             {
@@ -304,11 +306,11 @@ namespace VTBL.AddressNormalizer.Infrastructure.BuildingUnit
                     if (splitValues)
                     {
                         foreach (var part in SplitValues(value))
-                            target.Add(part);
+                            AddSingleValue(target, part, expandNumericRanges);
                     }
                     else
                     {
-                        target.Add(value);
+                        AddSingleValue(target, value, expandNumericRanges);
                     }
                 }
 
@@ -377,20 +379,25 @@ namespace VTBL.AddressNormalizer.Infrastructure.BuildingUnit
         /// <summary>
         /// Добавляет одно нормализованное значение в коллекцию, если оно непустое.
         /// </summary>
-        private static void AddSingleValue(IList<string> target, string raw)
+        /// <param name="expandNumericRanges">Раскрывать чистые числовые диапазоны «N-M».</param>
+        private static void AddSingleValue(IList<string> target, string raw, bool expandNumericRanges = false)
         {
-            var value = NormalizeValue(raw);
-            if (value.Length > 0)
-                target.Add(value);
+            foreach (var token in BuildingUnitNumericRangeExpander.Expand(raw, expandNumericRanges))
+            {
+                var value = NormalizeValue(token);
+                if (value.Length > 0)
+                    target.Add(value);
+            }
         }
 
         /// <summary>
         /// Добавляет несколько значений из строки с разделителями «;»/«,».
         /// </summary>
-        private static void AddMultiValue(IList<string> target, string raw)
+        /// <param name="expandNumericRanges">Раскрывать чистые числовые диапазоны «N-M» в каждом фрагменте.</param>
+        private static void AddMultiValue(IList<string> target, string raw, bool expandNumericRanges = false)
         {
             foreach (var part in raw.Split(new[] { ';', ',' }, StringSplitOptions.RemoveEmptyEntries))
-                AddSingleValue(target, part);
+                AddSingleValue(target, part, expandNumericRanges);
         }
     }
 }
