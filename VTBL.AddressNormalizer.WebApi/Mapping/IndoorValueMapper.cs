@@ -7,11 +7,12 @@ using VTBL.AddressNormalizer.WebApi.Models;
 namespace VTBL.AddressNormalizer.WebApi.Mapping
 {
     /// <summary>
-    /// Маппинг <see cref="BuildingUnitLocation"/> → typed <see cref="IndoorValueDto"/> (вариант B).
+    /// Маппинг <see cref="BuildingUnitLocation"/> → <see cref="IndoorValueDto"/>
+    /// (все категории с русским <c>name</c> и списком <c>values</c>).
     /// </summary>
     public static class IndoorValueMapper
     {
-        /// <summary>Русские имена категорий (ТЗ 2.A) — единый источник констант.</summary>
+        /// <summary>Русские отображаемые имена категорий — единый источник констант.</summary>
         public static class CategoryNames
         {
             public const string Floors = "этаж";
@@ -34,11 +35,11 @@ namespace VTBL.AddressNormalizer.WebApi.Mapping
         }
 
         /// <summary>
-        /// Строит полный <see cref="IndoorValueDto"/> со всеми 17 категориями (вариант B).
+        /// Строит полный <see cref="IndoorValueDto"/> со всеми категориями локации.
         /// Пустые коллекции Location → <c>values: []</c>; свойства никогда не null.
         /// </summary>
         /// <param name="location">Локация unit; <c>null</c> трактуется как пустая локация.</param>
-        public static IndoorValueDto ToVariantB(BuildingUnitLocation location)
+        public static IndoorValueDto ToIndoorValueDto(BuildingUnitLocation location)
         {
             var src = location ?? new BuildingUnitLocation();
 

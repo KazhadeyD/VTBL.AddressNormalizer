@@ -33,8 +33,9 @@ namespace VTBL.AddressNormalizer.WebApi.Controllers
         /// Нормализация indoor/unit-строки.
         /// </summary>
         /// <remarks>
-        /// Использует <c>IBuildingUnitNormalizer</c>: структурированный <c>indoorValue</c> (вариант B),
-        /// каноническая строка и SHA256-hash. CRM-category не возвращается.
+        /// Использует <c>IBuildingUnitNormalizer</c>: структурированный <c>indoorValue</c>
+        /// (все категории с русским name и values), каноническая строка и SHA256-hash.
+        /// CRM-category не возвращается.
         ///
         /// Пример:
         ///

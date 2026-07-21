@@ -3,7 +3,7 @@ namespace VTBL.AddressNormalizer.Abstractions.FieldAdapters.Crm
     /// <summary>
     /// Вход CRM-адаптера для полного адреса (сборка из столбцов <c>new_address</c>).
     /// </summary>
-    /// <remarks>Stub для UC-04 (фаза 2). Поля могут расширяться при реализации.</remarks>
+    /// <remarks>Stub (фаза 2). Поля могут расширяться при реализации.</remarks>
     public sealed class CrmNewAddressInput
     {
         /// <summary>Регион.</summary>

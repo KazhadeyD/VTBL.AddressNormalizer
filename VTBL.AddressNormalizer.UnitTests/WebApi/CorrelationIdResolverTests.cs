@@ -5,7 +5,7 @@ using Xunit;
 namespace VTBL.AddressNormalizer.UnitTests.WebApi
 {
     /// <summary>
-    /// Модульные тесты алгоритма выбора Correlation Id (F-API-07).
+    /// Модульные тесты алгоритма выбора Correlation Id.
     /// </summary>
     public class CorrelationIdResolverTests
     {

@@ -4,7 +4,7 @@ using VTBL.AddressNormalizer.WebApi.Models;
 namespace VTBL.AddressNormalizer.WebApi.Services
 {
     /// <summary>
-    /// Оркестрация бизнес-endpoint’ов UC-01..UC-05.
+    /// Оркестрация бизнес-endpoint’ов нормализации адреса.
     /// Контроллеры вызывают только этот интерфейс (без прямого доступа к Factory).
     /// </summary>
     public interface IAddressNormalizationService

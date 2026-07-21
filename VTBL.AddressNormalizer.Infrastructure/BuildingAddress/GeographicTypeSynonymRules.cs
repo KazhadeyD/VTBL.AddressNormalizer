@@ -3,7 +3,7 @@ using VTBL.AddressNormalizer.Abstractions.Shared;
 namespace VTBL.AddressNormalizer.Infrastructure.BuildingAddress
 {
     /// <summary>
-    /// Реестр синонимов географических типов адреса (§4.3 ТЗ).
+    /// Реестр синонимов географических типов адреса.
     /// </summary>
     internal static class GeographicTypeSynonymRules
     {

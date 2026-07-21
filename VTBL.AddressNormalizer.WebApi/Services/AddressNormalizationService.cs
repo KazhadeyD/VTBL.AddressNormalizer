@@ -8,7 +8,7 @@ using VTBL.AddressNormalizer.WebApi.Models;
 namespace VTBL.AddressNormalizer.WebApi.Services
 {
     /// <summary>
-    /// Оркестрация UC-01..UC-05 через <see cref="AddressNormalizerFactory"/>.
+    /// Оркестрация нормализации адреса через <see cref="AddressNormalizerFactory"/>.
     /// </summary>
     public class AddressNormalizationService : IAddressNormalizationService
     {
@@ -47,7 +47,7 @@ namespace VTBL.AddressNormalizer.WebApi.Services
             return new UnitNormalizeResult
             {
                 Source = source,
-                IndoorValue = IndoorValueMapper.ToVariantB(unit.Location),
+                IndoorValue = IndoorValueMapper.ToIndoorValueDto(unit.Location),
                 Canonical = unit.Canonical,
                 Hash = unit.Hash
             };
@@ -191,7 +191,7 @@ namespace VTBL.AddressNormalizer.WebApi.Services
                     OutdoorCanonical = outdoorCanonical,
                     Hash = hash
                 },
-                IndoorValue = IndoorValueMapper.ToVariantB(unit.Location)
+                IndoorValue = IndoorValueMapper.ToIndoorValueDto(unit.Location)
             };
         }
 

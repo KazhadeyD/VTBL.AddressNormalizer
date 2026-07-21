@@ -9,7 +9,7 @@ using Xunit;
 namespace VTBL.AddressNormalizer.UnitTests.WebApi
 {
     /// <summary>
-    /// Unit-тесты IndoorValueMapper (вариант B).
+    /// Unit-тесты <see cref="IndoorValueMapper"/>.
     /// </summary>
     public class IndoorValueMapperTests
     {
@@ -35,9 +35,9 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
         };
 
         [Fact]
-        public void ToVariantB_EmptyLocation_ReturnsAll17CategoriesWithNamesAndEmptyValues()
+        public void ToIndoorValueDto_EmptyLocation_ReturnsAll17CategoriesWithNamesAndEmptyValues()
         {
-            var dto = IndoorValueMapper.ToVariantB(new BuildingUnitLocation());
+            var dto = IndoorValueMapper.ToIndoorValueDto(new BuildingUnitLocation());
 
             AssertAll17CategoriesPresent(dto);
 
@@ -64,13 +64,13 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
         }
 
         [Fact]
-        public void ToVariantB_WithApartments_CopiesValuesAndLeavesOtherEmpty()
+        public void ToIndoorValueDto_WithApartments_CopiesValuesAndLeavesOtherEmpty()
         {
             var location = new BuildingUnitLocation();
             location.Apartments.Add("89");
             location.Floors.Add("2");
 
-            var dto = IndoorValueMapper.ToVariantB(location);
+            var dto = IndoorValueMapper.ToIndoorValueDto(location);
 
             Assert.Equal(new[] { "89" }, dto.Apartments.Values);
             Assert.Equal(IndoorValueMapper.CategoryNames.Apartments, dto.Apartments.Name);
@@ -82,9 +82,9 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
         }
 
         [Fact]
-        public void ToVariantB_NullLocation_ReturnsEmptyCategories()
+        public void ToIndoorValueDto_NullLocation_ReturnsEmptyCategories()
         {
-            var dto = IndoorValueMapper.ToVariantB(null);
+            var dto = IndoorValueMapper.ToIndoorValueDto(null);
 
             AssertAll17CategoriesPresent(dto);
             Assert.Empty(dto.Apartments.Values);

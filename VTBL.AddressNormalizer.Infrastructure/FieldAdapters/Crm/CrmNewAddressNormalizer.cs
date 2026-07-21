@@ -5,7 +5,7 @@ using VTBL.AddressNormalizer.Infrastructure.BuildingAddress;
 namespace VTBL.AddressNormalizer.Infrastructure.FieldAdapters.Crm
 {
     /// <summary>
-    /// Stub CRM-адаптера для полного адреса (<c>new_address</c>). UC-04 — фаза 2.
+    /// Stub CRM-адаптера для полного адреса (<c>new_address</c>). Фаза 2.
     /// </summary>
     public sealed class CrmNewAddressNormalizer : ICrmNewAddressNormalizer
     {
@@ -30,7 +30,7 @@ namespace VTBL.AddressNormalizer.Infrastructure.FieldAdapters.Crm
         public CrmNewAddressNormalizationResult Normalize(CrmNewAddressInput input)
         {
             throw new System.NotImplementedException(
-                "Сборка адреса из столбцов new_address — фаза 2 (UC-04). Используйте Normalize(string).");
+                "Сборка адреса из столбцов new_address — фаза 2. Используйте Normalize(string).");
         }
     }
 }

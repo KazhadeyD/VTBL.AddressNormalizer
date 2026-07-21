@@ -5,7 +5,7 @@ using Xunit;
 namespace VTBL.AddressNormalizer.UnitTests.BuildingAddress
 {
     /// <summary>
-    /// Unit-тесты F-CORE-01: <see cref="IBuildingLocationExtractor.ExtractSplit"/>.
+    /// Unit-тесты <see cref="IBuildingLocationExtractor.ExtractSplit"/>.
     /// </summary>
     public class BuildingLocationExtractorSplitTests
     {

@@ -6,7 +6,7 @@ using NLog;
 namespace VTBL.AddressNormalizer.WebApi.Middleware
 {
     /// <summary>
-    /// Correlation Id (UC-07 / F-API-07): выбор Id, NLog MDLC, echo response header.
+    /// Correlation Id: выбор Id, NLog MDLC, echo response header.
     /// </summary>
     public class CorrelationIdMiddleware
     {

@@ -3,7 +3,7 @@ using System;
 namespace VTBL.AddressNormalizer.WebApi.Middleware
 {
     /// <summary>
-    /// Чистая функция выбора Correlation Id по алгоритму F-API-07 / UC-07.
+    /// Чистая функция выбора Correlation Id.
     /// </summary>
     public static class CorrelationIdResolver
     {

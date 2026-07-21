@@ -1,7 +1,7 @@
 namespace VTBL.AddressNormalizer.Abstractions.FieldAdapters.Crm
 {
     /// <summary>
-    /// CRM-адаптер для полного адреса (<c>new_address</c>). Stub — фаза 2 (UC-04).
+    /// CRM-адаптер для полного адреса (<c>new_address</c>). Stub — фаза 2.
     /// </summary>
     public interface ICrmNewAddressNormalizer
     {

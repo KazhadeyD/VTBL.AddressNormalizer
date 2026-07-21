@@ -1,7 +1,7 @@
 namespace VTBL.AddressNormalizer.WebApi.Models
 {
     /// <summary>
-    /// Typed <c>indoorValue</c> (вариант B): все 17 категорий BuildingUnitLocation.
+    /// Structured <c>indoorValue</c>: все категории <c>BuildingUnitLocation</c> с русским name и values.
     /// Свойства никогда не null — пустые категории имеют <c>values: []</c>.
     /// </summary>
     public class IndoorValueDto

@@ -11,7 +11,7 @@ using Xunit;
 namespace VTBL.AddressNormalizer.UnitTests.WebApi
 {
     /// <summary>
-    /// E2E: POST /api/v1/normalize (UC-01) через реальный host + ядро.
+    /// E2E: POST /api/v1/normalize через реальный host + ядро.
     /// </summary>
     public class NormalizeEndpointTests : IClassFixture<WebApiTestFixture>
     {

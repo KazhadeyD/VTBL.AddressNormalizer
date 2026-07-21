@@ -8,7 +8,7 @@ using Xunit;
 namespace VTBL.AddressNormalizer.UnitTests.WebApi
 {
     /// <summary>
-    /// E2E: алгоритм Correlation Id (UC-07 / F-API-07).
+    /// E2E: алгоритм Correlation Id.
     /// </summary>
     public class CorrelationIdTests : IClassFixture<WebApiTestFixture>
     {

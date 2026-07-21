@@ -11,7 +11,7 @@ namespace VTBL.AddressNormalizer.WebApi.Models
         public string Source { get; set; }
 
         /// <summary>
-        /// Indoor в формате варианта B (все 17 категорий).
+        /// Indoor: все категории локации с русским name и values.
         /// </summary>
         public IndoorValueDto IndoorValue { get; set; }
 

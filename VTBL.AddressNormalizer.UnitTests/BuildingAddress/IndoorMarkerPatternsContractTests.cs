@@ -6,7 +6,7 @@ using Xunit;
 namespace VTBL.AddressNormalizer.UnitTests.BuildingAddress
 {
     /// <summary>
-    /// Контракт синхронизации <see cref="IndoorMarkerPatterns"/> с ТЗ §4.1.
+    /// Контракт синхронизации <see cref="IndoorMarkerPatterns"/> с набором indoor-маркеров ядра.
     /// </summary>
     public class IndoorMarkerPatternsContractTests
     {

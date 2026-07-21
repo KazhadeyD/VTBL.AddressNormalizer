@@ -26,7 +26,7 @@ dotnet run --project VTBL.AddressNormalizer.WebApi
 
 ## WebAPI
 
-ASP.NET Core host (`net5.0`): NLog (`nlog.config`, MDLC `CorrelationId`), Correlation Id (F-API-07), `ApiExceptionFilter` → 500 `{ error }`, Health, `IAddressNormalizationService` (оркестрация через `AddressNormalizerFactory`), controllers v1. **Auth отсутствует.** Порт по умолчанию — `http://localhost:5000` (`Properties/launchSettings.json`). Swagger UI — только в `Development` (`/swagger`). HTTP E2E — `UnitTests/WebApi` через `Microsoft.AspNetCore.Mvc.Testing` (Environment=Production).
+ASP.NET Core host (`net5.0`): NLog (`nlog.config`, MDLC `CorrelationId`), Correlation Id, `ApiExceptionFilter` → 500 `{ error }`, Health, `IAddressNormalizationService` (оркестрация через `AddressNormalizerFactory`), controllers v1. **Auth отсутствует.** Порт по умолчанию — `http://localhost:5000` (`Properties/launchSettings.json`). Swagger UI — только в `Development` (`/swagger`). HTTP E2E — `UnitTests/WebApi` через `Microsoft.AspNetCore.Mvc.Testing` (Environment=Production).
 
 ### Запуск
 
@@ -38,12 +38,12 @@ dotnet run --project VTBL.AddressNormalizer.WebApi
 
 | Method | Path | Назначение |
 |--------|------|------------|
-| POST | `/api/v1/normalize` | Полная нормализация (UC-01) |
-| POST | `/api/v1/normalize/batch` | Batch полной нормализации (UC-05) |
-| POST | `/api/v1/unit/normalize` | Indoor / unit (UC-03) |
-| POST | `/api/v1/address/extract` | Extract outdoor (UC-04) |
-| POST | `/api/v1/address/canonicalize` | Canonicalize без extract (UC-02) |
-| GET | `/health` | Liveness (UC-06) |
+| POST | `/api/v1/normalize` | Полная нормализация |
+| POST | `/api/v1/normalize/batch` | Batch полной нормализации |
+| POST | `/api/v1/unit/normalize` | Indoor / unit |
+| POST | `/api/v1/address/extract` | Extract outdoor |
+| POST | `/api/v1/address/canonicalize` | Canonicalize без extract |
+| GET | `/health` | Liveness |
 
 Конфиг: `Batch:MaxItems` (default `100`) в `appsettings.json`. Correlation: request header `X-Correlation-Id` (fallback `X-Request-Id` → GUID) → echo в response `X-Correlation-Id`.
 
@@ -54,7 +54,7 @@ dotnet run --project VTBL.AddressNormalizer.WebApi
 curl http://localhost:5000/health
 # → {"status":"Healthy"}
 
-# Normalize (UC-01)
+# Normalize
 curl -X POST http://localhost:5000/api/v1/normalize `
   -H "Content-Type: application/json" `
   -H "X-Correlation-Id: smoke-demo" `
@@ -92,11 +92,11 @@ VTBL.AddressNormalizer.sln
 ├── VTBL.AddressNormalizer.Console/          # тонкий CLI-хост (Program.cs)
 ├── VTBL.AddressNormalizer.WebApi/           # ASP.NET Core host (Health, NLog, controllers v1, orchestration)
 │   Controllers/   Health, Normalize, Unit, Address
-│   Middleware/    CorrelationIdResolver + CorrelationIdMiddleware (UC-07)
+│   Middleware/    CorrelationIdResolver + CorrelationIdMiddleware
 │   Filters/       ApiExceptionFilter (500 { error })
-│   Models/        DTO контракта ТЗ (Normalize/Unit/Extract/Canonicalize/Batch)
-│   Mapping/       IndoorValueMapper (вариант B, полный набор 17 категорий)
-│   Services/      IAddressNormalizationService + AddressNormalizationService (Factory + ILogger; UC-01..UC-05)
+│   Models/        DTO запросов/ответов (Normalize/Unit/Extract/Canonicalize/Batch)
+│   Mapping/       IndoorValueMapper → IndoorValueDto (все категории с name/values)
+│   Services/      IAddressNormalizationService + AddressNormalizationService (Factory + ILogger)
 │   Options/       BatchOptions
 │
 └── VTBL.AddressNormalizer.UnitTests/
@@ -131,7 +131,7 @@ flowchart LR
 | **HTTP** `GET /health` | Liveness |
 | `IBuildingAddressNormalizer` | In-process: полный адрес → extract + readable canonical |
 | `IBuildingLocationExtractor` | ExtractSplit outdoor+indoor; Extract = Outdoor |
-| `IBuildingAddressCanonicalizer` | Только канонизация building location (UC-02) |
+| `IBuildingAddressCanonicalizer` | Только канонизация building location |
 | `ICrmNewFlatNormalizer` | Prod: `new_flat` |
 | `ICrmNewAddressNormalizer` | Stub: строка → BuildingAddress; сборка из полей — фаза 2 |
 | `IBuildingUnitNormalizer` | Core indoor без classify |
@@ -207,7 +207,7 @@ dotnet test VTBL.AddressNormalizer.sln
 |--------|---------------|
 | BuildingUnit parser / slash / normalizer | Indoor parse + canonical + hash |
 | CRM `new_flat` + corpus | 5001 строк `flats.csv` |
-| BuildingAddress extract / canonical / E2E | UC-01–UC-03 |
+| BuildingAddress extract / canonical / E2E | Extract, канон, end-to-end |
 | IndoorMarkerPatterns contract | sync с BuildingUnit classifier |
 | Composition | `AddressNormalizerFactory` exposes services |
 | WebApi HTTP E2E | normalize / unit / extract / canonicalize / batch / health / Correlation Id |
@@ -255,6 +255,11 @@ Init-скрипты: `docker/mssql/init/`.
 
 ## История изменений
 
+### 22.07.2026 — Переименование ToIndoorValueDto
+
+- `IndoorValueMapper.ToVariantB` → `ToIndoorValueDto`; убраны упоминания «вариант B» / «ТЗ 2.A» из кода и комментариев WebApi
+- Убраны ярлыки UC-*/F-API-*/F-CORE-* из кода, тестов, README и `.AGENTS.md` продукта
+
 ### 21.07.2026 — Swagger: описания и примеры
 
 - XML-документация WebApi подключена в Swashbuckle (`GenerateDocumentationFile` + `IncludeXmlComments`)
@@ -278,21 +283,21 @@ Init-скрипты: `docker/mssql/init/`.
 - Correlation priority/whitespace и unhandled → `500 { error }` (подмена orchestration seam)
 - Batch partial / all-fail / max items / empty — без stub-ожиданий
 
-### 21.07.2026 — Batch NormalizeBatch (UC-05)
+### 21.07.2026 — Batch NormalizeBatch
 
 - `NormalizeBatch`: request-level (null/empty/MaxItems) → `RequestInvalid`; per-item try/catch; partial → `200 { items }`
 - All-fail без `items`: validation → `400`, exception/mixed → `500`
-- `null` source item → `source: ""`; ok-items через `NormalizeFullCore` (тот же путь, что UC-01, SHA256 outdoor)
+- `null` source item → `source: ""`; ok-items через `NormalizeFullCore` (тот же путь, что одиночный normalize, SHA256 outdoor)
 - HTTP E2E: `BatchEndpointTests` + all-fail через seam `ThrowingCore`; unit: MaxItems boundary, порядок, null→""
 
 ### 21.07.2026 — IndoorValueMapper + оркестрация NormalizeFull/Unit/Extract/Canonicalize
 
-- `IndoorValueMapper.ToVariantB`: все 17 категорий с русскими `name` и `values` из `BuildingUnitLocation`
+- `IndoorValueMapper.ToIndoorValueDto`: все категории с русскими `name` и `values` из `BuildingUnitLocation`
 - `AddressNormalizationService`: `ExtractSplit` → outdoor canonical/SHA256 → `IBuildingUnitNormalizer` → mapper; canonicalize без extract
 - Diff outdoor/indoor в WebAPI отсутствует; Factory только в сервисе
 - HTTP/unit-тесты single endpoints сравнивают результат с Factory (no-mock)
 
-### 21.07.2026 — Correlation Id (F-API-07) + ApiExceptionFilter
+### 21.07.2026 — Correlation Id + ApiExceptionFilter
 
 - `CorrelationIdResolver` + `CorrelationIdMiddleware`: приоритет `X-Correlation-Id` → `X-Request-Id` → GUID `"D"`; whitespace = отсутствует; MDLC `CorrelationId` до pipeline; echo response header
 - `ApiExceptionFilter`: unhandled → 500 `{ error }`, лог Error (Correlation Id из layout NLog)
@@ -300,11 +305,11 @@ Init-скрипты: `docker/mssql/init/`.
 - `AddressNormalizationService`: `ILogger` — Information на старт, Warning на validation
 - HTTP-тесты: приоритет заголовков, GUID без заголовков, 500 `{ error }`; fixture Environment=Production
 
-### 21.07.2026 — ExtractSplit: outdoor + indoor (F-CORE-01)
+### 21.07.2026 — ExtractSplit: outdoor + indoor
 
 - `BuildingLocationExtractor.ExtractSplit`: Indoor = `Substring(marker.Index)`, Outdoor через cutIndex + TrimTrailingDelimiters
 - Запрещён `Indoor = Substring(cutIndex)` (нет ведущей `,` перед маркером)
-- Unit-тесты: ТЗ §1.3 (#1–#3), indoor до дома, comma-before-marker, `Extract == ExtractSplit.Outdoor`
+- Unit-тесты: outdoor+indoor (#1–#3), indoor до дома, comma-before-marker, `Extract == ExtractSplit.Outdoor`
 - Outdoor-регрессия `BuildingLocationExtractorTests` без изменений семантики
 
 ### 21.07.2026 — HTTP E2E на stub (WebApplicationFactory)
@@ -324,8 +329,8 @@ Init-скрипты: `docker/mssql/init/`.
 
 ### 21.07.2026 — WebApi orchestration stub (DTO, mapper, service)
 
-- Typed DTO контракта ТЗ: Normalize / Unit / Extract / Canonicalize / Batch + `IndoorValueDto` (17 категорий)
-- `IndoorValueMapper.ToVariantB` stub: полный набор ключей, русские `name` (ТЗ 2.A), `values: []`
+- Typed DTO: Normalize / Unit / Extract / Canonicalize / Batch + `IndoorValueDto` (17 категорий)
+- `IndoorValueMapper.ToIndoorValueDto` stub: полный набор категорий, русские `name`, `values: []`
 - `IAddressNormalizationService` + `AddressNormalizationService` stub (`stub-outdoor` / `stub-hash` / batch outcomes)
 - DI: только сервис (+ options/filters); ядро через Factory **не** регистрируется в MS.DI
 

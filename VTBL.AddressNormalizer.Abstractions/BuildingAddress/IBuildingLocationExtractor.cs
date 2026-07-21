@@ -6,7 +6,7 @@ namespace VTBL.AddressNormalizer.Abstractions.BuildingAddress
     public interface IBuildingLocationExtractor
     {
         /// <summary>
-        /// Разбивает адрес на outdoor- и indoor-части по семантике ТЗ §1.3:
+        /// Разбивает адрес на outdoor- и indoor-части:
         /// outdoor — до точки отсечения indoor-маркера (без хвостовых разделителей);
         /// indoor — хвост начиная с первого indoor-маркера (маркер входит в строку).
         /// </summary>

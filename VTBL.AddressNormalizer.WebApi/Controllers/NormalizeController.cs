@@ -12,7 +12,7 @@ using VTBL.AddressNormalizer.WebApi.Services;
 namespace VTBL.AddressNormalizer.WebApi.Controllers
 {
     /// <summary>
-    /// Полная нормализация адресной строки: outdoor (extract + canonical + hash) и indoor (вариант B).
+    /// Полная нормализация адресной строки: outdoor (extract + canonical + hash) и structured indoor.
     /// </summary>
     [ApiController]
     [Route("api/v1/normalize")]
@@ -42,7 +42,7 @@ namespace VTBL.AddressNormalizer.WebApi.Controllers
         /// Разбирает полную адресную строку:
         /// 1. extract outdoor / indoor через ядро (`ExtractSplit`);
         /// 2. канонизация outdoor + SHA256 → `dadataOutdoor`;
-        /// 3. нормализация indoor через `IBuildingUnitNormalizer` → `indoorValue` (все 17 категорий);
+        /// 3. нормализация indoor через `IBuildingUnitNormalizer` → `indoorValue` (все категории с name/values);
         /// 4. `fiasId` в v1 всегда `null`.
         ///
         /// Пример запроса:

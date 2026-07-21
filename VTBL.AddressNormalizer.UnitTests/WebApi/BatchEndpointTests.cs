@@ -19,7 +19,7 @@ using Xunit;
 namespace VTBL.AddressNormalizer.UnitTests.WebApi
 {
     /// <summary>
-    /// E2E: POST /api/v1/normalize/batch (UC-05).
+    /// E2E: POST /api/v1/normalize/batch.
     /// </summary>
     public class BatchEndpointTests : IClassFixture<WebApiTestFixture>
     {

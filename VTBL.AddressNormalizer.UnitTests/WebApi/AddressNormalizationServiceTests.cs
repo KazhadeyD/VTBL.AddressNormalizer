@@ -10,7 +10,7 @@ using Xunit;
 namespace VTBL.AddressNormalizer.UnitTests.WebApi
 {
     /// <summary>
-    /// Unit-тесты AddressNormalizationService (реальная оркестрация UC-01..UC-05).
+    /// Unit-тесты AddressNormalizationService (реальная оркестрация).
     /// </summary>
     public class AddressNormalizationServiceTests
     {

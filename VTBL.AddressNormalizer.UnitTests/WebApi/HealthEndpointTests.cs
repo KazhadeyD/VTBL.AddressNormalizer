@@ -8,7 +8,7 @@ using Xunit;
 namespace VTBL.AddressNormalizer.UnitTests.WebApi
 {
     /// <summary>
-    /// E2E: GET /health (UC-06) — финальный контракт.
+    /// E2E: GET /health — финальный контракт.
     /// </summary>
     public class HealthEndpointTests : IClassFixture<WebApiTestFixture>
     {

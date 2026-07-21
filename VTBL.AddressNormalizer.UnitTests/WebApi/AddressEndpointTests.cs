@@ -9,7 +9,7 @@ using Xunit;
 namespace VTBL.AddressNormalizer.UnitTests.WebApi
 {
     /// <summary>
-    /// E2E: POST /api/v1/address/extract и canonicalize (UC-03, UC-04).
+    /// E2E: POST /api/v1/address/extract и canonicalize.
     /// </summary>
     public class AddressEndpointTests : IClassFixture<WebApiTestFixture>
     {

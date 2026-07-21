@@ -16,7 +16,7 @@ namespace VTBL.AddressNormalizer.WebApi.Models
         public DadataOutdoorDto DadataOutdoor { get; set; }
 
         /// <summary>
-        /// Indoor в формате варианта B: все категории <c>BuildingUnitLocation</c> как { name, values }.
+        /// Indoor: все категории <c>BuildingUnitLocation</c> как { name, values }.
         /// </summary>
         public IndoorValueDto IndoorValue { get; set; }
     }
