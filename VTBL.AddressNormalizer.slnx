@@ -1,6 +1,0 @@
-<Solution>
-  <Project Path="VTBL.AddressNormalizer.Abstractions/VTBL.AddressNormalizer.Abstractions.csproj" />
-  <Project Path="VTBL.AddressNormalizer.Console/VTBL.AddressNormalizer.Console.csproj" />
-  <Project Path="VTBL.AddressNormalizer.Infrastructure/VTBL.AddressNormalizer.Infrastructure.csproj" />
-  <Project Path="VTBL.AddressNormalizer.UnitTests/VTBL.AddressNormalizer.UnitTests.csproj" />
-</Solution>
