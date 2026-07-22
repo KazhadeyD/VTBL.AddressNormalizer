@@ -95,12 +95,13 @@ Models/        → DTO запросов/ответов
 Swagger/       → примеры OpenAPI
 ```
 
-DI (`Startup`): `AddAddressNormalizer()` + `AddressNormalizationService` (singleton).
+DI (`Startup`): `AddAddressNormalizerLogging()` + `AddAddressNormalizer()` + `AddressNormalizationService` (singleton).
 
 **Логирование:**
-- `RequestLoggingMiddleware` — исход HTTP: method, path, **status code**, duration (2xx Info / 4xx Warning / 5xx Error); skip `/health`, `/swagger`
-- `AddressNormalizationService` — Information на старт операции, Warning на валидацию
-- `ApiExceptionFilter` — Error на unhandled
+- **HTTP:** `RequestLoggingMiddleware` — method, path, status, duration (2xx Info / 4xx Warning / 5xx Error); skip `/health`, `/swagger`
+- **Orchestration:** `AddressNormalizationService` — Information на старт, Warning на валидацию
+- **Unhandled:** `ApiExceptionFilter` — Error
+- **Ядро (контракт):** `Abstractions.Logging.ILogger` → `MicrosoftExtensionsAddressNormalizerLogger` (категория `VTBL.AddressNormalizer`, уровни через `nlog.config` / `Logging:LogLevel`); Infrastructure подключится на следующем шаге
 
 ## Тесты
 

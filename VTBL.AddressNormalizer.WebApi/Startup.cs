@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using VTBL.AddressNormalizer.Infrastructure.Composition;
+using VTBL.AddressNormalizer.WebApi.Logging;
 using VTBL.AddressNormalizer.WebApi.Filters;
 using VTBL.AddressNormalizer.WebApi.Middleware;
 using VTBL.AddressNormalizer.WebApi.Options;
@@ -62,6 +63,7 @@ namespace VTBL.AddressNormalizer.WebApi
                 c.OperationFilter<SwaggerExamplesOperationFilter>();
             });
 
+            services.AddAddressNormalizerLogging();
             services.AddAddressNormalizer();
             services.AddSingleton<IAddressNormalizationService, AddressNormalizationService>();
         }

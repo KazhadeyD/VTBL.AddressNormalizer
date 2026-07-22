@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using VTBL.AddressNormalizer.Abstractions.BuildingAddress;
 using VTBL.AddressNormalizer.Abstractions.BuildingUnit;
 using VTBL.AddressNormalizer.Abstractions.Shared;
+using VTBL.AddressNormalizer.Console.Logging;
 using VTBL.AddressNormalizer.Infrastructure.Composition;
 
 namespace VTBL.AddressNormalizer.Console
@@ -29,6 +30,7 @@ namespace VTBL.AddressNormalizer.Console
         private static IServiceProvider BuildProvider()
         {
             var services = new ServiceCollection();
+            services.AddAddressNormalizerLogging();
             services.AddAddressNormalizer();
             return services.BuildServiceProvider();
         }

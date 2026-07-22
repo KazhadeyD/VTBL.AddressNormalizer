@@ -10,7 +10,7 @@
 
 ```powershell
 dotnet build VTBL.AddressNormalizer.sln
-dotnet test VTBL.AddressNormalizer.sln          # 240 тестов
+dotnet test VTBL.AddressNormalizer.sln          # 244 теста
 dotnet run --project VTBL.AddressNormalizer.Console
 dotnet run --project VTBL.AddressNormalizer.Console -- address
 dotnet run --project VTBL.AddressNormalizer.Console -- unit "КВАРТИРА 837"
@@ -75,7 +75,7 @@ curl -X POST http://localhost:5000/api/v1/normalize `
 
 ```
 VTBL.AddressNormalizer.sln
-├── Abstractions/       # интерфейсы, DTO, BuildingUnitLocation
+├── Abstractions/       # интерфейсы, DTO, BuildingUnitLocation, Logging.ILogger
 ├── Infrastructure/    # реализации + AddAddressNormalizer (DI)
 ├── Console/           # CLI-демо (DemoServices → AddAddressNormalizer)
 ├── WebApi/            # HTTP host, orchestration, NLog, Swagger
@@ -92,7 +92,8 @@ flowchart LR
   SVC --> MAP["IndoorValueMapper"]
 ```
 
-**Composition:** `services.AddAddressNormalizer()` — единый граф ядра для WebApi, Console и тестов.
+**Composition:** `services.AddAddressNormalizer()` — единый граф ядра для WebApi, Console и тестов.  
+**Логирование ядра:** `VTBL.AddressNormalizer.Abstractions.Logging.ILogger` — реализация у хоста: WebApi (`AddAddressNormalizerLogging` → MEL/NLog, категория `VTBL.AddressNormalizer`), Console (stdout). Тесты — `NullLogger`.
 
 | Entry point | Когда |
 |-------------|--------|
@@ -153,7 +154,7 @@ var split = sp.GetRequiredService<IBuildingLocationExtractor>()
 dotnet test VTBL.AddressNormalizer.sln
 ```
 
-Покрытие: BuildingUnit (parser/slash/corpus `flats.csv`, classifier), BuildingAddress, composition DI, WebApi HTTP E2E (normalize / batch / unit / extract / canonicalize / health / Correlation Id). **240** тестов (22.07.2026).
+Покрытие: BuildingUnit (parser/slash/corpus `flats.csv`, classifier), BuildingAddress, composition DI, WebApi HTTP E2E (normalize / batch / unit / extract / canonicalize / health / Correlation Id). **244** теста (22.07.2026).
 
 ## MSSQL (Docker, опционально)
 
@@ -165,6 +166,13 @@ docker compose up -d
 `localhost:1435`, БД `AddressNormalizer`, user `sa`. Seed: `dbo.new_address`, `dbo.street_type`, … Init: `docker/mssql/init/`.
 
 ## История изменений
+
+### 22.07.2026 — ILogger ядра (Abstractions)
+
+- Контракт `Abstractions.Logging.ILogger` (Debug / Information / Warning / Error)
+- `NullLogger` для тестов; WebApi-адаптер → MEL/NLog (`VTBL.AddressNormalizer`); Console → stdout
+- `AddAddressNormalizerLogging()` в WebApi и Console (до подключения логов в Infrastructure)
+- **244** теста
 
 ### 22.07.2026 — удаление CRM FieldAdapters
 
