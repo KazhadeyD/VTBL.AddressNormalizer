@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 namespace VTBL.AddressNormalizer.Infrastructure.BuildingUnit
 {
     /// <summary>
-    /// Классификация сырой строки <c>new_flat</c> перед разбором.
+    /// Классификация сырой indoor/unit-строки перед разбором.
     /// </summary>
     public sealed partial class BuildingUnitClassifier : IBuildingUnitClassifier
     {
@@ -109,7 +109,7 @@ namespace VTBL.AddressNormalizer.Infrastructure.BuildingUnit
         /// <summary>
         /// Определяет категорию строки по маркерам и правилам приоритета.
         /// </summary>
-        /// <param name="input">Сырая строка CRM-поля или локации.</param>
+        /// <param name="input">Сырая строка локации внутри здания.</param>
         /// <returns>Доминирующая категория по маркерам; без маркеров — <see cref="BuildingUnitCategory.Unknown"/>.</returns>
         public BuildingUnitCategory Classify(string input)
         {

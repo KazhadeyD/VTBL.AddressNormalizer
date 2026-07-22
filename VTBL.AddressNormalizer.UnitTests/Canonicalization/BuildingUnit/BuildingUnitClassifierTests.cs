@@ -1,11 +1,9 @@
 using VTBL.AddressNormalizer.Abstractions.BuildingUnit;
-using VTBL.AddressNormalizer.UnitTests;
-using VTBL.AddressNormalizer.Abstractions.FieldAdapters.Crm;
 using Xunit;
 
-namespace VTBL.AddressNormalizer.UnitTests.FieldAdapters.Crm
+namespace VTBL.AddressNormalizer.UnitTests.Canonicalization.BuildingUnit
 {
-    public class CrmNewFlatClassifierTests
+    public class BuildingUnitClassifierTests
     {
         [Theory]
         [InlineData("ЭТАЖ 4 ПОМЕЩЕНИЕ 2", BuildingUnitCategory.Premise)]

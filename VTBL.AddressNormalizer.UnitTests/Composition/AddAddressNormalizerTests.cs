@@ -1,7 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using VTBL.AddressNormalizer.Abstractions.BuildingAddress;
 using VTBL.AddressNormalizer.Abstractions.BuildingUnit;
-using VTBL.AddressNormalizer.Abstractions.FieldAdapters.Crm;
 using VTBL.AddressNormalizer.Abstractions.Shared;
 using VTBL.AddressNormalizer.Infrastructure.Composition;
 using Xunit;
@@ -30,11 +29,9 @@ namespace VTBL.AddressNormalizer.UnitTests.Composition
             Assert.NotNull(provider.GetRequiredService<IBuildingUnitNormalizer>());
             Assert.NotNull(provider.GetRequiredService<IBuildingUnitClassifier>());
             Assert.NotNull(provider.GetRequiredService<ICanonicalHash>());
-            Assert.NotNull(provider.GetRequiredService<ICrmNewFlatNormalizer>());
             Assert.NotNull(provider.GetRequiredService<IBuildingLocationExtractor>());
             Assert.NotNull(provider.GetRequiredService<IBuildingAddressCanonicalizer>());
             Assert.NotNull(provider.GetRequiredService<IBuildingAddressNormalizer>());
-            Assert.NotNull(provider.GetRequiredService<ICrmNewAddressNormalizer>());
         }
 
         private static ServiceProvider BuildProvider()

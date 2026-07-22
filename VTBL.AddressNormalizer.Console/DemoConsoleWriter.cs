@@ -53,7 +53,7 @@ namespace VTBL.AddressNormalizer.Console
             System.Console.WriteLine("  VTBL.AddressNormalizer.Console address         только BuildingAddress");
             System.Console.WriteLine("  VTBL.AddressNormalizer.Console unit            только BuildingUnit");
             System.Console.WriteLine("  VTBL.AddressNormalizer.Console address \"...\"   один произвольный адрес");
-            System.Console.WriteLine("  VTBL.AddressNormalizer.Console unit \"...\"      одна произвольная строка new_flat");
+            System.Console.WriteLine("  VTBL.AddressNormalizer.Console unit \"...\"      одна произвольная unit-строка");
             System.Console.WriteLine("  VTBL.AddressNormalizer.Console help            эта справка");
         }
     }

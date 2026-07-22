@@ -52,7 +52,7 @@ namespace VTBL.AddressNormalizer.Console
         private static void RunAll(string addressInput, string unitInput)
         {
             DemoConsoleWriter.WriteTitle("VTBL.AddressNormalizer — demo");
-            System.Console.WriteLine("Нормализация адресов CRM: BuildingAddress + BuildingUnit");
+            System.Console.WriteLine("Нормализация адресов: BuildingAddress + BuildingUnit");
 
             BuildingAddressDemo.Run(addressInput);
             BuildingUnitDemo.Run(unitInput);

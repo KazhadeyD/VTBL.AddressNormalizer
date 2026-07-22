@@ -8,7 +8,7 @@ using VTBL.AddressNormalizer.WebApi.Services;
 namespace VTBL.AddressNormalizer.WebApi.Controllers
 {
     /// <summary>
-    /// Нормализация indoor / unit-строки без полного адреса (поле вроде new_flat).
+    /// Нормализация indoor / unit-строки без полного адреса.
     /// </summary>
     [ApiController]
     [Route("api/v1/unit")]
@@ -30,7 +30,6 @@ namespace VTBL.AddressNormalizer.WebApi.Controllers
         /// <remarks>
         /// Использует <c>IBuildingUnitNormalizer</c>: структурированный <c>indoorValue</c>
         /// (все категории с русским name и values), каноническая строка и SHA256-hash.
-        /// CRM-category не возвращается.
         ///
         /// Пример:
         ///

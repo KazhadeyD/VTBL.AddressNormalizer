@@ -29,7 +29,7 @@ namespace VTBL.AddressNormalizer.Console
         /// <summary>
         /// Запускает демо BuildingUnit для набора sample-строк или одной произвольной.
         /// </summary>
-        /// <param name="customInput">Произвольная строка new_flat; если задана — обрабатывается только она.</param>
+        /// <param name="customInput">Произвольная unit-строка; если задана — обрабатывается только она.</param>
         public static void Run(string customInput)
         {
             DemoConsoleWriter.WriteTitle("BuildingUnit — внутренние помещения");

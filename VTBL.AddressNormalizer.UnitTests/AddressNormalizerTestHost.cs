@@ -2,7 +2,6 @@ using System;
 using Microsoft.Extensions.DependencyInjection;
 using VTBL.AddressNormalizer.Abstractions.BuildingAddress;
 using VTBL.AddressNormalizer.Abstractions.BuildingUnit;
-using VTBL.AddressNormalizer.Abstractions.FieldAdapters.Crm;
 using VTBL.AddressNormalizer.Abstractions.Shared;
 using VTBL.AddressNormalizer.Infrastructure.Composition;
 
@@ -32,9 +31,6 @@ namespace VTBL.AddressNormalizer.UnitTests
 
         public static ICanonicalHash Hash =>
             Provider.GetRequiredService<ICanonicalHash>();
-
-        public static ICrmNewFlatNormalizer CrmNewFlat =>
-            Provider.GetRequiredService<ICrmNewFlatNormalizer>();
 
         public static IBuildingAddressNormalizer BuildingAddress =>
             Provider.GetRequiredService<IBuildingAddressNormalizer>();

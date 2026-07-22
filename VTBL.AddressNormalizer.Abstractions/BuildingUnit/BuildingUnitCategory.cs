@@ -1,7 +1,7 @@
 namespace VTBL.AddressNormalizer.Abstractions.BuildingUnit
 {
     /// <summary>
-    /// Категория строки <c>new_flat</c> по доминирующему формату.
+    /// Категория indoor/unit-строки по доминирующему формату.
     /// </summary>
     /// <remarks>
     /// Определяется классификатором по наличию маркеров в сырой строке,

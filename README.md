@@ -1,8 +1,8 @@
 # VTBL.AddressNormalizer
 
-Нормализация адресных данных CRM:
+Нормализация адресных данных:
 
-1. **BuildingUnit** — локация внутри здания (`new_flat`) → structured canonical + JSON + SHA256  
+1. **BuildingUnit** — локация внутри здания → structured canonical + JSON + SHA256  
 2. **BuildingAddress** — полный адрес → extract outdoor/indoor + читаемый канон строения  
 3. **WebApi** — HTTP API v1 поверх ядра (DI: `AddAddressNormalizer`)
 
@@ -10,7 +10,7 @@
 
 ```powershell
 dotnet build VTBL.AddressNormalizer.sln
-dotnet test VTBL.AddressNormalizer.sln          # 257 тестов
+dotnet test VTBL.AddressNormalizer.sln          # 240 тестов
 dotnet run --project VTBL.AddressNormalizer.Console
 dotnet run --project VTBL.AddressNormalizer.Console -- address
 dotnet run --project VTBL.AddressNormalizer.Console -- unit "КВАРТИРА 837"
@@ -99,9 +99,8 @@ flowchart LR
 | HTTP `/api/v1/normalize` | Внешний доступ: outdoor + indoor |
 | `IBuildingAddressNormalizer` | In-process: extract + readable canonical |
 | `IBuildingLocationExtractor` | `ExtractSplit` / `Extract` |
-| `IBuildingUnitNormalizer` | Indoor без CRM-category |
-| `ICrmNewFlatNormalizer` | Prod: поле `new_flat` (+ category) |
-| `ICrmNewAddressNormalizer` | Stub, фаза 2 |
+| `IBuildingUnitNormalizer` | Indoor / unit: parse → canonical + JSON + SHA256 |
+| `IBuildingUnitClassifier` | Категория indoor-строки по маркерам |
 
 ### In-process пример
 
@@ -154,7 +153,7 @@ var split = sp.GetRequiredService<IBuildingLocationExtractor>()
 dotnet test VTBL.AddressNormalizer.sln
 ```
 
-Покрытие: BuildingUnit (parser/slash/corpus `flats.csv`), BuildingAddress, composition DI, WebApi HTTP E2E (normalize / batch / unit / extract / canonicalize / health / Correlation Id). **257** тестов (22.07.2026).
+Покрытие: BuildingUnit (parser/slash/corpus `flats.csv`, classifier), BuildingAddress, composition DI, WebApi HTTP E2E (normalize / batch / unit / extract / canonicalize / health / Correlation Id). **240** тестов (22.07.2026).
 
 ## MSSQL (Docker, опционально)
 
@@ -167,10 +166,17 @@ docker compose up -d
 
 ## История изменений
 
+### 22.07.2026 — удаление CRM FieldAdapters
+
+- Удалён слой `FieldAdapters/Crm` (`ICrmNewFlatNormalizer`, `ICrmNewAddressNormalizer` и реализации)
+- Entry point для indoor — только `IBuildingUnitNormalizer` (+ `IBuildingUnitClassifier`)
+- Тесты классификатора перенесены в `Canonicalization/BuildingUnit`
+- README и XML-docs без упоминаний CRM; **240** тестов
+
 ### 22.07.2026 — README переписан
 
 - Актуальная структура: WebApi + DI (`AddAddressNormalizer`), без битых ссылок и дневника пайплайна
-- Пример JSON ответа normalize; русские ошибки API; 257 тестов
+- Пример JSON ответа normalize; русские ошибки API
 - Добавлен [VTBL.AddressNormalizer.WebApi/README.md](VTBL.AddressNormalizer.WebApi/README.md)
 - Логи WebApi: `RequestLoggingMiddleware` (HTTP status) + сервис + `ApiExceptionFilter`; без дублей в контроллерах
 
@@ -188,10 +194,10 @@ docker compose up -d
 
 ### 21.07.2026 — ядро BuildingAddress / BuildingUnit
 
-- Abstractions + Infrastructure; CRM `new_flat`; Console-демо
+- Abstractions + Infrastructure; BuildingUnit; Console-демо
 - Канонические префиксы, corpus `flats.csv`, раскрытие числовых диапазонов
 - TFM `net5.0` (SDK-style)
 
 ### 15–20.07.2026 — старт решения
 
-- Solution, Docker/MSSQL, seed адресов, нормализация `new_flat`
+- Solution, Docker/MSSQL, seed адресов, нормализация indoor/unit
