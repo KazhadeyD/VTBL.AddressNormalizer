@@ -47,7 +47,7 @@ namespace VTBL.AddressNormalizer.WebApi.Services
         /// <inheritdoc />
         public NormalizeValueDto NormalizeFull(string source)
         {
-            _logger.LogInformation("NormalizeFull started");
+            _logger.LogInformation("Запущена полная нормализация");
             EnsureValidSource(source);
             return NormalizeFullCore(source);
         }
@@ -55,7 +55,7 @@ namespace VTBL.AddressNormalizer.WebApi.Services
         /// <inheritdoc />
         public UnitNormalizeResult NormalizeUnit(string source)
         {
-            _logger.LogInformation("NormalizeUnit started");
+            _logger.LogInformation("Запущена нормализация unit");
             EnsureValidSource(source);
 
             var unit = _unitNormalizer.Normalize(source);
@@ -71,7 +71,7 @@ namespace VTBL.AddressNormalizer.WebApi.Services
         /// <inheritdoc />
         public string ExtractOutdoor(string source)
         {
-            _logger.LogInformation("ExtractOutdoor started");
+            _logger.LogInformation("Запущено извлечение outdoor");
             EnsureValidSource(source);
             return _locationExtractor.ExtractSplit(source).Outdoor;
         }
@@ -79,7 +79,7 @@ namespace VTBL.AddressNormalizer.WebApi.Services
         /// <inheritdoc />
         public string Canonicalize(string source)
         {
-            _logger.LogInformation("Canonicalize started");
+            _logger.LogInformation("Запущена канонизация");
             EnsureValidSource(source);
             return _addressCanonicalizer.ToCanonical(source);
         }
@@ -87,11 +87,11 @@ namespace VTBL.AddressNormalizer.WebApi.Services
         /// <inheritdoc />
         public BatchOutcome NormalizeBatch(IReadOnlyList<string> sources, int maxItems)
         {
-            _logger.LogInformation("NormalizeBatch started");
+            _logger.LogInformation("Запущена пакетная нормализация");
 
             if (sources == null || sources.Count == 0 || sources.Count > maxItems)
             {
-                _logger.LogWarning("NormalizeBatch validation failed: invalid items list or MaxItems exceeded");
+                _logger.LogWarning("Пакетная нормализация: ошибка валидации — пустой список или превышен MaxItems");
                 return new BatchOutcome
                 {
                     Kind = BatchOutcomeKind.RequestInvalid,
@@ -113,7 +113,7 @@ namespace VTBL.AddressNormalizer.WebApi.Services
                 if (string.IsNullOrWhiteSpace(raw))
                 {
                     validationFailCount++;
-                    _logger.LogWarning("NormalizeBatch item {ItemIndex} failed validation", i);
+                    _logger.LogWarning("Пакетная нормализация: элемент {ItemIndex} не прошёл валидацию", i);
                     items.Add(new BatchItemResultDto
                     {
                         Status = "error",
@@ -137,7 +137,7 @@ namespace VTBL.AddressNormalizer.WebApi.Services
                 catch (Exception ex)
                 {
                     exceptionFailCount++;
-                    _logger.LogWarning(ex, "NormalizeBatch item {ItemIndex} failed with exception", i);
+                    _logger.LogWarning(ex, "Пакетная нормализация: элемент {ItemIndex} завершился с исключением", i);
                     items.Add(new BatchItemResultDto
                     {
                         Status = "error",
@@ -214,7 +214,7 @@ namespace VTBL.AddressNormalizer.WebApi.Services
         {
             if (string.IsNullOrWhiteSpace(source))
             {
-                _logger.LogWarning("Source validation failed: empty or whitespace");
+                _logger.LogWarning("Валидация source не пройдена: пустая строка или пробелы");
                 throw new ArgumentException(InvalidSourceMessage, nameof(source));
             }
         }

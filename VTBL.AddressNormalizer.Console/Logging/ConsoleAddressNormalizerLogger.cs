@@ -9,20 +9,20 @@ namespace VTBL.AddressNormalizer.Console.Logging
     public sealed class ConsoleAddressNormalizerLogger : CoreLogger
     {
         /// <inheritdoc />
-        public void Debug(string message) => Write("DBG", message);
+        public void Debug(string message) => Write("ДОП", message);
 
         /// <inheritdoc />
-        public void Information(string message) => Write("INF", message);
+        public void Information(string message) => Write("ИНФ", message);
 
         /// <inheritdoc />
-        public void Warning(string message) => Write("WRN", message);
+        public void Warning(string message) => Write("ПРД", message);
 
         /// <inheritdoc />
-        public void Error(string message) => Write("ERR", message);
+        public void Error(string message) => Write("ОШБ", message);
 
         /// <inheritdoc />
         public void Error(Exception exception, string message) =>
-            Write("ERR", message + Environment.NewLine + exception);
+            Write("ОШБ", message + Environment.NewLine + exception);
 
         private static void Write(string level, string message)
         {

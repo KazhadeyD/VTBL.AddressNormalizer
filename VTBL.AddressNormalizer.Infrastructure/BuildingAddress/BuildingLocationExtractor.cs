@@ -1,5 +1,6 @@
 using System.Text.RegularExpressions;
 using VTBL.AddressNormalizer.Abstractions.BuildingAddress;
+using VTBL.AddressNormalizer.Abstractions.Logging;
 
 namespace VTBL.AddressNormalizer.Infrastructure.BuildingAddress
 {
@@ -13,29 +14,59 @@ namespace VTBL.AddressNormalizer.Infrastructure.BuildingAddress
             @"(?<!\p{L})(?:ДОМ|Д)(?!\p{L})\.?\s*\d",
             RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Compiled);
 
+        private readonly ILogger _logger;
+
+        /// <summary>
+        /// Создаёт extractor с внедрённым логгером ядра.
+        /// </summary>
+        public BuildingLocationExtractor(ILogger logger)
+        {
+            _logger = logger ?? NullLogger.Instance;
+        }
+
         /// <inheritdoc />
         public BuildingLocationExtractionResult ExtractSplit(string input)
         {
             var preprocessed = AddressPreprocessor.Preprocess(input);
             var text = preprocessed.Text;
             if (string.IsNullOrEmpty(text))
+            {
+                _logger.Debug("ExtractSplit: пусто после preprocess, длина входа=" + (input?.Length ?? 0));
                 return new BuildingLocationExtractionResult(string.Empty, string.Empty);
+            }
 
             var housePos = FindHouseMarkerIndex(text);
             var indoorMatch = IndoorMarkerRegistry.FindFirstMatch(text);
 
+            BuildingLocationExtractionResult result;
             if (indoorMatch == null)
-                return new BuildingLocationExtractionResult(TrimTrailingDelimiters(text), string.Empty);
+            {
+                result = new BuildingLocationExtractionResult(TrimTrailingDelimiters(text), string.Empty);
+            }
+            else
+            {
+                // Indoor всегда от индекса маркера, не от cutIndex (иначе ведущая ','/';'/ws).
+                var indoor = text.Substring(indoorMatch.Index);
 
-            // Indoor всегда от индекса маркера, не от cutIndex (иначе ведущая ','/';'/ws).
-            var indoor = text.Substring(indoorMatch.Index);
+                if (housePos >= 0 && indoorMatch.Index < housePos)
+                {
+                    result = new BuildingLocationExtractionResult(string.Empty, indoor);
+                }
+                else
+                {
+                    var cutIndex = ComputeCutIndex(text, indoorMatch);
+                    var outdoorRaw = cutIndex <= 0 ? string.Empty : text.Substring(0, cutIndex);
+                    result = new BuildingLocationExtractionResult(TrimTrailingDelimiters(outdoorRaw), indoor);
+                }
+            }
 
-            if (housePos >= 0 && indoorMatch.Index < housePos)
-                return new BuildingLocationExtractionResult(string.Empty, indoor);
+            _logger.Debug(
+                "ExtractSplit: длина входа=" + text.Length +
+                ", длина outdoor=" + result.Outdoor.Length +
+                ", длина indoor=" + result.Indoor.Length +
+                ", есть маркер дома=" + (housePos >= 0 ? "да" : "нет"));
 
-            var cutIndex = ComputeCutIndex(text, indoorMatch);
-            var outdoorRaw = cutIndex <= 0 ? string.Empty : text.Substring(0, cutIndex);
-            return new BuildingLocationExtractionResult(TrimTrailingDelimiters(outdoorRaw), indoor);
+            return result;
         }
 
         /// <inheritdoc />

@@ -10,7 +10,7 @@
 
 ```powershell
 dotnet build VTBL.AddressNormalizer.sln
-dotnet test VTBL.AddressNormalizer.sln          # 244 теста
+dotnet test VTBL.AddressNormalizer.sln          # 248 тестов
 dotnet run --project VTBL.AddressNormalizer.Console
 dotnet run --project VTBL.AddressNormalizer.Console -- address
 dotnet run --project VTBL.AddressNormalizer.Console -- unit "КВАРТИРА 837"
@@ -93,7 +93,7 @@ flowchart LR
 ```
 
 **Composition:** `services.AddAddressNormalizer()` — единый граф ядра для WebApi, Console и тестов.  
-**Логирование ядра:** `VTBL.AddressNormalizer.Abstractions.Logging.ILogger` — реализация у хоста: WebApi (`AddAddressNormalizerLogging` → MEL/NLog, категория `VTBL.AddressNormalizer`), Console (stdout). Тесты — `NullLogger`.
+**Логирование ядра:** `Abstractions.Logging.ILogger` через DI. Хост: `AddAddressNormalizerLogging()` (WebApi → MEL/NLog, Console → stdout). Без хоста — `NullLogger` (`TryAddSingleton` в `AddAddressNormalizer`). Debug на границах: `BuildingLocationExtractor.ExtractSplit`, `BuildingUnitNormalizer.Normalize` (длины / counts, без полного адреса).
 
 | Entry point | Когда |
 |-------------|--------|
@@ -154,7 +154,7 @@ var split = sp.GetRequiredService<IBuildingLocationExtractor>()
 dotnet test VTBL.AddressNormalizer.sln
 ```
 
-Покрытие: BuildingUnit (parser/slash/corpus `flats.csv`, classifier), BuildingAddress, composition DI, WebApi HTTP E2E (normalize / batch / unit / extract / canonicalize / health / Correlation Id). **244** теста (22.07.2026).
+Покрытие: BuildingUnit (parser/slash/corpus `flats.csv`, classifier), BuildingAddress, composition DI, WebApi HTTP E2E (normalize / batch / unit / extract / canonicalize / health / Correlation Id). **248** тестов (22.07.2026).
 
 ## MSSQL (Docker, опционально)
 
@@ -166,6 +166,17 @@ docker compose up -d
 `localhost:1435`, БД `AddressNormalizer`, user `sa`. Seed: `dbo.new_address`, `dbo.street_type`, … Init: `docker/mssql/init/`.
 
 ## История изменений
+
+### 22.07.2026 — русские сообщения логов
+
+- Infrastructure, WebApi (сервис, middleware, фильтр) и Console — все тексты логов на русском
+
+### 22.07.2026 — логирование Infrastructure (границы)
+
+- `ILogger` в ctor: `BuildingLocationExtractor`, `BuildingUnitNormalizer`
+- Debug-summary: длины outdoor/indoor / canonical, filledCategories, unparsedCount (без PII)
+- `AddAddressNormalizer` → `TryAddSingleton(NullLogger)`; хост может перекрыть через `AddAddressNormalizerLogging`
+- **248** тестов
 
 ### 22.07.2026 — ILogger ядра (Abstractions)
 

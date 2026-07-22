@@ -101,7 +101,7 @@ DI (`Startup`): `AddAddressNormalizerLogging()` + `AddAddressNormalizer()` + `Ad
 - **HTTP:** `RequestLoggingMiddleware` — method, path, status, duration (2xx Info / 4xx Warning / 5xx Error); skip `/health`, `/swagger`
 - **Orchestration:** `AddressNormalizationService` — Information на старт, Warning на валидацию
 - **Unhandled:** `ApiExceptionFilter` — Error
-- **Ядро (контракт):** `Abstractions.Logging.ILogger` → `MicrosoftExtensionsAddressNormalizerLogger` (категория `VTBL.AddressNormalizer`, уровни через `nlog.config` / `Logging:LogLevel`); Infrastructure подключится на следующем шаге
+- **Ядро:** `Abstractions.Logging.ILogger` → `MicrosoftExtensionsAddressNormalizerLogger` (категория `VTBL.AddressNormalizer`); Infrastructure пишет Debug на `ExtractSplit` / `BuildingUnit.Normalize` (вкл. через `Logging:LogLevel` / `nlog.config`)
 
 ## Тесты
 

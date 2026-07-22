@@ -28,7 +28,7 @@ namespace VTBL.AddressNormalizer.WebApi.Filters
         /// </summary>
         public void OnException(ExceptionContext context)
         {
-            _logger.LogError(context.Exception, "Unhandled exception");
+            _logger.LogError(context.Exception, "Необработанное исключение");
 
             context.Result = new ObjectResult(new ErrorResponse
             {

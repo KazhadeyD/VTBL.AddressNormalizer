@@ -33,10 +33,10 @@ namespace VTBL.AddressNormalizer.UnitTests.Logging
                 System.Console.SetOut(writer);
 
                 var logger = new ConsoleAddressNormalizerLogger();
-                logger.Information("smoke");
+                logger.Information("проверка");
 
                 var line = writer.ToString().TrimEnd();
-                Assert.Contains("[INF] AddressNormalizer: smoke", line);
+                Assert.Contains("[ИНФ] AddressNormalizer: проверка", line);
             }
             finally
             {
