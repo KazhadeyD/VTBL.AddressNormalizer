@@ -31,6 +31,7 @@ namespace VTBL.AddressNormalizer.UnitTests.Canonicalization.BuildingUnit
             new object[] { "ПОМЕЩ. 9А/1", "пом:9а/1" },
             new object[] { "ЭТАЖ 2 ПОДВАЛЬНЫЙ, ПОМ. 173", "эт:2|эт:подвальный|пом:173" },
             new object[] { "ЭТАЖ ЦОКОЛЬНЫЙ, ВХОД С ТОРЦА ОФИС 1", "эт:цокольный|оф:1|note:вход с торца" },
+            new object[] { "ЭТАЖ 2, ВХОД С ФАСАДА, ОФИС 5", "эт:2|оф:5|note:вход с фасада" },
         };
     }
 }

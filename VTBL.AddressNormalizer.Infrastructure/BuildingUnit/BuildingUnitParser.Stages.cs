@@ -11,7 +11,7 @@ namespace VTBL.AddressNormalizer.Infrastructure.BuildingUnit
     public sealed partial class BuildingUnitParser
     {
         /// <summary>
-        /// Извлекает текстовые примечания («ВХОД С ТОРЦА») в <see cref="BuildingUnitLocation.Notes"/>.
+        /// Извлекает текстовые примечания («ВХОД С ТОРЦА», «ВХОД С ФАСАДА») в <see cref="BuildingUnitLocation.Notes"/>.
         /// </summary>
         private static void ExtractNotes(BuildingUnitLocation location, ref string working)
         {

@@ -383,12 +383,12 @@ namespace VTBL.AddressNormalizer.Infrastructure.BuildingUnit
         /// Текстовые примечания к локации (не номера).
         /// </summary>
         /// <remarks>
-        /// <para>Паттерн: <c>(?&lt;!\p{L})(?:ВХОД\s+С\s+ТОРЦА)(?!\p{L})</c></para>
-        /// <para>Фиксированная фраза «ВХОД С ТОРЦА» целиком; попадает в <see cref="BuildingUnitLocation.Notes"/>,
+        /// <para>Паттерн: <c>(?&lt;!\p{L})(?:ВХОД\s+С\s+ТОРЦА|ВХОД\s+С\s+ФАСАДА)(?!\p{L})</c></para>
+        /// <para>Фиксированные фразы «ВХОД С ТОРЦА», «ВХОД С ФАСАДА» целиком; попадают в <see cref="BuildingUnitLocation.Notes"/>,
         /// а не в офис/этаж. Расширяется по мере появления новых шаблонов примечаний.</para>
         /// </remarks>
         private static readonly Regex NoteRegex = new Regex(
-            @"(?<!\p{L})(?:ВХОД\s+С\s+ТОРЦА)(?!\p{L})",
+            @"(?<!\p{L})(?:ВХОД\s+С\s+ТОРЦА|ВХОД\s+С\s+ФАСАДА)(?!\p{L})",
             RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
         /// <summary>

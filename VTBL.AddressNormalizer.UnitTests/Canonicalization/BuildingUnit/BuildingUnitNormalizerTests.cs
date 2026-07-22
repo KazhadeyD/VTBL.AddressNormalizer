@@ -87,5 +87,14 @@ namespace VTBL.AddressNormalizer.UnitTests.Canonicalization.BuildingUnit
             Assert.Contains("вход с торца", result.Location.Notes);
             Assert.Contains("note:вход с торца", result.Canonical);
         }
+
+        [Fact]
+        public void Normalize_NoteFacade_ExtractedSeparately()
+        {
+            var result = AddressNormalizerTestHost.Normalizer.Normalize("ЭТАЖ 2, Вход с фасада, ОФИС 5");
+
+            Assert.Contains("вход с фасада", result.Location.Notes);
+            Assert.Contains("note:вход с фасада", result.Canonical);
+        }
     }
 }
