@@ -27,19 +27,29 @@ namespace VTBL.AddressNormalizer.Abstractions.BuildingUnit
             Hash = hash;
         }
 
-        /// <summary>Исходная строка до нормализации.</summary>
+        /// <summary>
+        /// Исходная строка до нормализации.
+        /// </summary>
         public string Original { get; }
 
-        /// <summary>Разобранная структура локации.</summary>
+        /// <summary>
+        /// Разобранная структура локации.
+        /// </summary>
         public BuildingUnitLocation Location { get; }
 
-        /// <summary>Каноническая строка для matching.</summary>
+        /// <summary>
+        /// Каноническая строка для matching.
+        /// </summary>
         public string Canonical { get; }
 
-        /// <summary>JSON модели (<see cref="BuildingUnitLocation"/>).</summary>
+        /// <summary>
+        /// JSON модели (<see cref="BuildingUnitLocation"/>).
+        /// </summary>
         public string Json { get; }
 
-        /// <summary>SHA256-хеш канонической строки (hex, lowercase).</summary>
+        /// <summary>
+        /// SHA256-хеш канонической строки (hex, lowercase).
+        /// </summary>
         public string Hash { get; }
     }
 }

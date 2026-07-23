@@ -13,7 +13,9 @@ namespace VTBL.AddressNormalizer.Infrastructure.BuildingUnit
     /// </remarks>
     internal static class BuildingUnitNumericRangeExpander
     {
-        /// <summary>Максимальная длина раскрываемого диапазона (включительно).</summary>
+        /// <summary>
+        /// Максимальная длина раскрываемого диапазона (включительно).
+        /// </summary>
         public const int DefaultMaxSpan = 500;
 
         private static readonly Regex PureNumericRangeRegex = new Regex(

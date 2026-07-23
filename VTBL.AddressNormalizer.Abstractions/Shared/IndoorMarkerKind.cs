@@ -5,40 +5,64 @@ namespace VTBL.AddressNormalizer.Abstractions.Shared
     /// </summary>
     public enum IndoorMarkerKind
     {
-        /// <summary>Квартира (кв, квартира).</summary>
+        /// <summary>
+        /// Квартира (кв, квартира).
+        /// </summary>
         Apartment,
 
-        /// <summary>Офис (оф, офис).</summary>
+        /// <summary>
+        /// Офис (оф, офис).
+        /// </summary>
         Office,
 
-        /// <summary>Помещение (пом, помещ, помещение).</summary>
+        /// <summary>
+        /// Помещение (пом, помещ, помещение).
+        /// </summary>
         Premise,
 
-        /// <summary>Комната (ком, комн, комната).</summary>
+        /// <summary>
+        /// Комната (ком, комн, комната).
+        /// </summary>
         Room,
 
-        /// <summary>Кабинет (каб, кабинет).</summary>
+        /// <summary>
+        /// Кабинет (каб, кабинет).
+        /// </summary>
         Cabinet,
 
-        /// <summary>Этаж (эт, этаж).</summary>
+        /// <summary>
+        /// Этаж (эт, этаж).
+        /// </summary>
         Floor,
 
-        /// <summary>Подъезд.</summary>
+        /// <summary>
+        /// Подъезд.
+        /// </summary>
         Entrance,
 
-        /// <summary>Блок.</summary>
+        /// <summary>
+        /// Блок.
+        /// </summary>
         Block,
 
-        /// <summary>Секция.</summary>
+        /// <summary>
+        /// Секция.
+        /// </summary>
         Section,
 
-        /// <summary>Рабочее место (раб.м).</summary>
+        /// <summary>
+        /// Рабочее место (раб.м).
+        /// </summary>
         Workplace,
 
-        /// <summary>Часть помещения (ч.п).</summary>
+        /// <summary>
+        /// Часть помещения (ч.п).
+        /// </summary>
         Part,
 
-        /// <summary>Абонентский ящик (а/я).</summary>
+        /// <summary>
+        /// Абонентский ящик (а/я).
+        /// </summary>
         Mailbox,
     }
 }

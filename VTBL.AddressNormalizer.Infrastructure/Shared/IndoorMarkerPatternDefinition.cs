@@ -17,10 +17,14 @@ namespace VTBL.AddressNormalizer.Infrastructure.Shared
             Kind = kind;
         }
 
-        /// <summary>Скомпилированный regex маркера.</summary>
+        /// <summary>
+        /// Скомпилированный regex маркера.
+        /// </summary>
         public Regex Pattern { get; }
 
-        /// <summary>Категория маркера.</summary>
+        /// <summary>
+        /// Категория маркера.
+        /// </summary>
         public IndoorMarkerKind Kind { get; }
     }
 }

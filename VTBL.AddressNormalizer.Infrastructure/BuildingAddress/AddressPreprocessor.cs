@@ -16,7 +16,9 @@ namespace VTBL.AddressNormalizer.Infrastructure.BuildingAddress
             HadExplicitDelimiters = hadExplicitDelimiters;
         }
 
-        /// <summary>Нормализованный текст.</summary>
+        /// <summary>
+        /// Нормализованный текст.
+        /// </summary>
         public string Text { get; }
 
         /// <summary>

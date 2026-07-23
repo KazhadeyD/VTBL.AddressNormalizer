@@ -12,62 +12,86 @@ namespace VTBL.AddressNormalizer.Infrastructure.Shared
         private static readonly RegexOptions MarkerOptions =
             RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Compiled;
 
-        /// <summary>Маркер этажа и подземных уровней.</summary>
+        /// <summary>
+        /// Маркер этажа и подземных уровней.
+        /// </summary>
         public static Regex Floor { get; } = new Regex(
             @"(?<!\p{L})(?:ЭТАЖ|ЭТ(?!\p{L})|ПОДВАЛЬНЫЙ|ПОДВАЛ|ЦОКОЛЬНЫЙ|ЦОКОЛ)(?!\p{L})",
             MarkerOptions);
 
-        /// <summary>Маркер помещения, в т.ч. нежилого.</summary>
+        /// <summary>
+        /// Маркер помещения, в т.ч. нежилого.
+        /// </summary>
         public static Regex Premise { get; } = new Regex(
             @"(?<!\p{L})(?:НЕЖ\.?\s*ПОМ|ПОМЕЩЕНИЯ|ПОМЕЩЕНИЕ|ПОМЕЩ|ПОМ)(?!\p{L})",
             MarkerOptions);
 
-        /// <summary>Маркер комнаты.</summary>
+        /// <summary>
+        /// Маркер комнаты.
+        /// </summary>
         public static Regex Room { get; } = new Regex(
             @"(?<!\p{L})(?:КОМНАТА|КОМН|КОМ)(?!\p{L})|(?<!\p{L})К\.(?!\p{L})",
             MarkerOptions);
 
-        /// <summary>Маркер офиса.</summary>
+        /// <summary>
+        /// Маркер офиса.
+        /// </summary>
         public static Regex Office { get; } = new Regex(
             @"(?<!\p{L})(?:ОФИС|ОФ)(?!\p{L})",
             MarkerOptions);
 
-        /// <summary>Маркер квартиры.</summary>
+        /// <summary>
+        /// Маркер квартиры.
+        /// </summary>
         public static Regex Apartment { get; } = new Regex(
             @"(?<!\p{L})(?:КВАРТИРА|КВ)(?!\p{L})",
             MarkerOptions);
 
-        /// <summary>Маркер кабинета.</summary>
+        /// <summary>
+        /// Маркер кабинета.
+        /// </summary>
         public static Regex Cabinet { get; } = new Regex(
             @"(?<!\p{L})(?:КАБИНЕТ|КАБ)(?!\p{L})",
             MarkerOptions);
 
-        /// <summary>Маркер рабочего места.</summary>
+        /// <summary>
+        /// Маркер рабочего места.
+        /// </summary>
         public static Regex Workplace { get; } = new Regex(
             @"(?<!\p{L})РАБ\.?\s*М",
             MarkerOptions);
 
-        /// <summary>Маркер части помещения.</summary>
+        /// <summary>
+        /// Маркер части помещения.
+        /// </summary>
         public static Regex Part { get; } = new Regex(
             @"(?<!\p{L})Ч\.?\s*П",
             MarkerOptions);
 
-        /// <summary>Маркер подъезда.</summary>
+        /// <summary>
+        /// Маркер подъезда.
+        /// </summary>
         public static Regex Entrance { get; } = new Regex(
             @"(?<!\p{L})ПОДЪЕЗД(?!\p{L})",
             MarkerOptions);
 
-        /// <summary>Маркер блока.</summary>
+        /// <summary>
+        /// Маркер блока.
+        /// </summary>
         public static Regex Block { get; } = new Regex(
             @"(?<!\p{L})БЛОК(?!\p{L})",
             MarkerOptions);
 
-        /// <summary>Маркер секции.</summary>
+        /// <summary>
+        /// Маркер секции.
+        /// </summary>
         public static Regex Section { get; } = new Regex(
             @"(?<!\p{L})СЕКЦ",
             MarkerOptions);
 
-        /// <summary>Маркер абонентского ящика.</summary>
+        /// <summary>
+        /// Маркер абонентского ящика.
+        /// </summary>
         public static Regex Mailbox { get; } = new Regex(
             @"(?<!\p{L})А/Я(?!\p{L})",
             MarkerOptions);

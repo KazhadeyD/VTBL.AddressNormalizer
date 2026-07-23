@@ -44,29 +44,53 @@ namespace VTBL.AddressNormalizer.Infrastructure.BuildingUnit
                 Mailbox = mailbox;
             }
 
-            /// <summary>Маркер этажа (ЭТ, ЭТАЖ, подвал, цоколь).</summary>
+            /// <summary>
+            /// Маркер этажа (ЭТ, ЭТАЖ, подвал, цоколь).
+            /// </summary>
             public bool Floor { get; }
-            /// <summary>Маркер помещения (ПОМ, ПОМЕЩ., НЕЖ.ПОМ).</summary>
+            /// <summary>
+            /// Маркер помещения (ПОМ, ПОМЕЩ., НЕЖ.ПОМ).
+            /// </summary>
             public bool Premise { get; }
-            /// <summary>Маркер комнаты (КОМ, КОМН., К.).</summary>
+            /// <summary>
+            /// Маркер комнаты (КОМ, КОМН., К.).
+            /// </summary>
             public bool Room { get; }
-            /// <summary>Маркер офиса (ОФ, ОФИС).</summary>
+            /// <summary>
+            /// Маркер офиса (ОФ, ОФИС).
+            /// </summary>
             public bool Office { get; }
-            /// <summary>Маркер квартиры (КВ, КВАРТИРА).</summary>
+            /// <summary>
+            /// Маркер квартиры (КВ, КВАРТИРА).
+            /// </summary>
             public bool Apartment { get; }
-            /// <summary>Маркер кабинета (КАБ, КАБИНЕТ).</summary>
+            /// <summary>
+            /// Маркер кабинета (КАБ, КАБИНЕТ).
+            /// </summary>
             public bool Cabinet { get; }
-            /// <summary>Маркер рабочего места (РАБ.М.).</summary>
+            /// <summary>
+            /// Маркер рабочего места (РАБ.М.).
+            /// </summary>
             public bool Workplace { get; }
-            /// <summary>Маркер части помещения (Ч.П.).</summary>
+            /// <summary>
+            /// Маркер части помещения (Ч.П.).
+            /// </summary>
             public bool Part { get; }
-            /// <summary>Маркер подъезда (ПОДЪЕЗД).</summary>
+            /// <summary>
+            /// Маркер подъезда (ПОДЪЕЗД).
+            /// </summary>
             public bool Entrance { get; }
-            /// <summary>Маркер блока (БЛОК).</summary>
+            /// <summary>
+            /// Маркер блока (БЛОК).
+            /// </summary>
             public bool Block { get; }
-            /// <summary>Маркер секции (СЕКЦ…).</summary>
+            /// <summary>
+            /// Маркер секции (СЕКЦ…).
+            /// </summary>
             public bool Section { get; }
-            /// <summary>Маркер абонентского ящика (А/Я).</summary>
+            /// <summary>
+            /// Маркер абонентского ящика (А/Я).
+            /// </summary>
             public bool Mailbox { get; }
 
             /// <summary>

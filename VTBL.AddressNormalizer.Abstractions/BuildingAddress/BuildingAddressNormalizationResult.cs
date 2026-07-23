@@ -18,13 +18,19 @@ namespace VTBL.AddressNormalizer.Abstractions.BuildingAddress
             Canonical = canonical ?? string.Empty;
         }
 
-        /// <summary>Исходная строка до нормализации.</summary>
+        /// <summary>
+        /// Исходная строка до нормализации.
+        /// </summary>
         public string Original { get; }
 
-        /// <summary>Извлечённая локация здания (без indoor).</summary>
+        /// <summary>
+        /// Извлечённая локация здания (без indoor).
+        /// </summary>
         public string Extracted { get; }
 
-        /// <summary>Читаемый канонический вид локации здания.</summary>
+        /// <summary>
+        /// Читаемый канонический вид локации здания.
+        /// </summary>
         public string Canonical { get; }
     }
 }

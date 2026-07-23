@@ -7,13 +7,19 @@ namespace VTBL.AddressNormalizer.WebApi.Middleware
     /// </summary>
     public static class CorrelationIdResolver
     {
-        /// <summary>Имя response/request заголовка Correlation Id.</summary>
+        /// <summary>
+        /// Имя response/request заголовка Correlation Id.
+        /// </summary>
         public const string CorrelationIdHeaderName = "X-Correlation-Id";
 
-        /// <summary>Имя request заголовка Request Id (fallback).</summary>
+        /// <summary>
+        /// Имя request заголовка Request Id (fallback).
+        /// </summary>
         public const string RequestIdHeaderName = "X-Request-Id";
 
-        /// <summary>Ключ NLog MDLC / ScopeContext для Correlation Id.</summary>
+        /// <summary>
+        /// Ключ NLog MDLC / ScopeContext для Correlation Id.
+        /// </summary>
         public const string MdlcKey = "CorrelationId";
 
         /// <summary>

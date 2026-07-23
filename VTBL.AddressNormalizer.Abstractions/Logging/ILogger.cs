@@ -7,19 +7,29 @@ namespace VTBL.AddressNormalizer.Abstractions.Logging
     /// </summary>
     public interface ILogger
     {
-        /// <summary>Диагностика для разработки и отладки парсера.</summary>
+        /// <summary>
+        /// Диагностика для разработки и отладки парсера.
+        /// </summary>
         void Debug(string message);
 
-        /// <summary>Штатные события без детализации на каждый шаг.</summary>
+        /// <summary>
+        /// Штатные события без детализации на каждый шаг.
+        /// </summary>
         void Information(string message);
 
-        /// <summary>Аномалии, не прерывающие обработку.</summary>
+        /// <summary>
+        /// Аномалии, не прерывающие обработку.
+        /// </summary>
         void Warning(string message);
 
-        /// <summary>Ошибка без исключения.</summary>
+        /// <summary>
+        /// Ошибка без исключения.
+        /// </summary>
         void Error(string message);
 
-        /// <summary>Ошибка с исключением.</summary>
+        /// <summary>
+        /// Ошибка с исключением.
+        /// </summary>
         void Error(Exception exception, string message);
     }
 }

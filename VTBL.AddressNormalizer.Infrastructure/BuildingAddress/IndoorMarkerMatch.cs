@@ -17,13 +17,19 @@ namespace VTBL.AddressNormalizer.Infrastructure.BuildingAddress
             Kind = kind;
         }
 
-        /// <summary>Позиция начала маркера.</summary>
+        /// <summary>
+        /// Позиция начала маркера.
+        /// </summary>
         public int Index { get; }
 
-        /// <summary>Длина совпадения.</summary>
+        /// <summary>
+        /// Длина совпадения.
+        /// </summary>
         public int Length { get; }
 
-        /// <summary>Категория маркера.</summary>
+        /// <summary>
+        /// Категория маркера.
+        /// </summary>
         public IndoorMarkerKind Kind { get; }
     }
 }

@@ -7,7 +7,9 @@ namespace VTBL.AddressNormalizer.Abstractions.Logging
     /// </summary>
     public sealed class NullLogger : ILogger
     {
-        /// <summary>Единственный экземпляр.</summary>
+        /// <summary>
+        /// Единственный экземпляр.
+        /// </summary>
         public static NullLogger Instance { get; } = new NullLogger();
 
         private NullLogger()

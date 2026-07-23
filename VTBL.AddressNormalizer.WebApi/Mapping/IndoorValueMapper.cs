@@ -12,7 +12,9 @@ namespace VTBL.AddressNormalizer.WebApi.Mapping
     /// </summary>
     public static class IndoorValueMapper
     {
-        /// <summary>Русские отображаемые имена категорий — единый источник констант.</summary>
+        /// <summary>
+        /// Русские отображаемые имена категорий — единый источник констант.
+        /// </summary>
         public static class CategoryNames
         {
             public const string Floors = "этаж";

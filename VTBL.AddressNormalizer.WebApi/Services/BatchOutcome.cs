@@ -8,19 +8,29 @@ namespace VTBL.AddressNormalizer.WebApi.Services
     /// </summary>
     public enum BatchOutcomeKind
     {
-        /// <summary>Есть хотя бы один ok — ответ с items.</summary>
+        /// <summary>
+        /// Есть хотя бы один ok — ответ с items.
+        /// </summary>
         PartialOrSuccess,
 
-        /// <summary>Все элементы — ошибки валидации.</summary>
+        /// <summary>
+        /// Все элементы — ошибки валидации.
+        /// </summary>
         AllFailValidation,
 
-        /// <summary>Все элементы — исключения ядра.</summary>
+        /// <summary>
+        /// Все элементы — исключения ядра.
+        /// </summary>
         AllFailException,
 
-        /// <summary>Все элементы error, смесь validation и exception.</summary>
+        /// <summary>
+        /// Все элементы error, смесь validation и exception.
+        /// </summary>
         AllFailMixed,
 
-        /// <summary>Некорректный запрос (пустой / null / сверх MaxItems).</summary>
+        /// <summary>
+        /// Некорректный запрос (пустой / null / сверх MaxItems).
+        /// </summary>
         RequestInvalid
     }
 
