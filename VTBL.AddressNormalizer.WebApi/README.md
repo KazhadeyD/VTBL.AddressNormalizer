@@ -18,7 +18,6 @@ dotnet run --project VTBL.AddressNormalizer.WebApi
 | TFM | `net5.0` |
 
 ```powershell
-# Development (Swagger включён)
 $env:ASPNETCORE_ENVIRONMENT = "Development"
 dotnet run --project VTBL.AddressNormalizer.WebApi
 ```
@@ -27,14 +26,14 @@ dotnet run --project VTBL.AddressNormalizer.WebApi
 
 | Method | Path | Тело | Успех |
 |--------|------|------|--------|
-| POST | `/api/v1/normalize` | `{ "source": "..." }` | `200` + outdoor/indoor |
+| POST | `/api/v1/normalize` | `{ "source": "..." }` | `200` + `dadataOutdoor` + `indoorValue` |
 | POST | `/api/v1/normalize/batch` | `{ "items": [ { "source": "..." }, ... ] }` | `200` + per-item `ok`/`error` |
-| POST | `/api/v1/unit/normalize` | `{ "source": "..." }` | `200` + indoor + canonical + hash |
+| POST | `/api/v1/unit/normalize` | `{ "source": "..." }` | `200` + `indoorValue` + top-level `canonical`/`hash` |
 | POST | `/api/v1/address/extract` | `{ "source": "..." }` | `200` + `extracted` |
 | POST | `/api/v1/address/canonicalize` | `{ "source": "..." }` | `200` + `canonical` |
 | GET | `/health` | — | `200` `{ "status": "Healthy" }` |
 
-Пустой / null / whitespace `source` → **400** `{ "error": "..." }`.
+Пустой / null / whitespace `source` → **400** `{ "error": "..." }` (русский текст).  
 Unhandled → **500** `{ "error": "..." }` (`ApiExceptionFilter`).
 
 ### Batch
@@ -45,16 +44,10 @@ Unhandled → **500** `{ "error": "..." }` (`ApiExceptionFilter`).
 
 ### Correlation Id
 
-Приоритет: `X-Correlation-Id` → `X-Request-Id` → GUID. Значение пишется в response header `X-Correlation-Id` и в NLog (`CorrelationId`).
+Приоритет: `X-Correlation-Id` → `X-Request-Id` → GUID.  
+Значение: response header `X-Correlation-Id` и NLog (`CorrelationId` в layout).
 
-## Пример
-
-```powershell
-curl -X POST http://localhost:5000/api/v1/normalize `
-  -H "Content-Type: application/json" `
-  -H "X-Correlation-Id: demo-1" `
-  -d "{\"source\":\"г Москва, ул Сухонская, д 11, кв 89\"}"
-```
+## Контракт ответа normalize
 
 ```json
 {
@@ -69,46 +62,68 @@ curl -X POST http://localhost:5000/api/v1/normalize `
     },
     "indoorValue": {
       "hash": "<sha256 от unit canonical>",
-      "apartments": { "name": "квартира", "values": ["89"] }
+      "apartments": { "name": "квартира", "values": ["89"] },
+      "floors": { "name": "этаж", "values": [] }
     }
   }
 }
 ```
 
-`indoorValue` — `hash` (SHA256 unit-канона) + все категории локации с русским `name` и `values` (пустые: `values: []`). `dadataOutdoor.fiasId` / `dadata` в v1 — `null`.
+| Поле | Смысл |
+|------|--------|
+| `dadataOutdoor.extracted` | Outdoor после extract |
+| `dadataOutdoor.outdoorCanonical` | Канон outdoor |
+| `dadataOutdoor.hash` | SHA256(outdoorCanonical) |
+| `dadataOutdoor.fiasId` | Заглушка v1 = `null` |
+| `dadataOutdoor.dadata` | Заглушка v1 = `null` |
+| `indoorValue.hash` | SHA256 unit-канона (`ToCanonical`) |
+| `indoorValue.*` | 17 категорий `{ name, values }` |
+
+**Unit** (`/api/v1/unit/normalize`): те же категории в `indoorValue` + top-level `canonical` и `hash` (дублирует `indoorValue.hash`).
+
+## Пример запроса
+
+```powershell
+curl -X POST http://localhost:5000/api/v1/normalize `
+  -H "Content-Type: application/json" `
+  -H "X-Correlation-Id: demo-1" `
+  -d "{\"source\":\"г Москва, ул Сухонская, д 11, кв 89\"}"
+```
 
 ## Конфигурация
 
 | Файл / секция | Назначение |
 |---------------|------------|
 | `appsettings.json` → `Batch:MaxItems` | Максимум элементов batch |
-| `nlog.config` | Console + `logs/webapi-*.log`; layout с `CorrelationId` |
+| `appsettings.Development.json` → `Logging:LogLevel:VTBL.AddressNormalizer` | Debug логов ядра в Development |
+| `nlog.config` | Console + `logs/webapi-*.log`; правило `VTBL.AddressNormalizer*` (Debug+); layout с `CorrelationId` |
 | `Properties/launchSettings.json` | URL, `ASPNETCORE_ENVIRONMENT` |
 
-## Слои проекта
+## Слои
 
 ```
-Controllers/   → только IAddressNormalizationService
+Controllers/   → IAddressNormalizationService
 Services/      → оркестрация (ExtractSplit, canonical, hash, unit, mapper)
 Mapping/       → BuildingUnitLocation → IndoorValueDto
-Middleware/    → Correlation Id
+Middleware/    → Correlation Id, RequestLogging
 Filters/       → ApiExceptionFilter (500)
+Logging/       → AddAddressNormalizerLogging → MEL/NLog
 Models/        → DTO запросов/ответов
 Swagger/       → примеры OpenAPI
 ```
 
-DI (`Startup`): `AddAddressNormalizerLogging()` + `AddAddressNormalizer()` + `AddressNormalizationService` (singleton).
+DI (`Startup`): `AddAddressNormalizerLogging()` → `AddAddressNormalizer()` → `AddressNormalizationService`.
 
-**Логирование:**
-- **HTTP:** `RequestLoggingMiddleware` — method, path, status, duration (2xx Info / 4xx Warning / 5xx Error); skip `/health`, `/swagger`
-- **Orchestration:** `AddressNormalizationService` — Information на старт, Warning на валидацию
-- **Unhandled:** `ApiExceptionFilter` — Error
-- **Ядро:** `Abstractions.Logging.ILogger` → `MicrosoftExtensionsAddressNormalizerLogger` (категория `VTBL.AddressNormalizer`); Infrastructure пишет Debug на `ExtractSplit` / `BuildingUnit.Normalize` (вкл. через `Logging:LogLevel` / `nlog.config`)
+**Логирование (тексты на русском):**
+- `RequestLoggingMiddleware` — HTTP method/path/status/duration (skip `/health`, `/swagger`)
+- `AddressNormalizationService` — старт операций, Warning на валидацию
+- `ApiExceptionFilter` — Error на unhandled
+- Ядро — Debug через `Abstractions.Logging.ILogger` (категория `VTBL.AddressNormalizer`)
 
 ## Тесты
-
-HTTP E2E и unit orchestration: `VTBL.AddressNormalizer.UnitTests/WebApi/` (`WebApplicationFactory`, Environment=`Production`).
 
 ```powershell
 dotnet test VTBL.AddressNormalizer.sln --filter "FullyQualifiedName~WebApi"
 ```
+
+Каталог: `VTBL.AddressNormalizer.UnitTests/WebApi/` (`WebApplicationFactory`, Environment=`Production`).

@@ -4,7 +4,7 @@
 
 1. **BuildingUnit** — локация внутри здания → structured canonical + JSON + SHA256  
 2. **BuildingAddress** — полный адрес → extract outdoor/indoor + читаемый канон строения  
-3. **WebApi** — HTTP API v1 поверх ядра (DI: `AddAddressNormalizer`)
+3. **WebApi** — HTTP API v1 поверх ядра (`AddAddressNormalizer`)
 
 ## Быстрый старт
 
@@ -25,8 +25,6 @@ dotnet run --project VTBL.AddressNormalizer.WebApi
 
 Подробности: [VTBL.AddressNormalizer.WebApi/README.md](VTBL.AddressNormalizer.WebApi/README.md).
 
-ASP.NET Core (`net5.0`): `AddAddressNormalizer()` + `IAddressNormalizationService`, NLog (`nlog.config`, Correlation Id в layout), `ApiExceptionFilter` → 500 `{ "error": "..." }`. Auth нет. Порт по умолчанию: `http://localhost:5000`. Swagger UI — только в `Development` (`/swagger`).
-
 | Method | Path | Назначение |
 |--------|------|------------|
 | POST | `/api/v1/normalize` | Полная нормализация (outdoor + indoor) |
@@ -36,20 +34,12 @@ ASP.NET Core (`net5.0`): `AddAddressNormalizer()` + `IAddressNormalizationServic
 | POST | `/api/v1/address/canonicalize` | Канон building location (без extract) |
 | GET | `/health` | Liveness |
 
-**Вход:** `{ "source": "..." }` (непустая строка; иначе 400).  
-**Correlation:** `X-Correlation-Id` → иначе `X-Request-Id` → иначе GUID; echo в response header.  
-**Batch:** ошибки по элементам не останавливают остальные; если упали все — одна ошибка 400/500 без `items`.
+- Auth нет. Порт: `http://localhost:5000`. Swagger UI — только `Development` (`/swagger`).
+- Вход: `{ "source": "..." }` (непустая строка; иначе 400, сообщения на русском).
+- Correlation: `X-Correlation-Id` → иначе `X-Request-Id` → иначе GUID; echo в response header.
+- Batch: ошибка элемента не останавливает остальные; если упали все — одна ошибка 400/500 без `items`.
 
-### Пример
-
-```powershell
-curl -X POST http://localhost:5000/api/v1/normalize `
-  -H "Content-Type: application/json" `
-  -H "X-Correlation-Id: smoke-demo" `
-  -d "{\"source\":\"г Москва, ул Сухонская, д 11, кв 89\"}"
-```
-
-Ответ (схематично):
+### Пример ответа `POST /api/v1/normalize`
 
 ```json
 {
@@ -58,12 +48,12 @@ curl -X POST http://localhost:5000/api/v1/normalize `
     "dadataOutdoor": {
       "extracted": "г Москва, ул Сухонская, д 11",
       "outdoorCanonical": "г Москва, ул Сухонская, д 11",
-      "hash": "<sha256 hex от outdoorCanonical>",
+      "hash": "<sha256 от outdoorCanonical>",
       "fiasId": null,
       "dadata": null
     },
     "indoorValue": {
-      "hash": "<sha256 hex от unit canonical>",
+      "hash": "<sha256 от unit canonical>",
       "apartments": { "name": "квартира", "values": ["89"] },
       "floors": { "name": "этаж", "values": [] }
     }
@@ -71,15 +61,17 @@ curl -X POST http://localhost:5000/api/v1/normalize `
 }
 ```
 
-`indoorValue` содержит `hash` (SHA256 unit-канона) и все категории локации с русским `name` и массивом `values`. `dadataOutdoor.fiasId` / `dadata` в v1 — `null`. Сообщения ошибок API — на русском.
+- `dadataOutdoor.fiasId` / `dadata` в v1 всегда `null` (заглушки).
+- `indoorValue.hash` — SHA256 unit-канона (`ToCanonical`); пустые категории: `values: []`.
+- Unit-endpoint дополнительно отдаёт top-level `canonical` и `hash` (тот же hash, что в `indoorValue`).
 
 ## Архитектура
 
 ```
 VTBL.AddressNormalizer.sln
-├── Abstractions/       # интерфейсы, DTO, BuildingUnitLocation, Logging.ILogger
-├── Infrastructure/    # реализации + AddAddressNormalizer (DI)
-├── Console/           # CLI-демо (DemoServices → AddAddressNormalizer)
+├── Abstractions/       # контракты, BuildingUnitLocation, Logging.ILogger
+├── Infrastructure/    # реализации + AddAddressNormalizer
+├── Console/           # CLI-демо (DemoServices)
 ├── WebApi/            # HTTP host, orchestration, NLog, Swagger
 └── UnitTests/         # xUnit + WebApplicationFactory
 ```
@@ -94,9 +86,6 @@ flowchart LR
   SVC --> MAP["IndoorValueMapper"]
 ```
 
-**Composition:** `services.AddAddressNormalizer()` — единый граф ядра для WebApi, Console и тестов.  
-**Логирование ядра:** `Abstractions.Logging.ILogger` через DI. Хост: `AddAddressNormalizerLogging()` (WebApi → MEL/NLog, Console → stdout). Без хоста — `NullLogger` (`TryAddSingleton` в `AddAddressNormalizer`). Debug на границах: `BuildingLocationExtractor.ExtractSplit`, `BuildingUnitNormalizer.Normalize` (длины / counts, без полного адреса).
-
 | Entry point | Когда |
 |-------------|--------|
 | HTTP `/api/v1/normalize` | Внешний доступ: outdoor + indoor |
@@ -105,7 +94,10 @@ flowchart LR
 | `IBuildingUnitNormalizer` | Indoor / unit: parse → canonical + JSON + SHA256 |
 | `IBuildingUnitClassifier` | Категория indoor-строки по маркерам |
 
-### In-process пример
+**Composition:** `AddAddressNormalizer()` — единый DI-граф для WebApi, Console и тестов.  
+**Логирование ядра:** `Abstractions.Logging.ILogger`. Хост регистрирует реализацию через `AddAddressNormalizerLogging()` (WebApi → MEL/NLog, Console → stdout). Иначе — `NullLogger`. Debug на границах Extractor / BuildingUnitNormalizer (без полного адреса в логах). Сообщения логов — на русском.
+
+### In-process
 
 ```csharp
 using Microsoft.Extensions.DependencyInjection;
@@ -118,7 +110,6 @@ var sp = services.BuildServiceProvider();
 
 var result = sp.GetRequiredService<IBuildingAddressNormalizer>()
     .Normalize("г Москва, ул Сухонская, д 11, кв 89");
-// Extracted / Canonical → outdoor без indoor
 
 var split = sp.GetRequiredService<IBuildingLocationExtractor>()
     .ExtractSplit("г Москва, ул Сухонская, д 11, кв 89");
@@ -147,7 +138,7 @@ var split = sp.GetRequiredService<IBuildingLocationExtractor>()
 | `лит:` | literas | `лит:б` |
 | `диап:` | ranges | `диап:74-82` |
 | `code:` | rawCodes | `code:659318` |
-| `note:` | notes | `note:…` |
+| `note:` | notes | `note:вход с торца` / `note:вход с фасада` |
 | `unparsed:` | unparsed | `unparsed:…` |
 
 ## Тесты
@@ -156,7 +147,7 @@ var split = sp.GetRequiredService<IBuildingLocationExtractor>()
 dotnet test VTBL.AddressNormalizer.sln
 ```
 
-Покрытие: BuildingUnit (parser/slash/corpus `flats.csv`, classifier), BuildingAddress, composition DI, WebApi HTTP E2E (normalize / batch / unit / extract / canonicalize / health / Correlation Id). **250** тестов (23.07.2026).
+**250** тестов (23.07.2026): BuildingUnit (parser, slash, corpus `flats.csv`, classifier, notes), BuildingAddress, composition DI, WebApi HTTP E2E.
 
 ## MSSQL (Docker, опционально)
 
@@ -165,73 +156,35 @@ copy .env.example .env
 docker compose up -d
 ```
 
-`localhost:1435`, БД `AddressNormalizer`, user `sa`. Seed: `dbo.new_address`, `dbo.street_type`, … Init: `docker/mssql/init/`.
+`localhost:1435`, БД `AddressNormalizer`, user `sa`. Init: `docker/mssql/init/`.
 
 ## История изменений
 
-### 23.07.2026 — DTO: fiasId/dadata в dadataOutdoor, hash в indoorValue
+### 23.07.2026 — README актуализированы
 
-- `fiasId` перенесён в `DadataOutdoorDto`; добавлен `dadata` (v1 = `null`)
-- `IndoorValueDto.Hash` = SHA256 unit-канона (`ToCanonical`); unit endpoint сохраняет top-level `canonical`/`hash`
+- Корневой и WebApi README приведены к текущему контракту API (dadataOutdoor / indoorValue.hash)
+- История сжата; убраны устаревшие счётчики тестов из промежуточных записей
 
-### 23.07.2026 — форматирование XML summary
+### 23.07.2026 — DTO normalize
 
-- Однострочные `/// <summary>…</summary>` приведены к многострочному виду (16 файлов, Abstractions / Infrastructure / WebApi)
+- `fiasId` и `dadata` внутри `dadataOutdoor` (v1 = `null`)
+- `indoorValue.hash` = SHA256 unit-канона; unit endpoint сохраняет top-level `canonical`/`hash`
 
-### 22.07.2026 — примечание «вход с фасада»
+### 23.07.2026 — XML summary
 
-- `NoteRegex`: к «вход с торца» добавлена фраза «вход с фасада» → `note:` в каноне
+- Однострочные `/// <summary>` → многострочный вид (Abstractions / Infrastructure / WebApi)
 
-### 22.07.2026 — русские сообщения логов
+### 22.07.2026 — ядро и логирование
 
-- Infrastructure, WebApi (сервис, middleware, фильтр) и Console — все тексты логов на русском
+- Примечание `вход с фасада` в `NoteRegex`
+- `Abstractions.Logging.ILogger` + хост-адаптеры; Debug на границах Infrastructure; тексты логов на русском
+- Удалены CRM FieldAdapters; DI вместо Factory (`AddAddressNormalizer`)
 
-### 22.07.2026 — логирование Infrastructure (границы)
-
-- `ILogger` в ctor: `BuildingLocationExtractor`, `BuildingUnitNormalizer`
-- Debug-summary: длины outdoor/indoor / canonical, filledCategories, unparsedCount (без PII)
-- `AddAddressNormalizer` → `TryAddSingleton(NullLogger)`; хост может перекрыть через `AddAddressNormalizerLogging`
-- **248** тестов
-
-### 22.07.2026 — ILogger ядра (Abstractions)
-
-- Контракт `Abstractions.Logging.ILogger` (Debug / Information / Warning / Error)
-- `NullLogger` для тестов; WebApi-адаптер → MEL/NLog (`VTBL.AddressNormalizer`); Console → stdout
-- `AddAddressNormalizerLogging()` в WebApi и Console (до подключения логов в Infrastructure)
-- **244** теста
-
-### 22.07.2026 — удаление CRM FieldAdapters
-
-- Удалён слой `FieldAdapters/Crm` (`ICrmNewFlatNormalizer`, `ICrmNewAddressNormalizer` и реализации)
-- Entry point для indoor — только `IBuildingUnitNormalizer` (+ `IBuildingUnitClassifier`)
-- Тесты классификатора перенесены в `Canonicalization/BuildingUnit`
-- README и XML-docs без упоминаний CRM; **240** тестов
-
-### 22.07.2026 — README переписан
-
-- Актуальная структура: WebApi + DI (`AddAddressNormalizer`), без битых ссылок и дневника пайплайна
-- Пример JSON ответа normalize; русские ошибки API
-- Добавлен [VTBL.AddressNormalizer.WebApi/README.md](VTBL.AddressNormalizer.WebApi/README.md)
-- Логи WebApi: `RequestLoggingMiddleware` (HTTP status) + сервис + `ApiExceptionFilter`; без дублей в контроллерах
-
-### 22.07.2026 — DI вместо Factory
-
-- Удалён `AddressNormalizerFactory`; composition только через `AddAddressNormalizer`
-- Console (`DemoServices`) и тесты (`AddressNormalizerTestHost`) на том же DI-графе
-- Русские сообщения ошибок сервиса/контроллеров/Swagger
-
-### 21.07.2026 — WebApi v1
+### 21.07.2026 — WebApi v1 и ядро
 
 - Endpoints normalize / batch / unit / extract / canonicalize / health
-- ExtractSplit outdoor+indoor; `dadataOutdoor` + SHA256; structured `indoorValue`
-- NLog + Correlation Id; Swagger (Development) с XML и примерами
-
-### 21.07.2026 — ядро BuildingAddress / BuildingUnit
-
-- Abstractions + Infrastructure; BuildingUnit; Console-демо
-- Канонические префиксы, corpus `flats.csv`, раскрытие числовых диапазонов
-- TFM `net5.0` (SDK-style)
+- NLog + Correlation Id; BuildingAddress / BuildingUnit; TFM `net5.0`
 
 ### 15–20.07.2026 — старт решения
 
-- Solution, Docker/MSSQL, seed адресов, нормализация indoor/unit
+- Solution, Docker/MSSQL, seed адресов
