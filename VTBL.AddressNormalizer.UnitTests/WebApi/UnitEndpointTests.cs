@@ -39,6 +39,7 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
             Assert.Equal(source, dto.Source);
             Assert.Equal(expected.Canonical, dto.Canonical);
             Assert.Equal(expected.Hash, dto.Hash);
+            Assert.Equal(expected.Hash, dto.IndoorValue.Hash);
             Assert.Contains("89", dto.IndoorValue.Apartments.Values);
 
             using var doc = JsonDocument.Parse(body);

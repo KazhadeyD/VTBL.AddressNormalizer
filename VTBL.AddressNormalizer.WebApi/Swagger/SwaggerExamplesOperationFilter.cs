@@ -153,12 +153,13 @@ namespace VTBL.AddressNormalizer.WebApi.Swagger
             ["source"] = new OpenApiString("г Москва, ул Сухонская, д 11, кв 89"),
             ["value"] = new OpenApiObject
             {
-                ["fiasId"] = new OpenApiNull(),
                 ["dadataOutdoor"] = new OpenApiObject
                 {
                     ["extracted"] = new OpenApiString("г Москва, ул Сухонская, д 11"),
                     ["outdoorCanonical"] = new OpenApiString("г Москва, ул Сухонская, д 11"),
-                    ["hash"] = new OpenApiString("a1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456")
+                    ["hash"] = new OpenApiString("a1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456"),
+                    ["fiasId"] = new OpenApiNull(),
+                    ["dadata"] = new OpenApiNull()
                 },
                 ["indoorValue"] = SampleIndoorWithApartment()
             }
@@ -189,12 +190,13 @@ namespace VTBL.AddressNormalizer.WebApi.Swagger
                     ["source"] = new OpenApiString("г Москва, ул Сухонская, д 11, кв 89"),
                     ["value"] = new OpenApiObject
                     {
-                        ["fiasId"] = new OpenApiNull(),
                         ["dadataOutdoor"] = new OpenApiObject
                         {
                             ["extracted"] = new OpenApiString("г Москва, ул Сухонская, д 11"),
                             ["outdoorCanonical"] = new OpenApiString("г Москва, ул Сухонская, д 11"),
-                            ["hash"] = new OpenApiString("a1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456")
+                            ["hash"] = new OpenApiString("a1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456"),
+                            ["fiasId"] = new OpenApiNull(),
+                            ["dadata"] = new OpenApiNull()
                         },
                         ["indoorValue"] = SampleIndoorWithApartment()
                     },
@@ -262,6 +264,7 @@ namespace VTBL.AddressNormalizer.WebApi.Swagger
 
         private static OpenApiObject EmptyIndoor() => new OpenApiObject
         {
+            ["hash"] = new OpenApiString("b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef12345678"),
             ["floors"] = EmptyCategory("этаж"),
             ["premises"] = EmptyCategory("помещение"),
             ["rooms"] = EmptyCategory("комната"),

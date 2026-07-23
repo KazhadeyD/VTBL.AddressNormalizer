@@ -60,20 +60,22 @@ curl -X POST http://localhost:5000/api/v1/normalize `
 {
   "source": "г Москва, ул Сухонская, д 11, кв 89",
   "value": {
-    "fiasId": null,
     "dadataOutdoor": {
       "extracted": "г Москва, ул Сухонская, д 11",
       "outdoorCanonical": "г Москва, ул Сухонская, д 11",
-      "hash": "<sha256 от outdoorCanonical>"
+      "hash": "<sha256 от outdoorCanonical>",
+      "fiasId": null,
+      "dadata": null
     },
     "indoorValue": {
+      "hash": "<sha256 от unit canonical>",
       "apartments": { "name": "квартира", "values": ["89"] }
     }
   }
 }
 ```
 
-`indoorValue` — все категории локации с русским `name` и `values` (пустые категории: `values: []`).
+`indoorValue` — `hash` (SHA256 unit-канона) + все категории локации с русским `name` и `values` (пустые: `values: []`). `dadataOutdoor.fiasId` / `dadata` в v1 — `null`.
 
 ## Конфигурация
 

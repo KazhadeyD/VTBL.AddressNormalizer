@@ -136,10 +136,13 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
             var expectedHash = AddressNormalizerTestHost.Hash.ComputeSha256(outdoorCanonical);
 
             Assert.NotNull(value);
-            Assert.Null(value.FiasId);
+            Assert.Null(value.DadataOutdoor.FiasId);
+            Assert.Null(value.DadataOutdoor.Dadata);
             Assert.Equal(split.Outdoor, value.DadataOutdoor.Extracted);
             Assert.Equal(outdoorCanonical, value.DadataOutdoor.OutdoorCanonical);
             Assert.Equal(expectedHash, value.DadataOutdoor.Hash);
+            var unit = AddressNormalizerTestHost.Normalizer.Normalize(split.Indoor);
+            Assert.Equal(unit.Hash, value.IndoorValue.Hash);
         }
 
         private static async Task AssertErrorBodyWithoutItemsAsync(HttpResponseMessage response)

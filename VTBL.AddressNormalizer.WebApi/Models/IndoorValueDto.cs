@@ -1,11 +1,17 @@
 namespace VTBL.AddressNormalizer.WebApi.Models
 {
     /// <summary>
-    /// Structured <c>indoorValue</c>: все категории <c>BuildingUnitLocation</c> с русским name и values.
-    /// Свойства никогда не null — пустые категории имеют <c>values: []</c>.
+    /// Structured <c>indoorValue</c>: все категории <c>BuildingUnitLocation</c> с русским name и values,
+    /// плюс <c>hash</c> от unit-канона.
+    /// Свойства категорий никогда не null — пустые имеют <c>values: []</c>.
     /// </summary>
     public class IndoorValueDto
     {
+        /// <summary>
+        /// SHA256 (hex, lowercase) от канонической строки unit (<c>ToCanonical</c>).
+        /// </summary>
+        public string Hash { get; set; }
+
         /// <summary>
         /// Этаж (<c>name</c>: «этаж»).
         /// </summary>

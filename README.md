@@ -10,7 +10,7 @@
 
 ```powershell
 dotnet build VTBL.AddressNormalizer.sln
-dotnet test VTBL.AddressNormalizer.sln          # 248 тестов
+dotnet test VTBL.AddressNormalizer.sln          # 250 тестов
 dotnet run --project VTBL.AddressNormalizer.Console
 dotnet run --project VTBL.AddressNormalizer.Console -- address
 dotnet run --project VTBL.AddressNormalizer.Console -- unit "КВАРТИРА 837"
@@ -55,13 +55,15 @@ curl -X POST http://localhost:5000/api/v1/normalize `
 {
   "source": "г Москва, ул Сухонская, д 11, кв 89",
   "value": {
-    "fiasId": null,
     "dadataOutdoor": {
       "extracted": "г Москва, ул Сухонская, д 11",
       "outdoorCanonical": "г Москва, ул Сухонская, д 11",
-      "hash": "<sha256 hex от outdoorCanonical>"
+      "hash": "<sha256 hex от outdoorCanonical>",
+      "fiasId": null,
+      "dadata": null
     },
     "indoorValue": {
+      "hash": "<sha256 hex от unit canonical>",
       "apartments": { "name": "квартира", "values": ["89"] },
       "floors": { "name": "этаж", "values": [] }
     }
@@ -69,7 +71,7 @@ curl -X POST http://localhost:5000/api/v1/normalize `
 }
 ```
 
-`indoorValue` содержит все категории локации с русским `name` и массивом `values`. Сообщения ошибок API — на русском.
+`indoorValue` содержит `hash` (SHA256 unit-канона) и все категории локации с русским `name` и массивом `values`. `dadataOutdoor.fiasId` / `dadata` в v1 — `null`. Сообщения ошибок API — на русском.
 
 ## Архитектура
 
@@ -154,7 +156,7 @@ var split = sp.GetRequiredService<IBuildingLocationExtractor>()
 dotnet test VTBL.AddressNormalizer.sln
 ```
 
-Покрытие: BuildingUnit (parser/slash/corpus `flats.csv`, classifier), BuildingAddress, composition DI, WebApi HTTP E2E (normalize / batch / unit / extract / canonicalize / health / Correlation Id). **248** тестов (22.07.2026).
+Покрытие: BuildingUnit (parser/slash/corpus `flats.csv`, classifier), BuildingAddress, composition DI, WebApi HTTP E2E (normalize / batch / unit / extract / canonicalize / health / Correlation Id). **250** тестов (23.07.2026).
 
 ## MSSQL (Docker, опционально)
 
@@ -166,6 +168,11 @@ docker compose up -d
 `localhost:1435`, БД `AddressNormalizer`, user `sa`. Seed: `dbo.new_address`, `dbo.street_type`, … Init: `docker/mssql/init/`.
 
 ## История изменений
+
+### 23.07.2026 — DTO: fiasId/dadata в dadataOutdoor, hash в indoorValue
+
+- `fiasId` перенесён в `DadataOutdoorDto`; добавлен `dadata` (v1 = `null`)
+- `IndoorValueDto.Hash` = SHA256 unit-канона (`ToCanonical`); unit endpoint сохраняет top-level `canonical`/`hash`
 
 ### 23.07.2026 — форматирование XML summary
 

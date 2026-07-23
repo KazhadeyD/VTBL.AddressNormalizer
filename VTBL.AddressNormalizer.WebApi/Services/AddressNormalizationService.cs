@@ -59,10 +59,12 @@ namespace VTBL.AddressNormalizer.WebApi.Services
             EnsureValidSource(source);
 
             var unit = _unitNormalizer.Normalize(source);
+            var indoor = IndoorValueMapper.ToIndoorValueDto(unit.Location);
+            indoor.Hash = unit.Hash;
             return new UnitNormalizeResult
             {
                 Source = source,
-                IndoorValue = IndoorValueMapper.ToIndoorValueDto(unit.Location),
+                IndoorValue = indoor,
                 Canonical = unit.Canonical,
                 Hash = unit.Hash
             };
@@ -196,17 +198,20 @@ namespace VTBL.AddressNormalizer.WebApi.Services
             var outdoorCanonical = _addressCanonicalizer.ToCanonical(split.Outdoor);
             var hash = _canonicalHash.ComputeSha256(outdoorCanonical);
             var unit = _unitNormalizer.Normalize(split.Indoor);
+            var indoor = IndoorValueMapper.ToIndoorValueDto(unit.Location);
+            indoor.Hash = unit.Hash;
 
             return new NormalizeValueDto
             {
-                FiasId = null,
                 DadataOutdoor = new DadataOutdoorDto
                 {
                     Extracted = split.Outdoor,
                     OutdoorCanonical = outdoorCanonical,
-                    Hash = hash
+                    Hash = hash,
+                    FiasId = null,
+                    Dadata = null
                 },
-                IndoorValue = IndoorValueMapper.ToIndoorValueDto(unit.Location)
+                IndoorValue = indoor
             };
         }
 
