@@ -7,115 +7,102 @@ namespace VTBL.AddressNormalizer.Infrastructure.Shared
     /// <summary>
     /// Единый источник regex indoor-маркеров для BuildingUnit parser и BuildingAddress extract.
     /// </summary>
+    /// <remarks>
+    /// Лексемы — <see cref="IndoorMarkerLexemes"/>; сборка — <see cref="IndoorMarkerRegexFactory"/>.
+    /// </remarks>
     internal static class IndoorMarkerPatterns
     {
-        private static readonly RegexOptions MarkerOptions =
-            RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Compiled;
-
         /// <summary>
         /// Маркер этажа и подземных уровней.
         /// </summary>
-        public static Regex Floor { get; } = new Regex(
-            @"(?<!\p{L})(?:ЭТАЖ|ЭТ(?!\p{L})|ПОДВАЛЬНЫЙ|ПОДВАЛ|ЦОКОЛЬНЫЙ|ЦОКОЛ)(?!\p{L})",
-            MarkerOptions);
+        public static Regex Floor { get; } =
+            IndoorMarkerRegexFactory.MarkerOnly(IndoorMarkerLexemes.Floor);
 
         /// <summary>
         /// Маркер помещения, в т.ч. нежилого.
         /// </summary>
-        public static Regex Premise { get; } = new Regex(
-            @"(?<!\p{L})(?:НЕЖ\.?\s*ПОМ|ПОМЕЩЕНИЯ|ПОМЕЩЕНИЕ|ПОМЕЩ|ПОМ)(?!\p{L})",
-            MarkerOptions);
+        public static Regex Premise { get; } =
+            IndoorMarkerRegexFactory.MarkerOnly(IndoorMarkerLexemes.Premise);
 
         /// <summary>
         /// Маркер комнаты.
         /// </summary>
         public static Regex Room { get; } = new Regex(
-            @"(?<!\p{L})(?:КОМНАТА|КОМН|КОМ)(?!\p{L})|(?<!\p{L})К\.(?!\p{L})",
-            MarkerOptions);
+            $@"(?<!\p{{L}})(?:{IndoorMarkerLexemes.Room})(?!\p{{L}})|(?<!\p{{L}}){IndoorMarkerLexemes.ShortRoom}(?!\p{{L}})",
+            IndoorMarkerRegexFactory.MarkerOptions);
 
         /// <summary>
         /// Маркер офиса.
         /// </summary>
-        public static Regex Office { get; } = new Regex(
-            @"(?<!\p{L})(?:ОФИС|ОФ)(?!\p{L})",
-            MarkerOptions);
+        public static Regex Office { get; } =
+            IndoorMarkerRegexFactory.MarkerOnly(IndoorMarkerLexemes.Office);
 
         /// <summary>
         /// Маркер квартиры.
         /// </summary>
-        public static Regex Apartment { get; } = new Regex(
-            @"(?<!\p{L})(?:КВАРТИРА|КВ)(?!\p{L})",
-            MarkerOptions);
+        public static Regex Apartment { get; } =
+            IndoorMarkerRegexFactory.MarkerOnly(IndoorMarkerLexemes.Apartment);
 
         /// <summary>
         /// Маркер кабинета.
         /// </summary>
-        public static Regex Cabinet { get; } = new Regex(
-            @"(?<!\p{L})(?:КАБИНЕТ|КАБ)(?!\p{L})",
-            MarkerOptions);
+        public static Regex Cabinet { get; } =
+            IndoorMarkerRegexFactory.MarkerOnly(IndoorMarkerLexemes.Cabinet);
 
         /// <summary>
         /// Маркер рабочего места.
         /// </summary>
-        public static Regex Workplace { get; } = new Regex(
-            @"(?<!\p{L})РАБ\.?\s*М",
-            MarkerOptions);
+        public static Regex Workplace { get; } =
+            IndoorMarkerRegexFactory.MarkerPrefix(IndoorMarkerLexemes.Workplace);
 
         /// <summary>
         /// Маркер части помещения.
         /// </summary>
-        public static Regex Part { get; } = new Regex(
-            @"(?<!\p{L})Ч\.?\s*П",
-            MarkerOptions);
+        public static Regex Part { get; } =
+            IndoorMarkerRegexFactory.MarkerPrefix(IndoorMarkerLexemes.Part);
 
         /// <summary>
         /// Маркер подъезда.
         /// </summary>
-        public static Regex Entrance { get; } = new Regex(
-            @"(?<!\p{L})ПОДЪЕЗД(?!\p{L})",
-            MarkerOptions);
+        public static Regex Entrance { get; } =
+            IndoorMarkerRegexFactory.MarkerOnly(IndoorMarkerLexemes.Entrance);
 
         /// <summary>
         /// Маркер проезда («проезд», «пр-д»; опционально ведущий порядковый «1-й»).
         /// </summary>
         public static Regex Passage { get; } = new Regex(
-            @"(?<!\p{L})(?:\d+\s*-\s*[ЙЯ]\s+)?(?:ПРОЕЗД|ПР-Д)(?!\p{L})",
-            MarkerOptions);
+            $@"(?<!\p{{L}})(?:\d+\s*-\s*[ЙЯ]\s+)?(?:{IndoorMarkerLexemes.Passage})(?!\p{{L}})",
+            IndoorMarkerRegexFactory.MarkerOptions);
 
         /// <summary>
         /// Маркер владения («владение», «влад», «вл.»).
         /// </summary>
-        public static Regex Holding { get; } = new Regex(
-            @"(?<!\p{L})(?:ВЛАДЕНИЕ|ВЛАД(?!\p{L})|ВЛ\.?)(?!\p{L})",
-            MarkerOptions);
+        public static Regex Holding { get; } =
+            IndoorMarkerRegexFactory.MarkerOnly(IndoorMarkerLexemes.Holding + @"\.?");
 
         /// <summary>
         /// Маркер склада («склад», «скл.»).
         /// </summary>
-        public static Regex Storage { get; } = new Regex(
-            @"(?<!\p{L})(?:СКЛАД|СКЛ\.?)(?!\p{L})",
-            MarkerOptions);
+        public static Regex Storage { get; } =
+            IndoorMarkerRegexFactory.MarkerOnly(IndoorMarkerLexemes.Storage + @"\.?");
 
         /// <summary>
         /// Маркер блока.
         /// </summary>
-        public static Regex Block { get; } = new Regex(
-            @"(?<!\p{L})БЛОК(?!\p{L})",
-            MarkerOptions);
+        public static Regex Block { get; } =
+            IndoorMarkerRegexFactory.MarkerOnly(IndoorMarkerLexemes.Block);
 
         /// <summary>
         /// Маркер секции.
         /// </summary>
-        public static Regex Section { get; } = new Regex(
-            @"(?<!\p{L})СЕКЦ",
-            MarkerOptions);
+        public static Regex Section { get; } =
+            IndoorMarkerRegexFactory.MarkerPrefix(IndoorMarkerLexemes.Section);
 
         /// <summary>
         /// Маркер абонентского ящика.
         /// </summary>
-        public static Regex Mailbox { get; } = new Regex(
-            @"(?<!\p{L})А/Я(?!\p{L})",
-            MarkerOptions);
+        public static Regex Mailbox { get; } =
+            IndoorMarkerRegexFactory.MarkerOnly(IndoorMarkerLexemes.Mailbox);
 
         /// <summary>
         /// Все indoor-маркеры в фиксированном порядке (15 шт.).

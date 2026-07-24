@@ -163,6 +163,13 @@ docker compose up -d
 
 ## История изменений
 
+### 24.07.2026 — рефакторинг BuildingUnitParser (вариант C)
+
+- Общие лексемы маркеров: `IndoorMarkerLexemes` + фабрика `IndoorMarkerRegexFactory`
+- `IndoorMarkerPatterns` и early-regex парсера собраны из одних лексем
+- Early-маркеры table-driven (`EarlyMarkersBefore/AfterBlockSection`); `CollapseWorking`
+- Единый `ApplySlashTypeValue` для slash-chain и dot-slash
+
 ### 24.07.2026 — indoor «склад»
 
 - Категория `Storages` / канон `склад:`; маркеры `СКЛАД`, `СКЛ.`; форма `склад 1`

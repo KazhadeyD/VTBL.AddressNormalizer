@@ -20,7 +20,7 @@ namespace VTBL.AddressNormalizer.Infrastructure.BuildingUnit
                 location.Notes.Add(NormalizeNote(match.Value));
                 return ", ";
             });
-            working = WhitespaceCollapseRegex.Replace(working, " ").Trim(' ', ',');
+            CollapseWorking(ref working);
         }
 
         /// <summary>
@@ -82,35 +82,13 @@ namespace VTBL.AddressNormalizer.Infrastructure.BuildingUnit
                     MarkConsumed(consumed, valueStart, index - valueStart);
 
                     for (var i = 0; i < types.Count && i < values.Count; i++)
-                        ApplySlashValue(location, types[i], values[i]);
+                        ApplySlashTypeValue(location, types[i], values[i], SlashValueMode.DotSlash);
                 }
 
                 match = SlashTypeHeaderRegex.Match(working, index);
             }
 
             working = BuildRemaining(working, consumed);
-        }
-
-        /// <summary>
-        /// Записывает значение dot-slash формата в коллекцию по типу заголовка.
-        /// </summary>
-        private static void ApplySlashValue(BuildingUnitLocation location, string type, string value)
-        {
-            switch (type)
-            {
-                case "ЭТ":
-                    location.Floors.Add(value);
-                    break;
-                case "ПОМЕЩ":
-                    location.Premises.Add(value);
-                    break;
-                case "КОМ":
-                    AddMultiValue(location.Rooms, value);
-                    break;
-                case "ОФИС":
-                    location.Offices.Add(value);
-                    break;
-            }
         }
 
         /// <summary>
@@ -179,7 +157,8 @@ namespace VTBL.AddressNormalizer.Infrastructure.BuildingUnit
             }
 
             working = WhitespaceCollapseRegex.Replace(working, " ").Trim(' ', ',');
-            working = BareFloorWordRegex.Replace(working, " ").Trim(' ', ',');
+            working = BareFloorWordRegex.Replace(working, " ");
+            CollapseWorking(ref working);
         }
 
         /// <summary>
@@ -196,7 +175,7 @@ namespace VTBL.AddressNormalizer.Infrastructure.BuildingUnit
                 });
             }
 
-            working = WhitespaceCollapseRegex.Replace(working, " ").Trim(' ', ',');
+            CollapseWorking(ref working);
         }
 
         /// <summary>

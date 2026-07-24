@@ -29,17 +29,9 @@ namespace VTBL.AddressNormalizer.Infrastructure.BuildingUnit
             ExtractBusinessCenterNotes(location, ref working);
             ExtractSlashChains(location, ref working);
 
-            ExtractTyped(location, ApartmentRegex, location.Apartments, ref working, splitValues: true, expandNumericRanges: true);
-            ExtractTyped(location, CabinetRegex, location.Cabinets, ref working, splitValues: true, expandNumericRanges: true);
-            ExtractTyped(location, EntranceRegex, location.Entrances, ref working);
-            ExtractTyped(location, PassageRegex, location.Passages, ref working);
-            ExtractTyped(location, HoldingRegex, location.Holdings, ref working);
-            ExtractTyped(location, StorageRegex, location.Storages, ref working);
+            ExtractEarlyMarkers(location, EarlyMarkersBeforeBlockSection, ref working);
             ExtractBlockSection(location, ref working);
-            ExtractTyped(location, BlockRegex, location.Blocks, ref working);
-            ExtractTyped(location, SectionRegex, location.Sections, ref working);
-            ExtractTyped(location, MailboxRegex, location.Mailboxes, ref working);
-            ExtractTyped(location, LiteraRegex, location.Literas, ref working);
+            ExtractEarlyMarkers(location, EarlyMarkersAfterBlockSection, ref working);
 
             working = PreprocessIndoorRemainder(working);
             ExtractNotes(location, ref working);
@@ -131,7 +123,7 @@ namespace VTBL.AddressNormalizer.Infrastructure.BuildingUnit
             }
 
             working = BuildRemaining(working, consumed);
-            working = WhitespaceCollapseRegex.Replace(working, " ").Trim(' ', ',');
+            CollapseWorking(ref working);
         }
 
         /// <summary>
@@ -152,14 +144,14 @@ namespace VTBL.AddressNormalizer.Infrastructure.BuildingUnit
                     headers[headerIndex + 1] == "КОМ" &&
                     TrySplitPremiseRoom(valueParts[valueIndex], out var premise, out var room))
                 {
-                    ApplySlashChainValue(location, "ПОМЕЩ", premise);
-                    ApplySlashChainValue(location, "КОМ", room);
+                    ApplySlashTypeValue(location, "ПОМЕЩ", premise, SlashValueMode.Chain);
+                    ApplySlashTypeValue(location, "КОМ", room, SlashValueMode.Chain);
                     headerIndex += 2;
                     valueIndex += 1;
                     continue;
                 }
 
-                ApplySlashChainValue(location, headers[headerIndex], valueParts[valueIndex]);
+                ApplySlashTypeValue(location, headers[headerIndex], valueParts[valueIndex], SlashValueMode.Chain);
                 headerIndex += 1;
                 valueIndex += 1;
             }
@@ -202,7 +194,7 @@ namespace VTBL.AddressNormalizer.Infrastructure.BuildingUnit
                 return " ";
             });
 
-            working = WhitespaceCollapseRegex.Replace(working, " ").Trim(' ', ',');
+            CollapseWorking(ref working);
         }
 
         /// <summary>
@@ -244,29 +236,61 @@ namespace VTBL.AddressNormalizer.Infrastructure.BuildingUnit
         }
 
         /// <summary>
-        /// Записывает одно значение slash-цепочки в соответствующую коллекцию модели.
+        /// Режим записи значения slash-нотации.
         /// </summary>
-        private static void ApplySlashChainValue(BuildingUnitLocation location, string type, string value)
+        private enum SlashValueMode
         {
+            /// <summary>
+            /// Цепочки «ЭТ/ПОМ 1/40»: нормализация + раскрытие числовых диапазонов.
+            /// </summary>
+            Chain,
+
+            /// <summary>
+            /// Dot-slash «ЭТ./ПОМЕЩ. 0/II»: значение уже нарезано, без expand.
+            /// </summary>
+            DotSlash
+        }
+
+        /// <summary>
+        /// Записывает значение slash-нотации в коллекцию модели (общий маппинг для chain и dot-slash).
+        /// </summary>
+        private static void ApplySlashTypeValue(
+            BuildingUnitLocation location,
+            string type,
+            string value,
+            SlashValueMode mode)
+        {
+            var expand = mode == SlashValueMode.Chain;
             switch (type)
             {
                 case "ЭТ":
-                    AddSingleValue(location.Floors, value, expandNumericRanges: true);
+                    if (mode == SlashValueMode.Chain)
+                        AddSingleValue(location.Floors, value, expandNumericRanges: true);
+                    else
+                        location.Floors.Add(value);
                     break;
                 case "ПОМЕЩ":
-                    AddMultiValue(location.Premises, value, expandNumericRanges: true);
+                    if (mode == SlashValueMode.Chain)
+                        AddMultiValue(location.Premises, value, expandNumericRanges: true);
+                    else
+                        location.Premises.Add(value);
                     break;
                 case "КОМ":
-                    AddMultiValue(location.Rooms, value, expandNumericRanges: true);
+                    AddMultiValue(location.Rooms, value, expandNumericRanges: expand);
                     break;
                 case "ОФИС":
-                    AddSingleValue(location.Offices, value, expandNumericRanges: true);
+                    if (mode == SlashValueMode.Chain)
+                        AddSingleValue(location.Offices, value, expandNumericRanges: true);
+                    else
+                        location.Offices.Add(value);
                     break;
                 case "КАБ":
-                    AddSingleValue(location.Cabinets, value, expandNumericRanges: true);
+                    if (mode == SlashValueMode.Chain)
+                        AddSingleValue(location.Cabinets, value, expandNumericRanges: true);
                     break;
                 case "РАБ":
-                    AddSingleValue(location.Workplaces, value, expandNumericRanges: true);
+                    if (mode == SlashValueMode.Chain)
+                        AddSingleValue(location.Workplaces, value, expandNumericRanges: true);
                     break;
             }
         }
@@ -285,7 +309,27 @@ namespace VTBL.AddressNormalizer.Infrastructure.BuildingUnit
                 return " ";
             });
 
-            working = WhitespaceCollapseRegex.Replace(working, " ").Trim(' ', ',');
+            CollapseWorking(ref working);
+        }
+
+        /// <summary>
+        /// Прогоняет таблицу early-маркеров через <see cref="ExtractTyped"/>.
+        /// </summary>
+        private static void ExtractEarlyMarkers(
+            BuildingUnitLocation location,
+            EarlyMarkerDefinition[] markers,
+            ref string working)
+        {
+            foreach (var marker in markers)
+            {
+                ExtractTyped(
+                    location,
+                    marker.Regex,
+                    marker.Target(location),
+                    ref working,
+                    marker.SplitValues,
+                    marker.ExpandNumericRanges);
+            }
         }
 
         /// <summary>
@@ -320,6 +364,14 @@ namespace VTBL.AddressNormalizer.Infrastructure.BuildingUnit
                 return " ";
             });
 
+            CollapseWorking(ref working);
+        }
+
+        /// <summary>
+        /// Схлопывает пробелы и обрезает хвостовые разделители у рабочей строки.
+        /// </summary>
+        private static void CollapseWorking(ref string working)
+        {
             working = WhitespaceCollapseRegex.Replace(working, " ").Trim(' ', ',');
         }
 
