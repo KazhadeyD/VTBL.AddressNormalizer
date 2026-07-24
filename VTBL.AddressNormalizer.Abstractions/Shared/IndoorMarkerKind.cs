@@ -66,7 +66,7 @@ namespace VTBL.AddressNormalizer.Abstractions.Shared
         Section,
 
         /// <summary>
-        /// Рабочее место (раб.м).
+        /// Рабочее место (рм, раб.м, раб. место).
         /// </summary>
         Workplace,
 

@@ -36,7 +36,7 @@ namespace VTBL.AddressNormalizer.Abstractions.BuildingUnit
         public IList<string> Offices { get; } = new List<string>();
 
         /// <summary>
-        /// Рабочее место («РАБ.М.», «РАБ М»).
+        /// Рабочее место («РМ», «Р.М.», «РАБ.М.», «РАБ. МЕСТО», «РАБ. МЕС»).
         /// Канон: <c>раб.м:</c>.
         /// </summary>
         public IList<string> Workplaces { get; } = new List<string>();

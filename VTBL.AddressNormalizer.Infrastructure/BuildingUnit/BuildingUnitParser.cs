@@ -233,7 +233,10 @@ namespace VTBL.AddressNormalizer.Infrastructure.BuildingUnit
                 return "ОФИС";
             if (token.StartsWith("КАБИНЕТ", StringComparison.Ordinal) || token.StartsWith("КАБ", StringComparison.Ordinal))
                 return "КАБ";
-            if (token.StartsWith("РАБ", StringComparison.Ordinal))
+            var workplaceCompact = token.Replace(".", string.Empty);
+            if (workplaceCompact.StartsWith("РАБ", StringComparison.Ordinal) ||
+                workplaceCompact == "РМ" ||
+                workplaceCompact.StartsWith("РМ", StringComparison.Ordinal))
                 return "РАБ";
 
             return token;

@@ -80,7 +80,7 @@ namespace VTBL.AddressNormalizer.Infrastructure.BuildingUnit
         /// Шаблон токена типа в slash-цепочке (этаж, пом, ком, оф, каб, раб.м).
         /// </summary>
         private const string SlashChainHeaderTokenPattern =
-            @"ЭТАЖ|ЭТ\.?|Э\.?|ПОМЕЩЕНИЯ|ПОМЕЩЕНИЕ|ПОМЕЩ\.?|ПОМ\.?|КОМНАТА|КОМН\.?|КОМ\.?|КО\.?|ОФИС|ОФ\.?|КАБИНЕТ|КАБ\.?|РАБ\.?\s*М(?:ЕСТО)?";
+            @"ЭТАЖ|ЭТ\.?|Э\.?|ПОМЕЩЕНИЯ|ПОМЕЩЕНИЕ|ПОМЕЩ\.?|ПОМ\.?|КОМНАТА|КОМН\.?|КОМ\.?|КО\.?|ОФИС|ОФ\.?|КАБИНЕТ|КАБ\.?|РАБ\.?\s*М(?:ЕСТО|ЕСТ|ЕС)?\.?|Р\.?\s*М\.?";
 
         /// <summary>
         /// Цепочка заголовков slash-нотации без значений: «ЭТАЖ/ПОМЕЩ.», «КОМ./ОФИС».
@@ -265,10 +265,10 @@ namespace VTBL.AddressNormalizer.Infrastructure.BuildingUnit
             RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
         /// <summary>
-        /// Рабочее место: «РАБ.М.1», «РАБ М 2».
+        /// Рабочее место: «РМ 1», «Р.М. 2», «РАБ.М.1», «РАБ. МЕСТО 3», «РАБ. МЕС 4».
         /// </summary>
         private static readonly Regex WorkplaceTypedRegex = new Regex(
-            $@"(?<!\p{{L}}){IndoorMarkerLexemes.Workplace}\.?\s*(?<v>[\d\w\-]+)(?!\p{{L}})",
+            $@"(?<!\p{{L}})(?:{IndoorMarkerLexemes.Workplace})\s*(?<v>[\d\w\-]+)(?!\p{{L}})",
             RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
         /// <summary>

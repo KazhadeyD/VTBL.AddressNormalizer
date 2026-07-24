@@ -132,6 +132,15 @@ namespace VTBL.AddressNormalizer.UnitTests.Canonicalization.BuildingUnit
         public static IEnumerable<object[]> WorkplaceCases()
         {
             yield return new object[] { "РАБ М 2", "раб.м:2" };
+            yield return new object[] { "РМ 1", "раб.м:1" };
+            yield return new object[] { "Р.М. 3", "раб.м:3" };
+            yield return new object[] { "Р.М.5", "раб.м:5" };
+            yield return new object[] { "Раб. место 4", "раб.м:4" };
+            yield return new object[] { "Раб. м. 6", "раб.м:6" };
+            yield return new object[] { "Раб. мес 7", "раб.м:7" };
+            yield return new object[] { "РАБ.МЕСТ 8", "раб.м:8" };
+            yield return new object[] { "РАБ.М.9", "раб.м:9" };
+            yield return new object[] { "РМ 9", "раб.м:9" };
         }
 
         [Theory]

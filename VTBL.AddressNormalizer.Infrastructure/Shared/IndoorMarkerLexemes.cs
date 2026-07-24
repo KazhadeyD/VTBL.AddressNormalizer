@@ -41,7 +41,12 @@ namespace VTBL.AddressNormalizer.Infrastructure.Shared
         public const string Premise = @"НЕЖ\.?\s*ПОМ|ПОМЕЩЕНИЯ|ПОМЕЩЕНИЕ|ПОМЕЩ|ПОМ";
         public const string Room = @"КОМНАТА|КОМН|КОМ|КО";
         public const string ShortRoom = @"К\.";
-        public const string Workplace = @"РАБ\.?\s*М";
+        /// <summary>
+        /// Рабочее место: «РМ», «Р.М.», «РАБ.М», «РАБ М», «РАБ. МЕСТО», «РАБ. МЕС», …
+        /// </summary>
+        public const string Workplace =
+            @"РАБ\.?\s*М(?:ЕСТО|ЕСТ|ЕС)?\.?|Р\.?\s*М\.?";
+
         public const string Part = @"Ч\.?\s*П";
     }
 }
