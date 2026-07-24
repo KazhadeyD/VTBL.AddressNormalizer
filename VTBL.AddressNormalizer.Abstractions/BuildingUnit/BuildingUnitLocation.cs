@@ -66,6 +66,18 @@ namespace VTBL.AddressNormalizer.Abstractions.BuildingUnit
         public IList<string> Entrances { get; } = new List<string>();
 
         /// <summary>
+        /// Проезд («ПРОЕЗД», «ПР-Д»; также «1-й проезд»).
+        /// Канон: <c>проезд:</c>.
+        /// </summary>
+        public IList<string> Passages { get; } = new List<string>();
+
+        /// <summary>
+        /// Владение («ВЛАДЕНИЕ», «ВЛАД», «ВЛ.»).
+        /// Канон: <c>влад:</c>.
+        /// </summary>
+        public IList<string> Holdings { get; } = new List<string>();
+
+        /// <summary>
         /// Блок («БЛОК»; для «БЛОК-СЕКЦИЯ» дублируется в <see cref="Sections"/>).
         /// Канон: <c>блок:</c>.
         /// </summary>

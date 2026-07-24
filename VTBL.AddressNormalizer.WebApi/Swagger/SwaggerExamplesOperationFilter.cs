@@ -274,6 +274,8 @@ namespace VTBL.AddressNormalizer.WebApi.Swagger
             ["apartments"] = EmptyCategory("квартира"),
             ["cabinets"] = EmptyCategory("кабинет"),
             ["entrances"] = EmptyCategory("подъезд"),
+            ["passages"] = EmptyCategory("проезд"),
+            ["holdings"] = EmptyCategory("владение"),
             ["blocks"] = EmptyCategory("блок"),
             ["sections"] = EmptyCategory("секция"),
             ["mailboxes"] = EmptyCategory("а/я"),

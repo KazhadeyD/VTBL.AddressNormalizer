@@ -10,7 +10,7 @@
 
 ```powershell
 dotnet build VTBL.AddressNormalizer.sln
-dotnet test VTBL.AddressNormalizer.sln          # 230 тестов
+dotnet test VTBL.AddressNormalizer.sln          # 244 теста
 dotnet run --project VTBL.AddressNormalizer.Console
 dotnet run --project VTBL.AddressNormalizer.Console -- address
 dotnet run --project VTBL.AddressNormalizer.Console -- unit "КВАРТИРА 837"
@@ -132,6 +132,8 @@ var split = sp.GetRequiredService<IBuildingLocationExtractor>()
 | `кв:` | apartments | `кв:837` |
 | `каб:` | cabinets | `каб:69` |
 | `под:` | entrances | `под:5` |
+| `проезд:` | passages | `проезд:1` |
+| `влад:` | holdings | `влад:1` |
 | `блок:` | blocks | `блок:1` |
 | `секц:` | sections | `секц:2` |
 | `а/я:` | mailboxes | `а/я:165` |
@@ -147,7 +149,7 @@ var split = sp.GetRequiredService<IBuildingLocationExtractor>()
 dotnet test VTBL.AddressNormalizer.sln
 ```
 
-**230** тестов (24.07.2026): BuildingUnit (parser, slash, corpus `flats.csv`, notes), BuildingAddress, composition DI, WebApi HTTP E2E.
+**244** теста (24.07.2026): BuildingUnit (parser, slash, corpus `flats.csv`, notes, проезд, владение), BuildingAddress, composition DI, WebApi HTTP E2E.
 
 ## MSSQL (Docker, опционально)
 
@@ -159,6 +161,16 @@ docker compose up -d
 `localhost:1435`, БД `AddressNormalizer`, user `sa`. Init: `docker/mssql/init/`.
 
 ## История изменений
+
+### 24.07.2026 — indoor «владение»
+
+- Категория `Holdings` / канон `влад:`; маркеры `ВЛАДЕНИЕ`, `ВЛАД`, `ВЛ.`; форма `владение 1`
+- Extract: `IndoorMarkerKind.Holding`
+
+### 24.07.2026 — indoor «проезд»
+
+- Категория `Passages` / канон `проезд:`; маркеры `ПРОЕЗД`, `ПР-Д`; формы `проезд 1` и `1-й проезд`
+- Extract: `IndoorMarkerKind.Passage`
 
 ### 24.07.2026 — удаление IBuildingUnitClassifier
 

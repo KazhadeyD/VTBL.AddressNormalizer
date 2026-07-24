@@ -90,6 +90,33 @@ namespace VTBL.AddressNormalizer.UnitTests.Canonicalization.BuildingUnit
             Assert.Contains("note:вход с фасада", canonical);
         }
 
+        [Theory]
+        [InlineData("проезд 1")]
+        [InlineData("1-й проезд")]
+        [InlineData("пр-д 1")]
+        [InlineData("1-й пр-д")]
+        public void Passage_ParsesToPassageCategory(string input)
+        {
+            var location = AddressNormalizerTestHost.Parser.Parse(input);
+            var canonical = AddressNormalizerTestHost.Canonicalizer.ToCanonical(location);
+
+            Assert.Contains("1", location.Passages);
+            Assert.Equal("проезд:1", canonical);
+        }
+
+        [Theory]
+        [InlineData("владение 1")]
+        [InlineData("влад 1")]
+        [InlineData("вл. 1")]
+        public void Holding_ParsesToHoldingCategory(string input)
+        {
+            var location = AddressNormalizerTestHost.Parser.Parse(input);
+            var canonical = AddressNormalizerTestHost.Canonicalizer.ToCanonical(location);
+
+            Assert.Contains("1", location.Holdings);
+            Assert.Equal("влад:1", canonical);
+        }
+
         private static (string Canonical, string Hash) Canonicalize(string input)
         {
             var location = AddressNormalizerTestHost.Parser.Parse(input);

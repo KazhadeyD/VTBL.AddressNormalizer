@@ -41,6 +41,16 @@ namespace VTBL.AddressNormalizer.Abstractions.Shared
         Entrance,
 
         /// <summary>
+        /// Проезд (проезд, пр-д).
+        /// </summary>
+        Passage,
+
+        /// <summary>
+        /// Владение (владение, влад, вл.).
+        /// </summary>
+        Holding,
+
+        /// <summary>
         /// Блок.
         /// </summary>
         Block,

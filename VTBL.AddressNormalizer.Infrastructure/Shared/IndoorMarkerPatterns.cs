@@ -76,6 +76,20 @@ namespace VTBL.AddressNormalizer.Infrastructure.Shared
             MarkerOptions);
 
         /// <summary>
+        /// Маркер проезда («проезд», «пр-д»; опционально ведущий порядковый «1-й»).
+        /// </summary>
+        public static Regex Passage { get; } = new Regex(
+            @"(?<!\p{L})(?:\d+\s*-\s*[ЙЯ]\s+)?(?:ПРОЕЗД|ПР-Д)(?!\p{L})",
+            MarkerOptions);
+
+        /// <summary>
+        /// Маркер владения («владение», «влад», «вл.»).
+        /// </summary>
+        public static Regex Holding { get; } = new Regex(
+            @"(?<!\p{L})(?:ВЛАДЕНИЕ|ВЛАД(?!\p{L})|ВЛ\.?)(?!\p{L})",
+            MarkerOptions);
+
+        /// <summary>
         /// Маркер блока.
         /// </summary>
         public static Regex Block { get; } = new Regex(
@@ -97,7 +111,7 @@ namespace VTBL.AddressNormalizer.Infrastructure.Shared
             MarkerOptions);
 
         /// <summary>
-        /// Все indoor-маркеры в фиксированном порядке (12 шт.).
+        /// Все indoor-маркеры в фиксированном порядке (14 шт.).
         /// </summary>
         public static IReadOnlyList<IndoorMarkerPatternDefinition> All { get; } = new[]
         {
@@ -108,6 +122,8 @@ namespace VTBL.AddressNormalizer.Infrastructure.Shared
             new IndoorMarkerPatternDefinition(Cabinet, IndoorMarkerKind.Cabinet),
             new IndoorMarkerPatternDefinition(Floor, IndoorMarkerKind.Floor),
             new IndoorMarkerPatternDefinition(Entrance, IndoorMarkerKind.Entrance),
+            new IndoorMarkerPatternDefinition(Passage, IndoorMarkerKind.Passage),
+            new IndoorMarkerPatternDefinition(Holding, IndoorMarkerKind.Holding),
             new IndoorMarkerPatternDefinition(Block, IndoorMarkerKind.Block),
             new IndoorMarkerPatternDefinition(Section, IndoorMarkerKind.Section),
             new IndoorMarkerPatternDefinition(Workplace, IndoorMarkerKind.Workplace),

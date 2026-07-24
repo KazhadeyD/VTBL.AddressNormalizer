@@ -37,6 +37,8 @@ namespace VTBL.AddressNormalizer.Infrastructure.BuildingUnit
             Append(parts, "кв", location.Apartments);
             Append(parts, "каб", location.Cabinets);
             Append(parts, "под", location.Entrances);
+            Append(parts, "проезд", location.Passages);
+            Append(parts, "влад", location.Holdings);
             Append(parts, "блок", location.Blocks);
             Append(parts, "секц", location.Sections);
             Append(parts, "а/я", location.Mailboxes);

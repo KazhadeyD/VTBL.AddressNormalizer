@@ -32,6 +32,8 @@ namespace VTBL.AddressNormalizer.Infrastructure.BuildingUnit
             ExtractTyped(location, ApartmentRegex, location.Apartments, ref working, splitValues: true, expandNumericRanges: true);
             ExtractTyped(location, CabinetRegex, location.Cabinets, ref working, splitValues: true, expandNumericRanges: true);
             ExtractTyped(location, EntranceRegex, location.Entrances, ref working);
+            ExtractTyped(location, PassageRegex, location.Passages, ref working);
+            ExtractTyped(location, HoldingRegex, location.Holdings, ref working);
             ExtractBlockSection(location, ref working);
             ExtractTyped(location, BlockRegex, location.Blocks, ref working);
             ExtractTyped(location, SectionRegex, location.Sections, ref working);

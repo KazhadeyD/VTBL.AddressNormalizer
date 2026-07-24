@@ -67,6 +67,28 @@ namespace VTBL.AddressNormalizer.Infrastructure.BuildingUnit
             RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Compiled);
 
         /// <summary>
+        /// Проезд: «ПРОЕЗД 1», «ПР-Д 1», «1-й проезд».
+        /// </summary>
+        /// <remarks>
+        /// <para>Маркер: <c>ПРОЕЗД</c> или <c>ПР-Д</c>; номер после маркера или порядковый перед ним.</para>
+        /// <para>Заполняет <see cref="BuildingUnitLocation.Passages"/>.</para>
+        /// </remarks>
+        private static readonly Regex PassageRegex = new Regex(
+            @"(?<!\p{L})(?:(?:ПРОЕЗД|ПР-Д)\.?\s*(?<v>\d[\d\w\-/]*)|(?<v>\d+)\s*-\s*[ЙЯ]\s+(?:ПРОЕЗД|ПР-Д))",
+            RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Compiled);
+
+        /// <summary>
+        /// Владение: «ВЛАДЕНИЕ 1», «ВЛАД 1», «ВЛ. 1».
+        /// </summary>
+        /// <remarks>
+        /// <para>Маркер: <c>ВЛАДЕНИЕ</c>, <c>ВЛАД</c> или <c>ВЛ.</c>; номер после маркера.</para>
+        /// <para>Заполняет <see cref="BuildingUnitLocation.Holdings"/>.</para>
+        /// </remarks>
+        private static readonly Regex HoldingRegex = new Regex(
+            @"(?<!\p{L})(?:ВЛАДЕНИЕ|ВЛАД(?!\p{L})|ВЛ)\.?\s*(?<v>\d[\d\w\-/]*)",
+            RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Compiled);
+
+        /// <summary>
         /// Составной маркер «БЛОК-СЕКЦИЯ» с одним номером.
         /// </summary>
         /// <remarks>

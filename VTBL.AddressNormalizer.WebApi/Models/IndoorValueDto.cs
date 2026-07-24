@@ -58,6 +58,16 @@ namespace VTBL.AddressNormalizer.WebApi.Models
         public IndoorCategoryDto Entrances { get; set; } = CreateEmpty();
 
         /// <summary>
+        /// Проезд (<c>name</c>: «проезд»).
+        /// </summary>
+        public IndoorCategoryDto Passages { get; set; } = CreateEmpty();
+
+        /// <summary>
+        /// Владение (<c>name</c>: «владение»).
+        /// </summary>
+        public IndoorCategoryDto Holdings { get; set; } = CreateEmpty();
+
+        /// <summary>
         /// Блок (<c>name</c>: «блок»).
         /// </summary>
         public IndoorCategoryDto Blocks { get; set; } = CreateEmpty();
