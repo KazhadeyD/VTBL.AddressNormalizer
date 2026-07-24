@@ -28,8 +28,8 @@ namespace VTBL.AddressNormalizer.WebApi.Controllers
         /// Нормализация indoor/unit-строки.
         /// </summary>
         /// <remarks>
-        /// Использует <c>IBuildingUnitNormalizer</c>: структурированный <c>indoorValue</c>
-        /// (все категории с русским name и values), каноническая строка и SHA256-hash.
+        /// Использует Parse → ToCanonical → SHA256: структурированный <c>indoorValue</c>
+        /// (все категории с русским name и values), top-level канон и hash.
         ///
         /// Пример:
         ///

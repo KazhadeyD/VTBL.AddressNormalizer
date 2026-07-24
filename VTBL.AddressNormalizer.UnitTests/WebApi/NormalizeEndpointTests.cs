@@ -60,7 +60,9 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
             var split = AddressNormalizerTestHost.BuildingLocationExtractor.ExtractSplit(source);
             var outdoorCanonical = AddressNormalizerTestHost.BuildingAddressCanonicalizer.ToCanonical(split.Outdoor);
             var expectedHash = AddressNormalizerTestHost.Hash.ComputeSha256(outdoorCanonical);
-            var unit = AddressNormalizerTestHost.Normalizer.Normalize(split.Indoor);
+            var unitLocation = AddressNormalizerTestHost.Parser.Parse(split.Indoor);
+            var unitCanonical = AddressNormalizerTestHost.Canonicalizer.ToCanonical(unitLocation);
+            var unitHash = AddressNormalizerTestHost.Hash.ComputeSha256(unitCanonical);
 
             Assert.NotNull(dto);
             Assert.Equal(source, dto.Source);
@@ -73,7 +75,7 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
             Assert.Equal(expectedHash, dto.Value.DadataOutdoor.Hash);
 
             AssertAll17IndoorCategoriesPresent(dto.Value.IndoorValue);
-            Assert.Equal(unit.Hash, dto.Value.IndoorValue.Hash);
+            Assert.Equal(unitHash, dto.Value.IndoorValue.Hash);
             Assert.Contains("89", dto.Value.IndoorValue.Apartments.Values);
             Assert.Equal("квартира", dto.Value.IndoorValue.Apartments.Name);
         }

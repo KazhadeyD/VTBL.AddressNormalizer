@@ -30,7 +30,6 @@ namespace VTBL.AddressNormalizer.UnitTests.Composition
 
             Assert.NotNull(provider.GetRequiredService<IBuildingUnitParser>());
             Assert.NotNull(provider.GetRequiredService<IBuildingUnitCanonicalizer>());
-            Assert.NotNull(provider.GetRequiredService<IBuildingUnitNormalizer>());
             Assert.NotNull(provider.GetRequiredService<IBuildingUnitClassifier>());
             Assert.NotNull(provider.GetRequiredService<ICanonicalHash>());
             Assert.NotNull(provider.GetRequiredService<IBuildingLocationExtractor>());

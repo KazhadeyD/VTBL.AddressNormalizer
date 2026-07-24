@@ -24,7 +24,8 @@ namespace VTBL.AddressNormalizer.WebApi.Services
         private readonly ILogger<AddressNormalizationService> _logger;
         private readonly IBuildingLocationExtractor _locationExtractor;
         private readonly IBuildingAddressCanonicalizer _addressCanonicalizer;
-        private readonly IBuildingUnitNormalizer _unitNormalizer;
+        private readonly IBuildingUnitParser _unitParser;
+        private readonly IBuildingUnitCanonicalizer _unitCanonicalizer;
         private readonly ICanonicalHash _canonicalHash;
 
         /// <summary>
@@ -34,13 +35,15 @@ namespace VTBL.AddressNormalizer.WebApi.Services
             ILogger<AddressNormalizationService> logger,
             IBuildingLocationExtractor locationExtractor,
             IBuildingAddressCanonicalizer addressCanonicalizer,
-            IBuildingUnitNormalizer unitNormalizer,
+            IBuildingUnitParser unitParser,
+            IBuildingUnitCanonicalizer unitCanonicalizer,
             ICanonicalHash canonicalHash)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _locationExtractor = locationExtractor ?? throw new ArgumentNullException(nameof(locationExtractor));
             _addressCanonicalizer = addressCanonicalizer ?? throw new ArgumentNullException(nameof(addressCanonicalizer));
-            _unitNormalizer = unitNormalizer ?? throw new ArgumentNullException(nameof(unitNormalizer));
+            _unitParser = unitParser ?? throw new ArgumentNullException(nameof(unitParser));
+            _unitCanonicalizer = unitCanonicalizer ?? throw new ArgumentNullException(nameof(unitCanonicalizer));
             _canonicalHash = canonicalHash ?? throw new ArgumentNullException(nameof(canonicalHash));
         }
 
@@ -58,15 +61,15 @@ namespace VTBL.AddressNormalizer.WebApi.Services
             _logger.LogInformation("Запущена нормализация unit");
             EnsureValidSource(source);
 
-            var unit = _unitNormalizer.Normalize(source);
-            var indoor = IndoorValueMapper.ToIndoorValueDto(unit.Location);
-            indoor.Hash = unit.Hash;
+            var (location, canonical, hash) = NormalizeUnitCore(source);
+            var indoor = IndoorValueMapper.ToIndoorValueDto(location);
+            indoor.Hash = hash;
             return new UnitNormalizeResult
             {
                 Source = source,
                 IndoorValue = indoor,
-                Canonical = unit.Canonical,
-                Hash = unit.Hash
+                Canonical = canonical,
+                Hash = hash
             };
         }
 
@@ -196,10 +199,10 @@ namespace VTBL.AddressNormalizer.WebApi.Services
         {
             var split = _locationExtractor.ExtractSplit(source);
             var outdoorCanonical = _addressCanonicalizer.ToCanonical(split.Outdoor);
-            var hash = _canonicalHash.ComputeSha256(outdoorCanonical);
-            var unit = _unitNormalizer.Normalize(split.Indoor);
-            var indoor = IndoorValueMapper.ToIndoorValueDto(unit.Location);
-            indoor.Hash = unit.Hash;
+            var outdoorHash = _canonicalHash.ComputeSha256(outdoorCanonical);
+            var (location, _, indoorHash) = NormalizeUnitCore(split.Indoor);
+            var indoor = IndoorValueMapper.ToIndoorValueDto(location);
+            indoor.Hash = indoorHash;
 
             return new NormalizeValueDto
             {
@@ -207,12 +210,20 @@ namespace VTBL.AddressNormalizer.WebApi.Services
                 {
                     Extracted = split.Outdoor,
                     OutdoorCanonical = outdoorCanonical,
-                    Hash = hash,
+                    Hash = outdoorHash,
                     FiasId = null,
                     Dadata = null
                 },
                 IndoorValue = indoor
             };
+        }
+
+        private (BuildingUnitLocation Location, string Canonical, string Hash) NormalizeUnitCore(string source)
+        {
+            var location = _unitParser.Parse(source);
+            var canonical = _unitCanonicalizer.ToCanonical(location);
+            var hash = _canonicalHash.ComputeSha256(canonical);
+            return (location, canonical, hash);
         }
 
         private void EnsureValidSource(string source)

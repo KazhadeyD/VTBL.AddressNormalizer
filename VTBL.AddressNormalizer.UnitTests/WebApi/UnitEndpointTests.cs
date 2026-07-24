@@ -33,13 +33,15 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
 
             var body = await response.Content.ReadAsStringAsync();
             var dto = JsonSerializer.Deserialize<UnitNormalizeResponse>(body, WebApiTestFixture.JsonOptions);
-            var expected = AddressNormalizerTestHost.Normalizer.Normalize(source);
+            var location = AddressNormalizerTestHost.Parser.Parse(source);
+            var expectedCanonical = AddressNormalizerTestHost.Canonicalizer.ToCanonical(location);
+            var expectedHash = AddressNormalizerTestHost.Hash.ComputeSha256(expectedCanonical);
 
             Assert.NotNull(dto);
             Assert.Equal(source, dto.Source);
-            Assert.Equal(expected.Canonical, dto.Canonical);
-            Assert.Equal(expected.Hash, dto.Hash);
-            Assert.Equal(expected.Hash, dto.IndoorValue.Hash);
+            Assert.Equal(expectedCanonical, dto.Canonical);
+            Assert.Equal(expectedHash, dto.Hash);
+            Assert.Equal(expectedHash, dto.IndoorValue.Hash);
             Assert.Contains("89", dto.IndoorValue.Apartments.Values);
 
             using var doc = JsonDocument.Parse(body);

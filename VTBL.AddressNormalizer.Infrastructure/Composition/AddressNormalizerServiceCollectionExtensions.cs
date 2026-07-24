@@ -31,7 +31,6 @@ namespace VTBL.AddressNormalizer.Infrastructure.Composition
             services.AddSingleton<IBuildingUnitCanonicalizer, BuildingUnitCanonicalizer>();
             services.AddSingleton<IBuildingUnitClassifier, BuildingUnitClassifier>();
             services.AddSingleton<ICanonicalHash, CanonicalHash>();
-            services.AddSingleton<IBuildingUnitNormalizer, BuildingUnitNormalizer>();
             services.AddSingleton<IBuildingLocationExtractor, BuildingLocationExtractor>();
             services.AddSingleton<IBuildingAddressCanonicalizer, BuildingAddressCanonicalizer>();
             services.AddSingleton<IBuildingAddressNormalizer, BuildingAddressNormalizer>();

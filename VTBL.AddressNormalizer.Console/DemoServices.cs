@@ -21,8 +21,14 @@ namespace VTBL.AddressNormalizer.Console
         public static IBuildingAddressNormalizer BuildingAddressNormalizer =>
             Provider.GetRequiredService<IBuildingAddressNormalizer>();
 
-        public static IBuildingUnitNormalizer BuildingUnitNormalizer =>
-            Provider.GetRequiredService<IBuildingUnitNormalizer>();
+        public static IBuildingUnitParser BuildingUnitParser =>
+            Provider.GetRequiredService<IBuildingUnitParser>();
+
+        public static IBuildingUnitCanonicalizer BuildingUnitCanonicalizer =>
+            Provider.GetRequiredService<IBuildingUnitCanonicalizer>();
+
+        public static ICanonicalHash CanonicalHash =>
+            Provider.GetRequiredService<ICanonicalHash>();
 
         public static IBuildingUnitClassifier BuildingUnitClassifier =>
             Provider.GetRequiredService<IBuildingUnitClassifier>();

@@ -1,4 +1,5 @@
 using VTBL.AddressNormalizer.Abstractions.BuildingUnit;
+using VTBL.AddressNormalizer.Abstractions.Shared;
 
 namespace VTBL.AddressNormalizer.Console
 {
@@ -9,14 +10,12 @@ namespace VTBL.AddressNormalizer.Console
     {
         private static readonly string[] Samples =
         {
-            //"пом. 35-Н, Ч.П. 1 (№ 410).",
-            //"пом. 35-Н, Ч.П. 1 (№ 410)",
             "этаж 4 кв. 31-Р,35-38, 40-42",
             "этаж 4 кв. 31-Р,[35,38], 40-42",
             "Ч.П. 1 ( 410",
             "Ч.П. 1 (№410)",
             "ком 5, этаж 3, помещ 2, кв 8",
-            "этаж второй", // учесть что этажи могут быть строками/цифрами
+            "этаж второй",
             "этаж 2",
             "второй",
             "2",
@@ -24,7 +23,6 @@ namespace VTBL.AddressNormalizer.Console
             "ЭТАЖ ЦОКОЛЬНЫЙ, ВХОД С Парадно ОФИС 1",
             "офис /ЭТАЖ 309/ТРЕТИЙ",
             "ТЕРРИТОРИЯ РЫНКА, Й КОМПЛЕКС",
-
         };
 
         /// <summary>
@@ -35,32 +33,37 @@ namespace VTBL.AddressNormalizer.Console
         {
             DemoConsoleWriter.WriteTitle("BuildingUnit — внутренние помещения");
 
-            var normalizer = DemoServices.BuildingUnitNormalizer;
+            var parser = DemoServices.BuildingUnitParser;
+            var canonicalizer = DemoServices.BuildingUnitCanonicalizer;
+            var hash = DemoServices.CanonicalHash;
             var classifier = DemoServices.BuildingUnitClassifier;
             var inputs = string.IsNullOrWhiteSpace(customInput) ? Samples : new[] { customInput };
 
             for (var i = 0; i < inputs.Length; i++)
             {
-                PrintResult(normalizer, classifier, inputs[i], i + 1, inputs.Length);
+                PrintResult(parser, canonicalizer, hash, classifier, inputs[i], i + 1, inputs.Length);
             }
         }
 
         private static void PrintResult(
-            IBuildingUnitNormalizer normalizer,
+            IBuildingUnitParser parser,
+            IBuildingUnitCanonicalizer canonicalizer,
+            ICanonicalHash hash,
             IBuildingUnitClassifier classifier,
             string input,
             int index,
             int total)
         {
-            var result = normalizer.Normalize(input);
+            var location = parser.Parse(input);
+            var canonical = canonicalizer.ToCanonical(location);
+            var digest = hash.ComputeSha256(canonical);
             var category = classifier.Classify(input);
 
             DemoConsoleWriter.WriteSampleHeader(index, total);
-            DemoConsoleWriter.WriteField("IN", result.Original);
+            DemoConsoleWriter.WriteField("IN", input);
             DemoConsoleWriter.WriteField("CATEGORY", category.ToString());
-            DemoConsoleWriter.WriteField("CANONICAL", result.Canonical);
-            DemoConsoleWriter.WriteField("JSON", result.Json);
-            DemoConsoleWriter.WriteHashPreview(result.Hash);
+            DemoConsoleWriter.WriteField("CANONICAL", canonical);
+            DemoConsoleWriter.WriteHashPreview(digest);
         }
     }
 }

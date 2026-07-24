@@ -38,7 +38,7 @@ namespace VTBL.AddressNormalizer.WebApi.Controllers
         /// Разбирает полную адресную строку:
         /// 1. extract outdoor / indoor через ядро (`ExtractSplit`);
         /// 2. канонизация outdoor + SHA256 → `dadataOutdoor`;
-        /// 3. нормализация indoor через `IBuildingUnitNormalizer` → `indoorValue` (категории + hash канона);
+        /// 3. indoor: Parse → ToCanonical → SHA256 → `indoorValue` (категории + hash);
         /// 4. `dadataOutdoor.fiasId` и `dadataOutdoor.dadata` в v1 всегда `null`.
         ///
         /// Пример запроса:

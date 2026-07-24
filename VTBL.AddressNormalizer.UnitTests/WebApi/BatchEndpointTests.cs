@@ -141,8 +141,10 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
             Assert.Equal(split.Outdoor, value.DadataOutdoor.Extracted);
             Assert.Equal(outdoorCanonical, value.DadataOutdoor.OutdoorCanonical);
             Assert.Equal(expectedHash, value.DadataOutdoor.Hash);
-            var unit = AddressNormalizerTestHost.Normalizer.Normalize(split.Indoor);
-            Assert.Equal(unit.Hash, value.IndoorValue.Hash);
+            var unitLocation = AddressNormalizerTestHost.Parser.Parse(split.Indoor);
+            var unitCanonical = AddressNormalizerTestHost.Canonicalizer.ToCanonical(unitLocation);
+            var unitHash = AddressNormalizerTestHost.Hash.ComputeSha256(unitCanonical);
+            Assert.Equal(unitHash, value.IndoorValue.Hash);
         }
 
         private static async Task AssertErrorBodyWithoutItemsAsync(HttpResponseMessage response)
@@ -216,7 +218,8 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
                             NullLogger<AddressNormalizationService>.Instance,
                             AddressNormalizerTestHost.BuildingLocationExtractor,
                             AddressNormalizerTestHost.BuildingAddressCanonicalizer,
-                            AddressNormalizerTestHost.Normalizer,
+                            AddressNormalizerTestHost.Parser,
+                            AddressNormalizerTestHost.Canonicalizer,
                             AddressNormalizerTestHost.Hash));
                 });
             }
@@ -228,9 +231,10 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
                 Microsoft.Extensions.Logging.ILogger<AddressNormalizationService> logger,
                 VTBL.AddressNormalizer.Abstractions.BuildingAddress.IBuildingLocationExtractor locationExtractor,
                 VTBL.AddressNormalizer.Abstractions.BuildingAddress.IBuildingAddressCanonicalizer addressCanonicalizer,
-                VTBL.AddressNormalizer.Abstractions.BuildingUnit.IBuildingUnitNormalizer unitNormalizer,
+                VTBL.AddressNormalizer.Abstractions.BuildingUnit.IBuildingUnitParser unitParser,
+                VTBL.AddressNormalizer.Abstractions.BuildingUnit.IBuildingUnitCanonicalizer unitCanonicalizer,
                 VTBL.AddressNormalizer.Abstractions.Shared.ICanonicalHash canonicalHash)
-                : base(logger, locationExtractor, addressCanonicalizer, unitNormalizer, canonicalHash)
+                : base(logger, locationExtractor, addressCanonicalizer, unitParser, unitCanonicalizer, canonicalHash)
             {
             }
 

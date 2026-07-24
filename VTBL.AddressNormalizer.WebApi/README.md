@@ -103,7 +103,7 @@ curl -X POST http://localhost:5000/api/v1/normalize `
 
 ```
 Controllers/   → IAddressNormalizationService
-Services/      → оркестрация (ExtractSplit, canonical, hash, unit, mapper)
+Services/      → оркестрация (ExtractSplit, Parse, ToCanonical, hash, mapper)
 Mapping/       → BuildingUnitLocation → IndoorValueDto
 Middleware/    → Correlation Id, RequestLogging
 Filters/       → ApiExceptionFilter (500)
@@ -118,7 +118,7 @@ DI (`Startup`): `AddAddressNormalizerLogging()` → `AddAddressNormalizer()` →
 - `RequestLoggingMiddleware` — HTTP method/path/status/duration (skip `/health`, `/swagger`)
 - `AddressNormalizationService` — старт операций, Warning на валидацию
 - `ApiExceptionFilter` — Error на unhandled
-- Ядро — Debug через `Abstractions.Logging.ILogger` (категория `VTBL.AddressNormalizer`)
+- Ядро — Debug через `Abstractions.Logging.ILogger` на `ExtractSplit` (категория `VTBL.AddressNormalizer`)
 
 ## Тесты
 

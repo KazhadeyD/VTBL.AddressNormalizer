@@ -1,7 +1,5 @@
-using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 using VTBL.AddressNormalizer.Abstractions.BuildingAddress;
-using VTBL.AddressNormalizer.Abstractions.BuildingUnit;
 using VTBL.AddressNormalizer.Abstractions.Logging;
 using VTBL.AddressNormalizer.Infrastructure.Composition;
 using Xunit;
@@ -53,24 +51,6 @@ namespace VTBL.AddressNormalizer.UnitTests.Logging
             Assert.Contains("есть маркер дома=да", msg);
             Assert.DoesNotContain("Сухонская", msg);
             Assert.DoesNotContain("кв 89", msg);
-        }
-
-        [Fact]
-        public void BuildingUnitNormalize_LogsDebugSummaryWithoutAddressText()
-        {
-            var capturing = new CapturingLogger();
-            var provider = BuildWithLogger(capturing);
-            var normalizer = provider.GetRequiredService<IBuildingUnitNormalizer>();
-
-            normalizer.Normalize("КВАРТИРА 837");
-
-            var msg = capturing.DebugMessages.Single(m => m.StartsWith("BuildingUnit.Normalize:"));
-            Assert.Contains("длина входа=", msg);
-            Assert.Contains("длина канона=", msg);
-            Assert.Contains("заполнено категорий=", msg);
-            Assert.Contains("неразобрано=", msg);
-            Assert.DoesNotContain("837", msg);
-            Assert.DoesNotContain("КВАРТИРА", msg);
         }
 
         private static ServiceProvider BuildWithLogger(CoreLogger logger)

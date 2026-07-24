@@ -23,7 +23,8 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
                 NullLogger<AddressNormalizationService>.Instance,
                 AddressNormalizerTestHost.BuildingLocationExtractor,
                 AddressNormalizerTestHost.BuildingAddressCanonicalizer,
-                AddressNormalizerTestHost.Normalizer,
+                AddressNormalizerTestHost.Parser,
+                AddressNormalizerTestHost.Canonicalizer,
                 AddressNormalizerTestHost.Hash);
 
         [Theory]
@@ -50,8 +51,10 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
             Assert.Equal(split.Outdoor, value.DadataOutdoor.Extracted);
             Assert.Equal(outdoorCanonical, value.DadataOutdoor.OutdoorCanonical);
             Assert.Equal(expectedHash, value.DadataOutdoor.Hash);
-            var unit = AddressNormalizerTestHost.Normalizer.Normalize(split.Indoor);
-            Assert.Equal(unit.Hash, value.IndoorValue.Hash);
+            var unitLocation = AddressNormalizerTestHost.Parser.Parse(split.Indoor);
+            var unitCanonical = AddressNormalizerTestHost.Canonicalizer.ToCanonical(unitLocation);
+            var unitHash = AddressNormalizerTestHost.Hash.ComputeSha256(unitCanonical);
+            Assert.Equal(unitHash, value.IndoorValue.Hash);
             Assert.Contains("89", value.IndoorValue.Apartments.Values);
             Assert.Equal("квартира", value.IndoorValue.Apartments.Name);
         }
@@ -91,11 +94,13 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
             const string source = "кв 10";
 
             var result = _sut.NormalizeUnit(source);
-            var expected = AddressNormalizerTestHost.Normalizer.Normalize(source);
+            var location = AddressNormalizerTestHost.Parser.Parse(source);
+            var expectedCanonical = AddressNormalizerTestHost.Canonicalizer.ToCanonical(location);
+            var expectedHash = AddressNormalizerTestHost.Hash.ComputeSha256(expectedCanonical);
 
-            Assert.Equal(expected.Canonical, result.Canonical);
-            Assert.Equal(expected.Hash, result.Hash);
-            Assert.Equal(expected.Hash, result.IndoorValue.Hash);
+            Assert.Equal(expectedCanonical, result.Canonical);
+            Assert.Equal(expectedHash, result.Hash);
+            Assert.Equal(expectedHash, result.IndoorValue.Hash);
             Assert.Contains("10", result.IndoorValue.Apartments.Values);
         }
 
@@ -251,7 +256,8 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
                     NullLogger<AddressNormalizationService>.Instance,
                     AddressNormalizerTestHost.BuildingLocationExtractor,
                     AddressNormalizerTestHost.BuildingAddressCanonicalizer,
-                    AddressNormalizerTestHost.Normalizer,
+                    AddressNormalizerTestHost.Parser,
+                    AddressNormalizerTestHost.Canonicalizer,
                     AddressNormalizerTestHost.Hash)
             {
             }
