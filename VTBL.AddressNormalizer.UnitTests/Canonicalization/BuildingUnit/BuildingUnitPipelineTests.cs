@@ -117,6 +117,18 @@ namespace VTBL.AddressNormalizer.UnitTests.Canonicalization.BuildingUnit
             Assert.Equal("влад:1", canonical);
         }
 
+        [Theory]
+        [InlineData("склад 1")]
+        [InlineData("скл. 1")]
+        public void Storage_ParsesToStorageCategory(string input)
+        {
+            var location = AddressNormalizerTestHost.Parser.Parse(input);
+            var canonical = AddressNormalizerTestHost.Canonicalizer.ToCanonical(location);
+
+            Assert.Contains("1", location.Storages);
+            Assert.Equal("склад:1", canonical);
+        }
+
         private static (string Canonical, string Hash) Canonicalize(string input)
         {
             var location = AddressNormalizerTestHost.Parser.Parse(input);

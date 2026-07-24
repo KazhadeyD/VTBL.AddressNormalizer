@@ -28,6 +28,7 @@ namespace VTBL.AddressNormalizer.WebApi.Mapping
             public const string Entrances = "подъезд";
             public const string Passages = "проезд";
             public const string Holdings = "владение";
+            public const string Storages = "склад";
             public const string Blocks = "блок";
             public const string Sections = "секция";
             public const string Mailboxes = "а/я";
@@ -60,6 +61,7 @@ namespace VTBL.AddressNormalizer.WebApi.Mapping
                 Entrances = Category(CategoryNames.Entrances, src.Entrances),
                 Passages = Category(CategoryNames.Passages, src.Passages),
                 Holdings = Category(CategoryNames.Holdings, src.Holdings),
+                Storages = Category(CategoryNames.Storages, src.Storages),
                 Blocks = Category(CategoryNames.Blocks, src.Blocks),
                 Sections = Category(CategoryNames.Sections, src.Sections),
                 Mailboxes = Category(CategoryNames.Mailboxes, src.Mailboxes),

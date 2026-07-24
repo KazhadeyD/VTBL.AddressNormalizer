@@ -11,9 +11,9 @@ namespace VTBL.AddressNormalizer.UnitTests.BuildingAddress
     public class IndoorMarkerPatternsContractTests
     {
         [Fact]
-        public void All_ContainsFourteenMarkers()
+        public void All_ContainsFifteenMarkers()
         {
-            Assert.Equal(14, IndoorMarkerPatterns.All.Count);
+            Assert.Equal(15, IndoorMarkerPatterns.All.Count);
         }
 
         [Fact]
@@ -30,6 +30,7 @@ namespace VTBL.AddressNormalizer.UnitTests.BuildingAddress
             Assert.Contains(IndoorMarkerKind.Entrance, kinds);
             Assert.Contains(IndoorMarkerKind.Passage, kinds);
             Assert.Contains(IndoorMarkerKind.Holding, kinds);
+            Assert.Contains(IndoorMarkerKind.Storage, kinds);
             Assert.Contains(IndoorMarkerKind.Block, kinds);
             Assert.Contains(IndoorMarkerKind.Section, kinds);
             Assert.Contains(IndoorMarkerKind.Workplace, kinds);

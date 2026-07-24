@@ -78,6 +78,12 @@ namespace VTBL.AddressNormalizer.Abstractions.BuildingUnit
         public IList<string> Holdings { get; } = new List<string>();
 
         /// <summary>
+        /// Склад («СКЛАД», «СКЛ.»).
+        /// Канон: <c>склад:</c>.
+        /// </summary>
+        public IList<string> Storages { get; } = new List<string>();
+
+        /// <summary>
         /// Блок («БЛОК»; для «БЛОК-СЕКЦИЯ» дублируется в <see cref="Sections"/>).
         /// Канон: <c>блок:</c>.
         /// </summary>

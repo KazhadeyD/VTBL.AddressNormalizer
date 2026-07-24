@@ -27,6 +27,7 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
             nameof(IndoorValueDto.Entrances),
             nameof(IndoorValueDto.Passages),
             nameof(IndoorValueDto.Holdings),
+            nameof(IndoorValueDto.Storages),
             nameof(IndoorValueDto.Blocks),
             nameof(IndoorValueDto.Sections),
             nameof(IndoorValueDto.Mailboxes),
@@ -76,7 +77,7 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
             Assert.Equal(outdoorCanonical, dto.Value.DadataOutdoor.OutdoorCanonical);
             Assert.Equal(expectedHash, dto.Value.DadataOutdoor.Hash);
 
-            AssertAll19IndoorCategoriesPresent(dto.Value.IndoorValue);
+            AssertAll20IndoorCategoriesPresent(dto.Value.IndoorValue);
             Assert.Equal(unitHash, dto.Value.IndoorValue.Hash);
             Assert.Contains("89", dto.Value.IndoorValue.Apartments.Values);
             Assert.Equal("квартира", dto.Value.IndoorValue.Apartments.Name);
@@ -96,7 +97,7 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
             var dto = JsonSerializer.Deserialize<NormalizeResponse>(body, WebApiTestFixture.JsonOptions);
 
             Assert.NotNull(dto?.Value?.IndoorValue);
-            AssertAll19IndoorCategoriesPresent(dto.Value.IndoorValue);
+            AssertAll20IndoorCategoriesPresent(dto.Value.IndoorValue);
             AssertAllIndoorValuesEmpty(dto.Value.IndoorValue);
         }
 
@@ -116,14 +117,14 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
             Assert.False(string.IsNullOrWhiteSpace(error.GetString()));
         }
 
-        private static void AssertAll19IndoorCategoriesPresent(IndoorValueDto indoor)
+        private static void AssertAll20IndoorCategoriesPresent(IndoorValueDto indoor)
         {
             var properties = typeof(IndoorValueDto)
                 .GetProperties(BindingFlags.Public | BindingFlags.Instance)
                 .Where(p => p.PropertyType == typeof(IndoorCategoryDto))
                 .ToArray();
 
-            Assert.Equal(19, properties.Length);
+            Assert.Equal(20, properties.Length);
             Assert.Equal(
                 IndoorCategoryPropertyNames.OrderBy(x => x),
                 properties.Select(p => p.Name).OrderBy(x => x));

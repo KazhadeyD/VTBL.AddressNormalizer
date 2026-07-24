@@ -68,6 +68,11 @@ namespace VTBL.AddressNormalizer.WebApi.Models
         public IndoorCategoryDto Holdings { get; set; } = CreateEmpty();
 
         /// <summary>
+        /// Склад (<c>name</c>: «склад»).
+        /// </summary>
+        public IndoorCategoryDto Storages { get; set; } = CreateEmpty();
+
+        /// <summary>
         /// Блок (<c>name</c>: «блок»).
         /// </summary>
         public IndoorCategoryDto Blocks { get; set; } = CreateEmpty();

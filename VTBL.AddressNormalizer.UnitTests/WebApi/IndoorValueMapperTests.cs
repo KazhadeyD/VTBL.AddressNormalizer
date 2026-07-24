@@ -26,6 +26,7 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
             nameof(IndoorValueDto.Entrances),
             nameof(IndoorValueDto.Passages),
             nameof(IndoorValueDto.Holdings),
+            nameof(IndoorValueDto.Storages),
             nameof(IndoorValueDto.Blocks),
             nameof(IndoorValueDto.Sections),
             nameof(IndoorValueDto.Mailboxes),
@@ -37,11 +38,11 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
         };
 
         [Fact]
-        public void ToIndoorValueDto_EmptyLocation_ReturnsAll19CategoriesWithNamesAndEmptyValues()
+        public void ToIndoorValueDto_EmptyLocation_ReturnsAll20CategoriesWithNamesAndEmptyValues()
         {
             var dto = IndoorValueMapper.ToIndoorValueDto(new BuildingUnitLocation());
 
-            AssertAll19CategoriesPresent(dto);
+            AssertAll20CategoriesPresent(dto);
 
             Assert.Equal(IndoorValueMapper.CategoryNames.Floors, dto.Floors.Name);
             Assert.Equal(IndoorValueMapper.CategoryNames.Premises, dto.Premises.Name);
@@ -54,6 +55,7 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
             Assert.Equal(IndoorValueMapper.CategoryNames.Entrances, dto.Entrances.Name);
             Assert.Equal(IndoorValueMapper.CategoryNames.Passages, dto.Passages.Name);
             Assert.Equal(IndoorValueMapper.CategoryNames.Holdings, dto.Holdings.Name);
+            Assert.Equal(IndoorValueMapper.CategoryNames.Storages, dto.Storages.Name);
             Assert.Equal(IndoorValueMapper.CategoryNames.Blocks, dto.Blocks.Name);
             Assert.Equal(IndoorValueMapper.CategoryNames.Sections, dto.Sections.Name);
             Assert.Equal(IndoorValueMapper.CategoryNames.Mailboxes, dto.Mailboxes.Name);
@@ -90,18 +92,18 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
         {
             var dto = IndoorValueMapper.ToIndoorValueDto(null);
 
-            AssertAll19CategoriesPresent(dto);
+            AssertAll20CategoriesPresent(dto);
             Assert.Empty(dto.Apartments.Values);
         }
 
-        private static void AssertAll19CategoriesPresent(IndoorValueDto dto)
+        private static void AssertAll20CategoriesPresent(IndoorValueDto dto)
         {
             var properties = typeof(IndoorValueDto)
                 .GetProperties(BindingFlags.Public | BindingFlags.Instance)
                 .Where(p => p.PropertyType == typeof(IndoorCategoryDto))
                 .ToArray();
 
-            Assert.Equal(19, properties.Length);
+            Assert.Equal(20, properties.Length);
             Assert.Equal(ExpectedPropertyNames.OrderBy(x => x), properties.Select(p => p.Name).OrderBy(x => x));
 
             foreach (var property in properties)

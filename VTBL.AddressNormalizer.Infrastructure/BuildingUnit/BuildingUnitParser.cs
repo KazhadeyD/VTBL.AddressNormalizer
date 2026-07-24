@@ -34,6 +34,7 @@ namespace VTBL.AddressNormalizer.Infrastructure.BuildingUnit
             ExtractTyped(location, EntranceRegex, location.Entrances, ref working);
             ExtractTyped(location, PassageRegex, location.Passages, ref working);
             ExtractTyped(location, HoldingRegex, location.Holdings, ref working);
+            ExtractTyped(location, StorageRegex, location.Storages, ref working);
             ExtractBlockSection(location, ref working);
             ExtractTyped(location, BlockRegex, location.Blocks, ref working);
             ExtractTyped(location, SectionRegex, location.Sections, ref working);

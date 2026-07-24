@@ -39,6 +39,8 @@ namespace VTBL.AddressNormalizer.UnitTests.Canonicalization.BuildingUnit
             new object[] { "владение 1", "влад:1" },
             new object[] { "влад 1", "влад:1" },
             new object[] { "вл. 1", "влад:1" },
+            new object[] { "склад 1", "склад:1" },
+            new object[] { "скл. 1", "склад:1" },
         };
     }
 }

@@ -276,6 +276,7 @@ namespace VTBL.AddressNormalizer.WebApi.Swagger
             ["entrances"] = EmptyCategory("подъезд"),
             ["passages"] = EmptyCategory("проезд"),
             ["holdings"] = EmptyCategory("владение"),
+            ["storages"] = EmptyCategory("склад"),
             ["blocks"] = EmptyCategory("блок"),
             ["sections"] = EmptyCategory("секция"),
             ["mailboxes"] = EmptyCategory("а/я"),

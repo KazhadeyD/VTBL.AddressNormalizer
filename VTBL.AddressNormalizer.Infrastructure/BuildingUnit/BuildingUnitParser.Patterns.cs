@@ -89,6 +89,17 @@ namespace VTBL.AddressNormalizer.Infrastructure.BuildingUnit
             RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Compiled);
 
         /// <summary>
+        /// Склад: «СКЛАД 1», «СКЛ. 1».
+        /// </summary>
+        /// <remarks>
+        /// <para>Маркер: <c>СКЛАД</c> или <c>СКЛ.</c>; номер после маркера.</para>
+        /// <para>Заполняет <see cref="BuildingUnitLocation.Storages"/>.</para>
+        /// </remarks>
+        private static readonly Regex StorageRegex = new Regex(
+            @"(?<!\p{L})(?:СКЛАД|СКЛ)\.?\s*(?<v>\d[\d\w\-/]*)",
+            RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Compiled);
+
+        /// <summary>
         /// Составной маркер «БЛОК-СЕКЦИЯ» с одним номером.
         /// </summary>
         /// <remarks>

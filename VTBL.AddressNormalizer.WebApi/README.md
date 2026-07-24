@@ -77,7 +77,7 @@ Unhandled → **500** `{ "error": "..." }` (`ApiExceptionFilter`).
 | `dadataOutdoor.fiasId` | Заглушка v1 = `null` |
 | `dadataOutdoor.dadata` | Заглушка v1 = `null` |
 | `indoorValue.hash` | SHA256 unit-канона (`ToCanonical`) |
-| `indoorValue.*` | 19 категорий `{ name, values }` |
+| `indoorValue.*` | 20 категорий `{ name, values }` |
 
 **Unit** (`/api/v1/unit/normalize`): те же категории в `indoorValue` + top-level `canonical` и `hash` (дублирует `indoorValue.hash`).
 

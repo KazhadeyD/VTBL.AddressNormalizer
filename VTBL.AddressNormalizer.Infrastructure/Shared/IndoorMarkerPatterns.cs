@@ -90,6 +90,13 @@ namespace VTBL.AddressNormalizer.Infrastructure.Shared
             MarkerOptions);
 
         /// <summary>
+        /// Маркер склада («склад», «скл.»).
+        /// </summary>
+        public static Regex Storage { get; } = new Regex(
+            @"(?<!\p{L})(?:СКЛАД|СКЛ\.?)(?!\p{L})",
+            MarkerOptions);
+
+        /// <summary>
         /// Маркер блока.
         /// </summary>
         public static Regex Block { get; } = new Regex(
@@ -111,7 +118,7 @@ namespace VTBL.AddressNormalizer.Infrastructure.Shared
             MarkerOptions);
 
         /// <summary>
-        /// Все indoor-маркеры в фиксированном порядке (14 шт.).
+        /// Все indoor-маркеры в фиксированном порядке (15 шт.).
         /// </summary>
         public static IReadOnlyList<IndoorMarkerPatternDefinition> All { get; } = new[]
         {
@@ -124,6 +131,7 @@ namespace VTBL.AddressNormalizer.Infrastructure.Shared
             new IndoorMarkerPatternDefinition(Entrance, IndoorMarkerKind.Entrance),
             new IndoorMarkerPatternDefinition(Passage, IndoorMarkerKind.Passage),
             new IndoorMarkerPatternDefinition(Holding, IndoorMarkerKind.Holding),
+            new IndoorMarkerPatternDefinition(Storage, IndoorMarkerKind.Storage),
             new IndoorMarkerPatternDefinition(Block, IndoorMarkerKind.Block),
             new IndoorMarkerPatternDefinition(Section, IndoorMarkerKind.Section),
             new IndoorMarkerPatternDefinition(Workplace, IndoorMarkerKind.Workplace),

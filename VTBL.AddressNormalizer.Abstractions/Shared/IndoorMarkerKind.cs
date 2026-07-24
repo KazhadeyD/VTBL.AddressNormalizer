@@ -51,6 +51,11 @@ namespace VTBL.AddressNormalizer.Abstractions.Shared
         Holding,
 
         /// <summary>
+        /// Склад (склад, скл.).
+        /// </summary>
+        Storage,
+
+        /// <summary>
         /// Блок.
         /// </summary>
         Block,

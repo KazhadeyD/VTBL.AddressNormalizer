@@ -78,6 +78,7 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
                     value.IndoorValue.Entrances.Values,
                     value.IndoorValue.Passages.Values,
                     value.IndoorValue.Holdings.Values,
+                    value.IndoorValue.Storages.Values,
                     value.IndoorValue.Blocks.Values,
                     value.IndoorValue.Sections.Values,
                     value.IndoorValue.Mailboxes.Values,
