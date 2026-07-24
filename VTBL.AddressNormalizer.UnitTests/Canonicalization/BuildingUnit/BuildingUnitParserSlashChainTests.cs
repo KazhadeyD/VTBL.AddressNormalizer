@@ -17,7 +17,7 @@ namespace VTBL.AddressNormalizer.UnitTests.Canonicalization.BuildingUnit
         [Theory]
         [InlineData("ЭТ/ПОМ 1/40", "1", "40")]
         [InlineData("ЭТАЖ/ПОМЕЩ. 11/97", "11", "97")]
-        [InlineData("ЭТ./ПОМЕЩ. 1/VIII", "1", "VIII")]
+        [InlineData("ЭТ./ПОМЕЩ. 1/VIII", "1", "8")]
         [InlineData("ЭТАЖ/КОМ. 5/118", "5", "118")]
         public void Parse_TwoHeaderChain_MapsFloorAndSecondType(
             string input,
@@ -34,8 +34,8 @@ namespace VTBL.AddressNormalizer.UnitTests.Canonicalization.BuildingUnit
         }
 
         [Theory]
-        [InlineData("эт/пом/ком 4/I/30", "4", "I", "30")]
-        [InlineData("ЭТ/ПОМ/КОМ 13/XXI/13", "13", "XXI", "13")]
+        [InlineData("эт/пом/ком 4/I/30", "4", "1", "30")]
+        [InlineData("ЭТ/ПОМ/КОМ 13/XXI/13", "13", "21", "13")]
         public void Parse_ThreeHeaderChain_MapsFloorPremiseAndRoom(
             string input,
             string floor,
@@ -56,7 +56,7 @@ namespace VTBL.AddressNormalizer.UnitTests.Canonicalization.BuildingUnit
             var location = AddressNormalizerTestHost.Parser.Parse("ЭТАЖ/ПОМЕЩ.-КОМ./ОФИС 5/XII-8/34");
 
             Assert.Equal(new[] { "5" }, location.Floors);
-            Assert.Equal(new[] { "XII" }, location.Premises);
+            Assert.Equal(new[] { "12" }, location.Premises);
             Assert.Equal(new[] { "8" }, location.Rooms);
             Assert.Equal(new[] { "34" }, location.Offices);
             Assert.Empty(location.RawCodes);
@@ -69,7 +69,7 @@ namespace VTBL.AddressNormalizer.UnitTests.Canonicalization.BuildingUnit
             var location = AddressNormalizerTestHost.Parser.Parse("ЭТАЖ/ПОМЕЩ. АНТРЕСОЛЬ 2/I КОМ./ОФИС 17/Е9Е");
 
             Assert.Contains("АНТРЕСОЛЬ 2", location.Floors);
-            Assert.Contains("I", location.Premises);
+            Assert.Contains("1", location.Premises);
             Assert.Contains("17", location.Rooms);
             Assert.Contains("Е9Е", location.Offices);
             Assert.Empty(location.RawCodes);
@@ -81,7 +81,7 @@ namespace VTBL.AddressNormalizer.UnitTests.Canonicalization.BuildingUnit
             var location = AddressNormalizerTestHost.Parser.Parse("ЭТАЖ/ПОМЕЩ АНТРЕСОЛЬ 2/I, КОМ./ОФИС 17/Д7Н");
 
             Assert.Contains("АНТРЕСОЛЬ 2", location.Floors);
-            Assert.Contains("I", location.Premises);
+            Assert.Contains("1", location.Premises);
             Assert.Contains("17", location.Rooms);
             Assert.Contains("Д7Н", location.Offices);
             Assert.Empty(location.RawCodes);
@@ -93,7 +93,7 @@ namespace VTBL.AddressNormalizer.UnitTests.Canonicalization.BuildingUnit
             var location = AddressNormalizerTestHost.Parser.Parse("ЭТ./ПОМЕЩ. 0/II КОМ./ОФИС 1/24");
 
             Assert.Equal(new[] { "0" }, location.Floors);
-            Assert.Equal(new[] { "II" }, location.Premises);
+            Assert.Equal(new[] { "2" }, location.Premises);
             Assert.Equal(new[] { "1" }, location.Rooms);
             Assert.Equal(new[] { "24" }, location.Offices);
             Assert.Empty(location.RawCodes);
@@ -105,7 +105,7 @@ namespace VTBL.AddressNormalizer.UnitTests.Canonicalization.BuildingUnit
             var location = AddressNormalizerTestHost.Parser.Parse("ЭТАЖ/ПОМЕЩ. ПОДВАЛ/I, КОМ./ОФИС 6/151");
 
             Assert.Contains("ПОДВАЛ", location.Floors);
-            Assert.Contains("I", location.Premises);
+            Assert.Contains("1", location.Premises);
             Assert.Contains("6", location.Rooms);
             Assert.Contains("151", location.Offices);
         }
@@ -148,7 +148,7 @@ namespace VTBL.AddressNormalizer.UnitTests.Canonicalization.BuildingUnit
             var location = AddressNormalizerTestHost.Parser.Parse("эт/пом/ком 4/I/30,31,32");
 
             Assert.Contains("4", location.Floors);
-            Assert.Contains("I", location.Premises);
+            Assert.Contains("1", location.Premises);
             Assert.Equal(new[] { "30", "31", "32" }, location.Rooms.OrderBy(r => r).ToArray());
         }
 
@@ -157,7 +157,7 @@ namespace VTBL.AddressNormalizer.UnitTests.Canonicalization.BuildingUnit
         {
             var location = AddressNormalizerTestHost.Parser.Parse("АНТРЕСОЛЬ 2 ПОМ/КОМ/ОФ I/17/Е5П");
 
-            Assert.Contains("I", location.Premises);
+            Assert.Contains("1", location.Premises);
             Assert.Contains("17", location.Rooms);
             Assert.Contains("Е5П", location.Offices);
             Assert.Contains("2", location.RawCodes);
@@ -187,9 +187,9 @@ namespace VTBL.AddressNormalizer.UnitTests.Canonicalization.BuildingUnit
         }
 
         [Theory]
-        [InlineData("ЭТАЖ/ПОМЕЩ. АНТРЕСОЛЬ 2/I КОМ./ОФИС 17/Е9Е", "эт:антресоль 2|пом:i|ком:17|оф:е9е")]
-        [InlineData("ЭТ./ПОМЕЩ. 0/II КОМ./ОФИС 1/24", "эт:0|пом:ii|ком:1|оф:24")]
-        [InlineData("ЭТАЖ/ПОМЕЩ.-КОМ./ОФИС 5/XII-8/34", "эт:5|пом:xii|ком:8|оф:34")]
+        [InlineData("ЭТАЖ/ПОМЕЩ. АНТРЕСОЛЬ 2/I КОМ./ОФИС 17/Е9Е", "эт:антресоль 2|пом:1|ком:17|оф:е9е")]
+        [InlineData("ЭТ./ПОМЕЩ. 0/II КОМ./ОФИС 1/24", "эт:0|пом:2|ком:1|оф:24")]
+        [InlineData("ЭТАЖ/ПОМЕЩ.-КОМ./ОФИС 5/XII-8/34", "эт:5|пом:12|ком:8|оф:34")]
         [InlineData("ЭТ/ПОМ 1/40", "эт:1|пом:40")]
         public void Parse_SlashChainCases_ProduceExpectedCanonical(string input, string expectedCanonical)
         {

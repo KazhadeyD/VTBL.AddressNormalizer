@@ -116,7 +116,7 @@ namespace VTBL.AddressNormalizer.UnitTests.Canonicalization.BuildingUnit
             var location = AddressNormalizerTestHost.Parser.Parse("ЭТАЖ/ПОМЕЩ. АНТРЕСОЛЬ 2/I КОМ./ОФИС 17/Е9Е");
 
             Assert.Contains("АНТРЕСОЛЬ 2", location.Floors);
-            Assert.Contains("I", location.Premises);
+            Assert.Contains("1", location.Premises);
             Assert.Contains("17", location.Rooms);
             Assert.Contains("Е9Е", location.Offices);
             Assert.Empty(location.RawCodes);
@@ -129,7 +129,7 @@ namespace VTBL.AddressNormalizer.UnitTests.Canonicalization.BuildingUnit
             var location = AddressNormalizerTestHost.Parser.Parse("ЭТАЖ/ПОМЕЩ.-КОМ./ОФИС 5/XII-8/34");
 
             Assert.Contains("5", location.Floors);
-            Assert.Contains("XII", location.Premises);
+            Assert.Contains("12", location.Premises);
             Assert.Contains("8", location.Rooms);
             Assert.Contains("34", location.Offices);
             Assert.Empty(location.RawCodes);
@@ -154,7 +154,7 @@ namespace VTBL.AddressNormalizer.UnitTests.Canonicalization.BuildingUnit
             var location = AddressNormalizerTestHost.Parser.Parse("эт/пом/ком 4/I/30,31,32");
 
             Assert.Contains("4", location.Floors);
-            Assert.Contains("I", location.Premises);
+            Assert.Contains("1", location.Premises);
             Assert.Contains("30", location.Rooms);
             Assert.Contains("31", location.Rooms);
             Assert.Contains("32", location.Rooms);

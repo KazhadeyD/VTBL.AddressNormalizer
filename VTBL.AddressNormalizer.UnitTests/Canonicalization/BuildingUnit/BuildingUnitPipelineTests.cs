@@ -65,7 +65,7 @@ namespace VTBL.AddressNormalizer.UnitTests.Canonicalization.BuildingUnit
             var location = AddressNormalizerTestHost.Parser.Parse("ЭТ./ПОМЕЩ. 0/II КОМ./ОФИС 1/24");
 
             Assert.Equal("0", location.Floors[0]);
-            Assert.Equal("II", location.Premises[0]);
+            Assert.Equal("2", location.Premises[0]);
             Assert.Equal("1", location.Rooms[0]);
             Assert.Equal("24", location.Offices[0]);
         }

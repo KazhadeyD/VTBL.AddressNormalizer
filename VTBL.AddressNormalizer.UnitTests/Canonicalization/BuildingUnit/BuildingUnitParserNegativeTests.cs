@@ -30,7 +30,7 @@ namespace VTBL.AddressNormalizer.UnitTests.Canonicalization.BuildingUnit
                 new[] { nameof(BuildingUnitLocation.Rooms) },
             };
 
-            // КОМ / КОМНАТА / К. → Rooms; ShortRoom «К. 5-20» без expand
+            // КОМ / КОМНАТА / КО / К. → Rooms; ShortRoom «К. 5-20» без expand
             yield return new object[]
             {
                 "КОМ 10",
@@ -41,6 +41,12 @@ namespace VTBL.AddressNormalizer.UnitTests.Canonicalization.BuildingUnit
             {
                 "КОМНАТА 136",
                 "ком:136",
+                new[] { nameof(BuildingUnitLocation.Apartments) },
+            };
+            yield return new object[]
+            {
+                "КО 10",
+                "ком:10",
                 new[] { nameof(BuildingUnitLocation.Apartments) },
             };
             yield return new object[]

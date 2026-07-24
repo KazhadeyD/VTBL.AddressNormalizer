@@ -40,6 +40,7 @@ namespace VTBL.AddressNormalizer.Infrastructure.BuildingUnit
             ExtractTypedSegments(location, ref working);
             ExtractRemainingRawCodes(location, working);
             ExtractRanges(location);
+            BuildingUnitRomanNumeralNormalizer.Normalize(location);
 
             return location;
         }
@@ -219,11 +220,13 @@ namespace VTBL.AddressNormalizer.Infrastructure.BuildingUnit
         private static string NormalizeSlashHeader(string raw)
         {
             var token = WhitespaceCollapseRegex.Replace(raw.ToUpperInvariant(), string.Empty).TrimEnd('.');
-            if (token.StartsWith("ЭТАЖ", StringComparison.Ordinal) || token == "ЭТ")
+            if (token.StartsWith("ЭТАЖ", StringComparison.Ordinal) || token == "ЭТ" || token == "Э")
                 return "ЭТ";
             if (token.StartsWith("ПОМЕЩ", StringComparison.Ordinal) || token.StartsWith("ПОМ", StringComparison.Ordinal))
                 return "ПОМЕЩ";
-            if (token.StartsWith("КОМН", StringComparison.Ordinal) || token.StartsWith("КОМ", StringComparison.Ordinal))
+            if (token.StartsWith("КОМН", StringComparison.Ordinal) ||
+                token.StartsWith("КОМ", StringComparison.Ordinal) ||
+                token == "КО")
                 return "КОМ";
             if (token.StartsWith("ОФИС", StringComparison.Ordinal) || token.StartsWith("ОФ", StringComparison.Ordinal))
                 return "ОФИС";

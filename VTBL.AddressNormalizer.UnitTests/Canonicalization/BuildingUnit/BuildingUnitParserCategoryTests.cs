@@ -11,6 +11,8 @@ namespace VTBL.AddressNormalizer.UnitTests.Canonicalization.BuildingUnit
     {
         [Theory]
         [InlineData("ЭТ 3", "эт:3")]
+        [InlineData("Эт 3", "эт:3")]
+        [InlineData("Э 3", "эт:3")]
         public void Parse_CategorySmoke_ReturnsExpectedCanonical(
             string input,
             string expectedCanonical)
@@ -23,6 +25,8 @@ namespace VTBL.AddressNormalizer.UnitTests.Canonicalization.BuildingUnit
         public static IEnumerable<object[]> FloorCases()
         {
             yield return new object[] { "ЭТАЖ 4-Я", "эт:4" };
+            yield return new object[] { "Э 4", "эт:4" };
+            yield return new object[] { "э. 2", "эт:2" };
             yield return new object[] { "ПОДВАЛ", "эт:подвал" };
             yield return new object[] { "ЭТАЖ 1 ПОДВАЛ", "эт:1|эт:подвал" };
             // BareFloorWordRegex снимает голое «ЭТАЖ» перед ОФИС.

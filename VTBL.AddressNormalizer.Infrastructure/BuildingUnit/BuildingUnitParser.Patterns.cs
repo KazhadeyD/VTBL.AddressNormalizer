@@ -80,7 +80,7 @@ namespace VTBL.AddressNormalizer.Infrastructure.BuildingUnit
         /// Шаблон токена типа в slash-цепочке (этаж, пом, ком, оф, каб, раб.м).
         /// </summary>
         private const string SlashChainHeaderTokenPattern =
-            @"ЭТАЖ|ЭТ\.?|ПОМЕЩЕНИЯ|ПОМЕЩЕНИЕ|ПОМЕЩ\.?|ПОМ\.?|КОМНАТА|КОМН\.?|КОМ\.?|ОФИС|ОФ\.?|КАБИНЕТ|КАБ\.?|РАБ\.?\s*М(?:ЕСТО)?";
+            @"ЭТАЖ|ЭТ\.?|Э\.?|ПОМЕЩЕНИЯ|ПОМЕЩЕНИЕ|ПОМЕЩ\.?|ПОМ\.?|КОМНАТА|КОМН\.?|КОМ\.?|КО\.?|ОФИС|ОФ\.?|КАБИНЕТ|КАБ\.?|РАБ\.?\s*М(?:ЕСТО)?";
 
         /// <summary>
         /// Цепочка заголовков slash-нотации без значений: «ЭТАЖ/ПОМЕЩ.», «КОМ./ОФИС».
@@ -212,23 +212,10 @@ namespace VTBL.AddressNormalizer.Infrastructure.BuildingUnit
             RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Compiled);
 
         /// <summary>
-        /// Этаж: «ЭТАЖ 4», «ЭТ 3», «ЭТАЖ 1-Й» (после препроцессинга — «ЭТАЖ 1»).
+        /// Этаж: «ЭТАЖ 4», «ЭТ 3», «Э 2», «Эт 1».
         /// </summary>
-        /// <remarks>
-        /// <para>Паттерн: <c>(?&lt;!\p{L})(?:ЭТАЖ|ЭТ(?!\p{L}))\s*(?&lt;v&gt;[\d\w\-]+(?:/[\d\w\-]+)*)(?!\p{L})</c></para>
-        /// <list type="bullet">
-        /// <item><description><c>(?&lt;!\p{L})</c> — граница слова слева (не буква Unicode).</description></item>
-        /// <item><description><c>ЭТАЖ|ЭТ(?!\p{L})</c> — полное «ЭТАЖ» или «ЭТ» не как префикс другого слова
-        /// (исключает ложные срабатывания внутри длинных токенов).</description></item>
-        /// <item><description><c>\s*</c> — пробелы между меткой и значением.</description></item>
-        /// <item><description><c>(?&lt;v&gt;[\d\w\-]+(?:/[\d\w\-]+)*)</c> — значение: цифры, буквы, дефис;
-        /// допускается составное через «/» (например «2/3»).</description></item>
-        /// <item><description><c>(?!\p{L})</c> — граница слова справа.</description></item>
-        /// </list>
-        /// <para>Примеры: «ЭТАЖ 4» → 4, «ЭТ 3» → 3. Не матчит «ПОДВАЛЬНЫЙ» и slash-формат «ЭТ./».</para>
-        /// </remarks>
         private static readonly Regex FloorTypedRegex = new Regex(
-            @"(?<!\p{L})(?:ЭТАЖ|ЭТ(?!\p{L}))\s*(?<v>[\d\w\-]+(?:/[\d\w\-]+)*)(?!\p{L})",
+            $@"(?<!\p{{L}})(?:{IndoorMarkerLexemes.FloorMarker})\.?\s*(?<v>[\d\w\-]+(?:/[\d\w\-]+)*)(?!\p{{L}})",
             RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
         /// <summary>
@@ -239,7 +226,7 @@ namespace VTBL.AddressNormalizer.Infrastructure.BuildingUnit
             RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
         /// <summary>
-        /// Комната: «КОМНАТА 136», «КОМ 35», «комн.9»; несколько номеров через «;» или «,».
+        /// Комната: «КОМНАТА 136», «КОМ 35», «КО 10», «комн.9»; несколько номеров через «;» или «,».
         /// </summary>
         private static readonly Regex RoomTypedRegex = new Regex(
             $@"(?<!\p{{L}})(?:{IndoorMarkerLexemes.Room})(?!\./)(?!\p{{L}})\.?\s*(?<v>[\d\w\.\-/;]+)(?!\p{{L}})",

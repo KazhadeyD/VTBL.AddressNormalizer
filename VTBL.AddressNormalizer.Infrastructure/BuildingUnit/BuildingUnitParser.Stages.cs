@@ -225,6 +225,7 @@ namespace VTBL.AddressNormalizer.Infrastructure.BuildingUnit
         private static bool IsIgnorableToken(string token)
         {
             return token == "ЭТ"
+                || token == "Э"
                 || token == "ПОМ"
                 || token == "КОМ"
                 || token == "ОФ"
@@ -233,7 +234,8 @@ namespace VTBL.AddressNormalizer.Infrastructure.BuildingUnit
                 || token == "ЭТАЖ"
                 || token == "ПОМЕЩЕНИЕ"
                 || token == "КОМНАТА"
-                || token == "КОМН";
+                || token == "КОМН"
+                || token == "КО";
         }
 
         /// <summary>

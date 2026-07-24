@@ -21,7 +21,7 @@ namespace VTBL.AddressNormalizer.Abstractions.Shared
         Premise,
 
         /// <summary>
-        /// Комната (ком, комн, комната).
+        /// Комната (ком, ко, комн, комната).
         /// </summary>
         Room,
 
@@ -31,7 +31,7 @@ namespace VTBL.AddressNormalizer.Abstractions.Shared
         Cabinet,
 
         /// <summary>
-        /// Этаж (эт, этаж).
+        /// Этаж (э, эт, этаж).
         /// </summary>
         Floor,
 

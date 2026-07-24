@@ -10,7 +10,7 @@
 
 ```powershell
 dotnet build VTBL.AddressNormalizer.sln
-dotnet test VTBL.AddressNormalizer.sln          # 330 тестов
+dotnet test VTBL.AddressNormalizer.sln          # 365 тестов
 dotnet run --project VTBL.AddressNormalizer.Console
 dotnet run --project VTBL.AddressNormalizer.Console -- address
 dotnet run --project VTBL.AddressNormalizer.Console -- unit "КВАРТИРА 837"
@@ -150,7 +150,7 @@ var split = sp.GetRequiredService<IBuildingLocationExtractor>()
 dotnet test VTBL.AddressNormalizer.sln
 ```
 
-**330** теста (24.07.2026): BuildingUnit (полное покрытие категорий parser — category/negative/gaps/slash/corpus; проезд/владение/склад), BuildingAddress, composition DI, WebApi HTTP E2E.
+**365** теста (24.07.2026): BuildingUnit (полное покрытие категорий parser — category/negative/gaps/slash/corpus; римские→арабские; маркеры КО/Э; проезд/владение/склад), BuildingAddress, composition DI, WebApi HTTP E2E.
 
 ## MSSQL (Docker, опционально)
 
@@ -162,6 +162,21 @@ docker compose up -d
 `localhost:1435`, БД `AddressNormalizer`, user `sa`. Init: `docker/mssql/init/`.
 
 ## История изменений
+
+### 24.07.2026 — маркеры этажа «Э» / «Эт»
+
+- `FloorMarker`: `ЭТАЖ|ЭТ|Э` (граница слова); `Эт` = `ЭТ` (IgnoreCase)
+- Формы `Э 4`, `э. 2`, `Эт 2` → `эт:…`; extract/slash-header/ignorable token обновлены
+
+### 24.07.2026 — маркер комнаты «КО»
+
+- Лексема Room: `КОМНАТА|КОМН|КОМ|КО` (граница слова — `КОМ` не режется)
+- Формы `КО 10`, `ко. 7` → `ком:10` / `ком:7`; extract/slash-header/ignorable token обновлены
+
+### 24.07.2026 — римские номера → арабские после Parse
+
+- `BuildingUnitRomanNumeralNormalizer`: чистый токен `I…M` → арабская строка; смеси (`X-10`, `2X`, `IA`, `XIБ`) не трогаются
+- Вызов в конце `BuildingUnitParser.Parse`; Literas/Notes/Unparsed/Ranges без конвертации
 
 ### 24.07.2026 — очистка технических ID в BuildingUnit-тестах
 

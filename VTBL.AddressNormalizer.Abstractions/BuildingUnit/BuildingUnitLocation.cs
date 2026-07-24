@@ -12,7 +12,7 @@ namespace VTBL.AddressNormalizer.Abstractions.BuildingUnit
     public sealed class BuildingUnitLocation
     {
         /// <summary>
-        /// Этаж («ЭТ», «ЭТАЖ», slash-цепочки).
+        /// Этаж («Э», «ЭТ», «ЭТАЖ», slash-цепочки).
         /// Канон: <c>эт:</c>.
         /// </summary>
         public IList<string> Floors { get; } = new List<string>();
@@ -24,7 +24,7 @@ namespace VTBL.AddressNormalizer.Abstractions.BuildingUnit
         public IList<string> Premises { get; } = new List<string>();
 
         /// <summary>
-        /// Комната («КОМ», «КОМН.», «КОМНАТА», «К.»).
+        /// Комната («КОМ», «КО», «КОМН.», «КОМНАТА», «К.»).
         /// Канон: <c>ком:</c>.
         /// </summary>
         public IList<string> Rooms { get; } = new List<string>();

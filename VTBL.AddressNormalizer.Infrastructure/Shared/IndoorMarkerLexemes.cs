@@ -32,9 +32,14 @@ namespace VTBL.AddressNormalizer.Infrastructure.Shared
         public const string Mailbox = @"А/Я";
         public const string Litera = @"ЛИТЕ?РА?";
 
-        public const string Floor = @"ЭТАЖ|ЭТ(?!\p{L})|ПОДВАЛЬНЫЙ|ПОДВАЛ|ЦОКОЛЬНЫЙ|ЦОКОЛ";
+        public const string Floor = @"ЭТАЖ|ЭТ(?!\p{L})|Э(?!\p{L})|ПОДВАЛЬНЫЙ|ПОДВАЛ|ЦОКОЛЬНЫЙ|ЦОКОЛ";
+
+        /// <summary>
+        /// Только маркер этажа (без подвал/цоколь) для typed-regex парсера.
+        /// </summary>
+        public const string FloorMarker = @"ЭТАЖ|ЭТ(?!\p{L})|Э(?!\p{L})";
         public const string Premise = @"НЕЖ\.?\s*ПОМ|ПОМЕЩЕНИЯ|ПОМЕЩЕНИЕ|ПОМЕЩ|ПОМ";
-        public const string Room = @"КОМНАТА|КОМН|КОМ";
+        public const string Room = @"КОМНАТА|КОМН|КОМ|КО";
         public const string ShortRoom = @"К\.";
         public const string Workplace = @"РАБ\.?\s*М";
         public const string Part = @"Ч\.?\s*П";
