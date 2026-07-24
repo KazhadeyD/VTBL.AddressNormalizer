@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using VTBL.AddressNormalizer.Abstractions.BuildingUnit;
 using VTBL.AddressNormalizer.UnitTests;
@@ -6,7 +8,10 @@ using Xunit;
 namespace VTBL.AddressNormalizer.UnitTests.Canonicalization.BuildingUnit
 {
     /// <summary>
-    /// Тесты slash-цепочек (<see cref="BuildingUnitParser"/> / ExtractSlashChains).
+    /// Слой C: slash / dot-slash chain (<see cref="BuildingUnitParser"/> / ExtractSlashChains).
+    /// UC-04 / architecture §2.1 Slash; review MINOR §3 (А1 early≠header).
+    /// Чек-лист: 6 chain-типов + dot-slash — существующие Facts; А1 — <see cref="Parse_EarlyMarkers_AreNotSlashChainHeaders"/>;
+    /// G06 КАБ/РАБ в dot-slash — Doc, task 3.2 / KnownGapTests, не здесь.
     /// </summary>
     public class BuildingUnitParserSlashChainTests
     {
@@ -193,6 +198,102 @@ namespace VTBL.AddressNormalizer.UnitTests.Canonicalization.BuildingUnit
             var canonical = AddressNormalizerTestHost.Canonicalizer.ToCanonical(location);
 
             Assert.Equal(expectedCanonical, canonical);
+        }
+
+        /// <summary>
+        /// UC-04 А1 / early≠slash-header (architecture_review MINOR §3; ТЗ UC-04).
+        /// Без паттерна multi-header «ТИП/ТИП values»: early/typed путь, одна коллекция, один префикс канона;
+        /// slash-typed и RawCodes пусты. Field-focused — не копия SampleCases.
+        /// </summary>
+        [Theory]
+        [InlineData("проезд 1", "проезд:1", nameof(BuildingUnitLocation.Passages), "1")]
+        [InlineData("влад 1", "влад:1", nameof(BuildingUnitLocation.Holdings), "1")]
+        [InlineData("склад 1", "склад:1", nameof(BuildingUnitLocation.Storages), "1")]
+        public void Parse_EarlyMarkers_AreNotSlashChainHeaders(
+            string input,
+            string expectedCanonical,
+            string filledCollectionName,
+            string expectedValue)
+        {
+            var location = AddressNormalizerTestHost.Parser.Parse(input);
+            var canonical = AddressNormalizerTestHost.Canonicalizer.ToCanonical(location);
+
+            Assert.Equal(expectedCanonical, canonical);
+            Assert.DoesNotContain("|", canonical);
+
+            var filled = GetLocationCollection(location, filledCollectionName);
+            Assert.Equal(new[] { expectedValue }, filled.ToArray());
+
+            // Slash-chain артефакты не появляются на early-only строке.
+            Assert.Empty(location.Floors);
+            Assert.Empty(location.Premises);
+            Assert.Empty(location.Rooms);
+            Assert.Empty(location.Offices);
+            Assert.Empty(location.Cabinets);
+            Assert.Empty(location.Workplaces);
+            Assert.Empty(location.RawCodes);
+
+            AssertOtherEarlyCollectionsEmpty(location, filledCollectionName);
+        }
+
+        /// <summary>
+        /// Сверка чек-листа UC-04 (слой C): якоря методов-доказательств без дубля матрицы.
+        /// | Требование | Статус | Доказательство |
+        /// | Chain ЭТ, ПОМЕЩ, КОМ, ОФИС, КАБ, РАБ | C | TwoHeader / ThreeHeader / PremiseOrCabinet |
+        /// | Dot-slash ЭТ\|ПОМЕЩ\|КОМ\|ОФИС | C | Parse_DotSlashTwoChainsInOneString_MapsAllFourTypes |
+        /// | А1 early≠header | C | Parse_EarlyMarkers_AreNotSlashChainHeaders |
+        /// | G06 КАБ/РАБ в dot-slash | Doc | KnownGapTests.Gap_G06_Doc (не здесь) |
+        /// </summary>
+        [Fact]
+        public void Slash_Checklist_Uc04_CoveredByExistingCases()
+        {
+            var type = typeof(BuildingUnitParserSlashChainTests);
+
+            Assert.NotNull(type.GetMethod(nameof(Parse_TwoHeaderChain_MapsFloorAndSecondType)));
+            Assert.NotNull(type.GetMethod(nameof(Parse_ThreeHeaderChain_MapsFloorPremiseAndRoom)));
+            Assert.NotNull(type.GetMethod(nameof(Parse_TwoHeaderPremiseOrCabinetChain_MapsBothValues)));
+            Assert.NotNull(type.GetMethod(nameof(Parse_DotSlashTwoChainsInOneString_MapsAllFourTypes)));
+            Assert.NotNull(type.GetMethod(nameof(Parse_EarlyMarkers_AreNotSlashChainHeaders)));
+        }
+
+        private static void AssertOtherEarlyCollectionsEmpty(
+            BuildingUnitLocation location,
+            string filledCollectionName)
+        {
+            var earlyNames = new[]
+            {
+                nameof(BuildingUnitLocation.Passages),
+                nameof(BuildingUnitLocation.Holdings),
+                nameof(BuildingUnitLocation.Storages),
+                nameof(BuildingUnitLocation.Apartments),
+                nameof(BuildingUnitLocation.Entrances),
+            };
+
+            foreach (var name in earlyNames)
+            {
+                if (string.Equals(name, filledCollectionName, StringComparison.Ordinal))
+                    continue;
+
+                Assert.Empty(GetLocationCollection(location, name));
+            }
+        }
+
+        private static IList<string> GetLocationCollection(
+            BuildingUnitLocation location,
+            string collectionName)
+        {
+            return collectionName switch
+            {
+                nameof(BuildingUnitLocation.Passages) => location.Passages,
+                nameof(BuildingUnitLocation.Holdings) => location.Holdings,
+                nameof(BuildingUnitLocation.Storages) => location.Storages,
+                nameof(BuildingUnitLocation.Apartments) => location.Apartments,
+                nameof(BuildingUnitLocation.Entrances) => location.Entrances,
+                _ => throw new ArgumentOutOfRangeException(
+                    nameof(collectionName),
+                    collectionName,
+                    "Ожидалась early-коллекция А1."),
+            };
         }
     }
 }

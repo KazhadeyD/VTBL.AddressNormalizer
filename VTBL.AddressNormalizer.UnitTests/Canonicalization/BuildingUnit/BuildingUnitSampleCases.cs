@@ -41,6 +41,11 @@ namespace VTBL.AddressNormalizer.UnitTests.Canonicalization.BuildingUnit
             new object[] { "вл. 1", "влад:1" },
             new object[] { "склад 1", "склад:1" },
             new object[] { "скл. 1", "склад:1" },
+            new object[] { "КВ. 10", "кв:10" },
+            new object[] { "КАБИНЕТ 69", "каб:69" },
+            new object[] { "ПОДЪЕЗД 5", "под:5" },
+            new object[] { "А/Я 165", "а/я:165" },
+            new object[] { "74 - 82", "диап:74-82" },
         };
     }
 }
