@@ -10,7 +10,7 @@
 
 ```powershell
 dotnet build VTBL.AddressNormalizer.sln
-dotnet test VTBL.AddressNormalizer.sln          # 365 тестов
+dotnet test VTBL.AddressNormalizer.sln          # 369 тестов
 dotnet run --project VTBL.AddressNormalizer.Console
 dotnet run --project VTBL.AddressNormalizer.Console -- address
 dotnet run --project VTBL.AddressNormalizer.Console -- unit "КВАРТИРА 837"
@@ -150,7 +150,7 @@ var split = sp.GetRequiredService<IBuildingLocationExtractor>()
 dotnet test VTBL.AddressNormalizer.sln
 ```
 
-**365** теста (24.07.2026): BuildingUnit (полное покрытие категорий parser — category/negative/gaps/slash/corpus; римские→арабские; маркеры КО/Э; проезд/владение/склад), BuildingAddress, composition DI, WebApi HTTP E2E.
+**369** теста (24.07.2026): BuildingUnit (полное покрытие категорий parser — category/negative/gaps/slash/interleaved/corpus; римские→арабские; маркеры КО/Э; проезд/владение/склад), BuildingAddress, composition DI, WebApi HTTP E2E.
 
 ## MSSQL (Docker, опционально)
 
@@ -162,6 +162,11 @@ docker compose up -d
 `localhost:1435`, БД `AddressNormalizer`, user `sa`. Init: `docker/mssql/init/`.
 
 ## История изменений
+
+### 24.07.2026 — interleaved «помещ 3/ком 4/оф 23»
+
+- `ExtractInterleavedTypedSlash`: сегменты `маркер значение` через `/` (не путать с `ПОМ/КОМ 3/4`)
+- Пример: `эт 2 помещ 3/ком 4/оф 23` → `эт:2|пом:3|ком:4|оф:23`
 
 ### 24.07.2026 — маркеры этажа «Э» / «Эт»
 

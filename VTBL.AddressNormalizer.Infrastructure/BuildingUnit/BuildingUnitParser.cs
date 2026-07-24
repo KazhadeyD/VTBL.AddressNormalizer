@@ -35,6 +35,7 @@ namespace VTBL.AddressNormalizer.Infrastructure.BuildingUnit
 
             working = PreprocessIndoorRemainder(working);
             ExtractNotes(location, ref working);
+            ExtractInterleavedTypedSlash(location, ref working);
             ExtractSlashFormat(location, ref working);
             ExtractSpecialFloors(location, ref working);
             ExtractTypedSegments(location, ref working);

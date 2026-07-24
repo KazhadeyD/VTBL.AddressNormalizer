@@ -24,6 +24,34 @@ namespace VTBL.AddressNormalizer.Infrastructure.BuildingUnit
         }
 
         /// <summary>
+        /// Извлекает чередование «маркер значение/маркер значение» («помещ 3/ком 4/оф 23»).
+        /// </summary>
+        private static void ExtractInterleavedTypedSlash(BuildingUnitLocation location, ref string working)
+        {
+            working = InterleavedTypedSlashChainRegex.Replace(working, match =>
+            {
+                var segments = match.Value.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+                foreach (var rawSegment in segments)
+                {
+                    var segment = InterleavedTypedSlashSegmentRegex.Match(rawSegment.Trim());
+                    if (!segment.Success)
+                        continue;
+
+                    var header = NormalizeSlashHeader(segment.Groups["h"].Value);
+                    var value = NormalizeValue(segment.Groups["v"].Value);
+                    if (string.IsNullOrWhiteSpace(value))
+                        continue;
+
+                    ApplySlashTypeValue(location, header, value, SlashValueMode.Chain);
+                }
+
+                return " ";
+            });
+
+            CollapseWorking(ref working);
+        }
+
+        /// <summary>
         /// Извлекает dot-slash формат («ЭТ./ПОМЕЩ. 0/II КОМ./ОФИС 1/24»).
         /// </summary>
         private static void ExtractSlashFormat(BuildingUnitLocation location, ref string working)

@@ -118,6 +118,24 @@ namespace VTBL.AddressNormalizer.Infrastructure.BuildingUnit
             RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Compiled);
 
         /// <summary>
+        /// Чередование «маркер значение / маркер значение»: «помещ 3/ком 4/оф 23».
+        /// </summary>
+        /// <remarks>
+        /// Отличается от header-chain («ПОМ/КОМ/ОФ 3/4/23»): здесь маркер стоит перед каждым значением.
+        /// Минимум два сегмента через «/».
+        /// </remarks>
+        private static readonly Regex InterleavedTypedSlashChainRegex = new Regex(
+            $@"(?<!\p{{L}})(?:{SlashChainHeaderTokenPattern})\s*[\d\w\-]+(?:\s*/\s*(?:{SlashChainHeaderTokenPattern})\s*[\d\w\-]+)+",
+            RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Compiled);
+
+        /// <summary>
+        /// Один сегмент interleaved-цепочки: «помещ 3», «ком 4», «оф 23».
+        /// </summary>
+        private static readonly Regex InterleavedTypedSlashSegmentRegex = new Regex(
+            $@"^(?<h>{SlashChainHeaderTokenPattern})\s*(?<v>[\d\w\-]+)$",
+            RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Compiled);
+
+        /// <summary>
         /// Секция: «СЕКЦИЯ НОМЕР 2», «СЕКЦИЯ 1».
         /// </summary>
         private static readonly Regex SectionRegex = new Regex(

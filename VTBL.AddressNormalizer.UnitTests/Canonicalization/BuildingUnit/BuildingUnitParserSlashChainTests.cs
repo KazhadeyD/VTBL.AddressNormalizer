@@ -199,6 +199,17 @@ namespace VTBL.AddressNormalizer.UnitTests.Canonicalization.BuildingUnit
             Assert.Equal(expectedCanonical, canonical);
         }
 
+        [Theory]
+        [InlineData("эт 2 помещ 3/ком 4/оф 23", "эт:2|пом:3|ком:4|оф:23")]
+        [InlineData("помещ 3/ком 4/оф 23", "пом:3|ком:4|оф:23")]
+        [InlineData("ПОМ 1/КО 2/ОФИС 5", "пом:1|ком:2|оф:5")]
+        public void Parse_InterleavedMarkerValueSlash_MapsEachSegment(
+            string input,
+            string expectedCanonical)
+        {
+            BuildingUnitTestAsserts.AssertCanonical(input, expectedCanonical);
+        }
+
         /// <summary>
         /// Early-маркеры без multi-header «ТИП/ТИП values»: одна коллекция, один префикс канона;
         /// slash-typed и RawCodes пусты.
