@@ -150,17 +150,17 @@ namespace VTBL.AddressNormalizer.UnitTests.Canonicalization.BuildingUnit
                 },
             };
 
-            // Bare / optional без номера — текущее поведение
+            // Bare / optional без номера — голое слово → Notes
             yield return new object[]
             {
                 "владение",
-                "code:владение",
+                "note:владение",
                 new[] { nameof(BuildingUnitLocation.Holdings) },
             };
             yield return new object[]
             {
                 "склад",
-                "code:склад",
+                "note:склад",
                 new[] { nameof(BuildingUnitLocation.Storages) },
             };
             yield return new object[]
@@ -176,11 +176,11 @@ namespace VTBL.AddressNormalizer.UnitTests.Canonicalization.BuildingUnit
                 new[] { nameof(BuildingUnitLocation.Mailboxes) },
             };
 
-            // Ложный префикс: ShortRoom (К\.?) съедает «К» → ком:вартирный; Apartments пуст
+            // ShortRoom требует значение с цифры — «КВАРТИРНЫЙ» целиком в Notes
             yield return new object[]
             {
                 "КВАРТИРНЫЙ",
-                "ком:вартирный",
+                "note:квартирный",
                 new[] { nameof(BuildingUnitLocation.Apartments) },
             };
         }

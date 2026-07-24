@@ -251,10 +251,11 @@ namespace VTBL.AddressNormalizer.Infrastructure.BuildingUnit
             RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
         /// <summary>
-        /// Краткая запись комнаты: «К. 5-20».
+        /// Краткая запись комнаты: «К. 5-20», «К 7».
+        /// Значение только с цифры — иначе «Курьяновски»/«КВАРТИРНЫЙ» ложно уходят в ком:.
         /// </summary>
         private static readonly Regex ShortRoomTypedRegex = new Regex(
-            @"(?<!\p{L})К\.?\s*(?<v>[\d\w\-]+(?:/[\d\w\-]+)*)(?!\p{L})",
+            @"(?<!\p{L})К\.?\s*(?<v>\d[\d\w\-]*(?:/[\d\w\-]+)*)(?!\p{L})",
             RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
         /// <summary>
@@ -397,11 +398,19 @@ namespace VTBL.AddressNormalizer.Infrastructure.BuildingUnit
         /// </summary>
         /// <remarks>
         /// <para>Паттерн: <c>^[\d\w\-./]+$</c> — вся строка из цифр, букв, дефиса, точки, слэша.</para>
-        /// <para>Примеры: «659318», «27-Н», «41X1Д», «305». Не матчит фразы с пробелами — они уходят в
+        /// <para>Примеры: «659318», «27-Н», «41X1Д», «305». Чистые слова (≥2 букв) до этой проверки
+        /// уходят в <see cref="BuildingUnitLocation.Notes"/>; мусор вроде «foo+bar» — в
         /// <see cref="BuildingUnitLocation.Unparsed"/>.</para>
         /// </remarks>
         private static readonly Regex RawCodeTokenRegex = new Regex(
             @"^[\d\w\-./]+$",
+            RegexOptions.CultureInvariant | RegexOptions.Compiled);
+
+        /// <summary>
+        /// Остаточное «голое» слово (≥2 букв) → <see cref="BuildingUnitLocation.Notes"/>.
+        /// </summary>
+        private static readonly Regex LetterWordTokenRegex = new Regex(
+            @"^\p{L}{2,}$",
             RegexOptions.CultureInvariant | RegexOptions.Compiled);
     }
 }

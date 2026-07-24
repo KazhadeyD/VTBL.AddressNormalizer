@@ -10,7 +10,7 @@
 
 ```powershell
 dotnet build VTBL.AddressNormalizer.sln
-dotnet test VTBL.AddressNormalizer.sln          # 377 тестов
+dotnet test VTBL.AddressNormalizer.sln          # 381 тестов
 dotnet run --project VTBL.AddressNormalizer.Console
 dotnet run --project VTBL.AddressNormalizer.Console -- address
 dotnet run --project VTBL.AddressNormalizer.Console -- unit "КВАРТИРА 837"
@@ -162,6 +162,12 @@ docker compose up -d
 `localhost:1435`, БД `AddressNormalizer`, user `sa`. Init: `docker/mssql/init/`.
 
 ## История изменений
+
+### 24.07.2026 — голые слова → note; ShortRoom только с цифры
+
+- Остаток ≥2 букв (не римское число) → `note:`; односимвольные и коды с цифрой — по-прежнему `code:`
+- `ShortRoom` (`К`/`К.`): значение только с цифры — «Курьяновски»/«КВАРТИРНЫЙ» больше не становятся `ком:`
+- Примеры: `Курьяновски` → `note:курьяновски`; `III Курьяновски` → `code:3|note:курьяновски`
 
 ### 24.07.2026 — маркеры рабочего места (РМ / Раб. место / …)
 

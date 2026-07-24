@@ -161,7 +161,7 @@ namespace VTBL.AddressNormalizer.UnitTests.Canonicalization.BuildingUnit
             Assert.Contains("17", location.Rooms);
             Assert.Contains("Е5П", location.Offices);
             Assert.Contains("2", location.RawCodes);
-            Assert.Contains("АНТРЕСОЛЬ", location.RawCodes);
+            Assert.Contains("АНТРЕСОЛЬ", location.Notes);
         }
 
         [Theory]

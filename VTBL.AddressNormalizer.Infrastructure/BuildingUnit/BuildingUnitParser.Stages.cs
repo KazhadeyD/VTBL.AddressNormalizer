@@ -207,8 +207,12 @@ namespace VTBL.AddressNormalizer.Infrastructure.BuildingUnit
         }
 
         /// <summary>
-        /// Разбирает необработанный остаток на <see cref="BuildingUnitLocation.RawCodes"/> и <see cref="BuildingUnitLocation.Unparsed"/>.
+        /// Разбирает необработанный остаток на Notes / RawCodes / Unparsed.
         /// </summary>
+        /// <remarks>
+        /// Буквенное слово (≥2 букв), не чистое римское число → <see cref="BuildingUnitLocation.Notes"/>;
+        /// код-паттерн → <see cref="BuildingUnitLocation.RawCodes"/>; иначе → Unparsed.
+        /// </remarks>
         private static void ExtractRemainingRawCodes(BuildingUnitLocation location, string working)
         {
             if (string.IsNullOrWhiteSpace(working))
@@ -225,11 +229,25 @@ namespace VTBL.AddressNormalizer.Infrastructure.BuildingUnit
                 if (IsIgnorableToken(token))
                     continue;
 
-                if (RawCodeTokenRegex.IsMatch(token))
+                if (IsLetterNoteToken(token))
+                    location.Notes.Add(token);
+                else if (RawCodeTokenRegex.IsMatch(token))
                     location.RawCodes.Add(token);
                 else
                     location.Unparsed.Add(token);
             }
+        }
+
+        /// <summary>
+        /// «Курьяновски», «антресоль» и т.п. — в заметки; «III» остаётся кодом (потом → арабское).
+        /// </summary>
+        private static bool IsLetterNoteToken(string token)
+        {
+            if (!LetterWordTokenRegex.IsMatch(token))
+                return false;
+
+            var asArabic = BuildingUnitRomanNumeralNormalizer.ConvertIfPureRoman(token);
+            return string.Equals(asArabic, token, StringComparison.Ordinal);
         }
 
         /// <summary>

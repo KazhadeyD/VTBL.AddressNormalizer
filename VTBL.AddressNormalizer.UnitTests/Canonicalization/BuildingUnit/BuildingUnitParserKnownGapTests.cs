@@ -41,32 +41,32 @@ namespace VTBL.AddressNormalizer.UnitTests.Canonicalization.BuildingUnit
         }
 
         /// <summary>
-        /// Желаемо: эт:цокол — сейчас уходит в RawCodes.
+        /// Желаемо: эт:цокол — сейчас уходит в Notes как голое слово.
         /// </summary>
         [Fact]
-        public void Parse_Cokol_MapsToRawCode()
+        public void Parse_Cokol_MapsToNote()
         {
-            BuildingUnitTestAsserts.AssertCanonical("ЦОКОЛ", "code:цокол");
+            BuildingUnitTestAsserts.AssertCanonical("ЦОКОЛ", "note:цокол");
         }
 
         /// <summary>
-        /// Желаемо: отдельная категория нежилого помещения — сейчас «неж» в RawCodes.
+        /// Желаемо: отдельная категория нежилого помещения — сейчас «неж» в Notes.
         /// </summary>
         [Theory]
         [InlineData("НЕЖ.ПОМ 5")]
         [InlineData("НЕЖ ПОМ 5")]
-        public void Parse_NezhPom_LeavesNezhAsCode(string input)
+        public void Parse_NezhPom_LeavesNezhAsNote(string input)
         {
-            BuildingUnitTestAsserts.AssertCanonical(input, "пом:5|code:неж");
+            BuildingUnitTestAsserts.AssertCanonical(input, "пом:5|note:неж");
         }
 
         /// <summary>
         /// Желаемо: секц:1 — сокращение «СЕКЦ» сейчас не матчит SectionRegex.
         /// </summary>
         [Fact]
-        public void Parse_SekcAbbreviation_MapsToRawCodes()
+        public void Parse_SekcAbbreviation_MapsToNoteAndCode()
         {
-            BuildingUnitTestAsserts.AssertCanonical("СЕКЦ 1", "code:1|code:секц");
+            BuildingUnitTestAsserts.AssertCanonical("СЕКЦ 1", "code:1|note:секц");
         }
 
         /// <summary>

@@ -178,7 +178,10 @@ namespace VTBL.AddressNormalizer.UnitTests.Canonicalization.BuildingUnit
         {
             yield return new object[] { "ЛИТЕРА А", "лит:а" };
             // Голое «ЛИТ» лексема ЛИТЕ?РА? не матчит → RawCodes.
-            yield return new object[] { "ЛИТ Б", "code:б|code:лит" };
+            yield return new object[] { "ЛИТ Б", "code:б|note:лит" };
+            yield return new object[] { "Курьяновски", "note:курьяновски" };
+            yield return new object[] { "III Курьяновски", "code:3|note:курьяновски" };
+            yield return new object[] { "ОФИС 5 Курьяновский", "оф:5|note:курьяновский" };
             yield return new object[] { "ЛИТРА А", "лит:а" };
             yield return new object[] { "ЛИТР А", "лит:а" };
             yield return new object[] { "ЛИТЕРА А, ОФИС 1", "оф:1|лит:а" };
