@@ -5,7 +5,7 @@ using VTBL.AddressNormalizer.Abstractions.Shared;
 namespace VTBL.AddressNormalizer.Infrastructure.Shared
 {
     /// <summary>
-    /// Единый источник regex indoor-маркеров для BuildingUnitClassifier и BuildingAddress extract.
+    /// Единый источник regex indoor-маркеров для BuildingUnit parser и BuildingAddress extract.
     /// </summary>
     internal static class IndoorMarkerPatterns
     {

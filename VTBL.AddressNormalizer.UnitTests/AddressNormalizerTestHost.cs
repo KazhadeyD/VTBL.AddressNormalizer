@@ -23,9 +23,6 @@ namespace VTBL.AddressNormalizer.UnitTests
         public static IBuildingUnitCanonicalizer Canonicalizer =>
             Provider.GetRequiredService<IBuildingUnitCanonicalizer>();
 
-        public static IBuildingUnitClassifier Classifier =>
-            Provider.GetRequiredService<IBuildingUnitClassifier>();
-
         public static ICanonicalHash Hash =>
             Provider.GetRequiredService<ICanonicalHash>();
 

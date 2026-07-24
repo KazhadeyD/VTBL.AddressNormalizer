@@ -30,9 +30,6 @@ namespace VTBL.AddressNormalizer.Console
         public static ICanonicalHash CanonicalHash =>
             Provider.GetRequiredService<ICanonicalHash>();
 
-        public static IBuildingUnitClassifier BuildingUnitClassifier =>
-            Provider.GetRequiredService<IBuildingUnitClassifier>();
-
         private static IServiceProvider BuildProvider()
         {
             var services = new ServiceCollection();

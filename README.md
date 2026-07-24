@@ -10,7 +10,7 @@
 
 ```powershell
 dotnet build VTBL.AddressNormalizer.sln
-dotnet test VTBL.AddressNormalizer.sln          # 248 тестов
+dotnet test VTBL.AddressNormalizer.sln          # 230 тестов
 dotnet run --project VTBL.AddressNormalizer.Console
 dotnet run --project VTBL.AddressNormalizer.Console -- address
 dotnet run --project VTBL.AddressNormalizer.Console -- unit "КВАРТИРА 837"
@@ -93,7 +93,6 @@ flowchart LR
 | `IBuildingAddressNormalizer` | In-process: extract + readable canonical |
 | `IBuildingLocationExtractor` | `ExtractSplit` / `Extract` |
 | `IBuildingUnitParser` + `IBuildingUnitCanonicalizer` + `ICanonicalHash` | Indoor / unit: parse → canonical + SHA256 |
-| `IBuildingUnitClassifier` | Категория indoor-строки по маркерам |
 
 **Composition:** `AddAddressNormalizer()` — единый DI-граф для WebApi, Console и тестов.  
 **Логирование ядра:** `Abstractions.Logging.ILogger`. Хост регистрирует реализацию через `AddAddressNormalizerLogging()` (WebApi → MEL/NLog, Console → stdout). Иначе — `NullLogger`. Debug на границе `BuildingLocationExtractor.ExtractSplit` (без полного адреса). Сообщения логов — на русском.
@@ -148,7 +147,7 @@ var split = sp.GetRequiredService<IBuildingLocationExtractor>()
 dotnet test VTBL.AddressNormalizer.sln
 ```
 
-**248** тестов (24.07.2026): BuildingUnit (parser, slash, corpus `flats.csv`, classifier, notes), BuildingAddress, composition DI, WebApi HTTP E2E.
+**230** тестов (24.07.2026): BuildingUnit (parser, slash, corpus `flats.csv`, notes), BuildingAddress, composition DI, WebApi HTTP E2E.
 
 ## MSSQL (Docker, опционально)
 
@@ -160,6 +159,11 @@ docker compose up -d
 `localhost:1435`, БД `AddressNormalizer`, user `sa`. Init: `docker/mssql/init/`.
 
 ## История изменений
+
+### 24.07.2026 — удаление IBuildingUnitClassifier
+
+- Удалены `IBuildingUnitClassifier`, `BuildingUnitClassifier`, `BuildingUnitCategory` и тесты
+- Console-демо без CATEGORY; `IndoorMarkerPatterns` оставлены для parser/extract
 
 ### 24.07.2026 — удаление IBuildingUnitNormalizer
 

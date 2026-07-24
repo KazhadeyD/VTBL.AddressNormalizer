@@ -29,7 +29,6 @@ namespace VTBL.AddressNormalizer.Infrastructure.Composition
 
             services.AddSingleton<IBuildingUnitParser, BuildingUnitParser>();
             services.AddSingleton<IBuildingUnitCanonicalizer, BuildingUnitCanonicalizer>();
-            services.AddSingleton<IBuildingUnitClassifier, BuildingUnitClassifier>();
             services.AddSingleton<ICanonicalHash, CanonicalHash>();
             services.AddSingleton<IBuildingLocationExtractor, BuildingLocationExtractor>();
             services.AddSingleton<IBuildingAddressCanonicalizer, BuildingAddressCanonicalizer>();
