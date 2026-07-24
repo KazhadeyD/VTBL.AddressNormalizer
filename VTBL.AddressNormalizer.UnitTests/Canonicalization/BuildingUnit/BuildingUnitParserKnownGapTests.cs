@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using VTBL.AddressNormalizer.Infrastructure.BuildingUnit;
@@ -10,51 +8,29 @@ using Xunit;
 namespace VTBL.AddressNormalizer.UnitTests.Canonicalization.BuildingUnit
 {
     /// <summary>
-    /// Слой E: реестр Known Gaps и Characterization / DocumentationOnly.
+    /// Фиксация известных пробелов контракта (текущее поведение Host, без правок прода).
     /// </summary>
     public class BuildingUnitParserKnownGapTests
     {
-        [Fact]
-        public void KnownGaps_Registry_ContainsG01ThroughG06()
-        {
-            var ids = BuildingUnitKnownGaps.Ids;
-
-            Assert.Equal(6, ids.Count);
-            Assert.Equal(
-                new[]
-                {
-                    BuildingUnitKnownGaps.G01,
-                    BuildingUnitKnownGaps.G02,
-                    BuildingUnitKnownGaps.G03,
-                    BuildingUnitKnownGaps.G04,
-                    BuildingUnitKnownGaps.G05,
-                    BuildingUnitKnownGaps.G06,
-                },
-                ids.ToArray());
-        }
-
         /// <summary>
-        /// DocumentationOnly G05: Litera есть в early-маркерах парсера, но отсутствует
-        /// в outdoor <see cref="IndoorMarkerPatterns.All"/> (15 kinds; property Litera нет).
-        /// Без <c>IndoorMarkerKind.Litera</c> (символа в enum нет).
+        /// Литера есть в early-маркерах парсера, но отсутствует в outdoor
+        /// <see cref="IndoorMarkerPatterns.All"/> (15 kinds; property Litera нет).
         /// </summary>
         [Fact]
-        public void Gap_G05_Doc_LiteraAbsentFromOutdoorPatterns()
+        public void Litera_IsAbsentFromOutdoorMarkerPatterns()
         {
             Assert.Equal(15, IndoorMarkerPatterns.All.Count);
             Assert.Null(
                 typeof(IndoorMarkerPatterns).GetProperty(
                     "Litera",
                     BindingFlags.Public | BindingFlags.Static));
-            Assert.Contains(BuildingUnitKnownGaps.G05, BuildingUnitKnownGaps.Ids);
         }
 
         /// <summary>
-        /// DocumentationOnly G06: <c>SlashTypeHeaderRegex</c> не включает КАБ/РАБ
-        /// (dot-slash ограничен ЭТ|ПОМЕЩ|КОМ|ОФИС).
+        /// Dot-slash заголовки не включают КАБ/РАБ (только ЭТ|ПОМЕЩ|КОМ|ОФИС).
         /// </summary>
         [Fact]
-        public void Gap_G06_Doc_DotSlashExcludesCabRab()
+        public void DotSlashHeader_ExcludesCabinetAndWorkplace()
         {
             var pattern = GetPrivateStaticRegexPattern(
                 typeof(BuildingUnitParser),
@@ -62,79 +38,44 @@ namespace VTBL.AddressNormalizer.UnitTests.Canonicalization.BuildingUnit
 
             Assert.DoesNotContain("КАБ", pattern, StringComparison.OrdinalIgnoreCase);
             Assert.DoesNotContain("РАБ", pattern, StringComparison.OrdinalIgnoreCase);
-            Assert.Contains(BuildingUnitKnownGaps.G06, BuildingUnitKnownGaps.Ids);
         }
 
         /// <summary>
-        /// Characterization G01–G04 (UC-06 / F08, P09, N03, R05).
-        /// Assert = actual Host Parse→ToCanonical; Desired (ТЗ §6) — только в комментариях.
+        /// Желаемо: эт:цокол — сейчас уходит в RawCodes.
         /// </summary>
-        public static IEnumerable<object[]> GapCharacterizationCases()
+        [Fact]
+        public void Parse_Cokol_MapsToRawCode()
         {
-            // G01 / F08 — Desired: эт:цокол
-            yield return new object[] { BuildingUnitKnownGaps.G01, "ЦОКОЛ", "code:цокол" };
-            // G02 / P09 — Desired: неж.пом:5 (typed); оба написания маркера
-            yield return new object[] { BuildingUnitKnownGaps.G02, "НЕЖ.ПОМ 5", "пом:5|code:неж" };
-            yield return new object[] { BuildingUnitKnownGaps.G02, "НЕЖ ПОМ 5", "пом:5|code:неж" };
-            // G03 / N03 — Desired: секц:1
-            yield return new object[] { BuildingUnitKnownGaps.G03, "СЕКЦ 1", "code:1|code:секц" };
-            // G04 / R05 — Desired: ком:3|ком:4; FullTests quirk не удалять
-            yield return new object[] { BuildingUnitKnownGaps.G04, "КОМ. 3,4", "ком:3|code:4" };
+            BuildingUnitTestAsserts.AssertCanonical("ЦОКОЛ", "code:цокол");
         }
 
-        public static IEnumerable<object[]> GapG01Cases() => CasesFor(BuildingUnitKnownGaps.G01);
-
-        public static IEnumerable<object[]> GapG02Cases() => CasesFor(BuildingUnitKnownGaps.G02);
-
-        public static IEnumerable<object[]> GapG03Cases() => CasesFor(BuildingUnitKnownGaps.G03);
-
-        public static IEnumerable<object[]> GapG04Cases() => CasesFor(BuildingUnitKnownGaps.G04);
-
-        private static IEnumerable<object[]> CasesFor(string gapId) =>
-            GapCharacterizationCases().Where(row => (string)row[0] == gapId);
-
+        /// <summary>
+        /// Желаемо: отдельная категория нежилого помещения — сейчас «неж» в RawCodes.
+        /// </summary>
         [Theory]
-        [MemberData(nameof(GapG01Cases))]
-        public void Gap_G01_Cokol_MapsToRawCode(
-            string gapId,
-            string input,
-            string actualCanonical)
+        [InlineData("НЕЖ.ПОМ 5")]
+        [InlineData("НЕЖ ПОМ 5")]
+        public void Parse_NezhPom_LeavesNezhAsCode(string input)
         {
-            Assert.Equal(BuildingUnitKnownGaps.G01, gapId);
-            BuildingUnitTestAsserts.AssertCanonical(input, actualCanonical);
+            BuildingUnitTestAsserts.AssertCanonical(input, "пом:5|code:неж");
         }
 
-        [Theory]
-        [MemberData(nameof(GapG02Cases))]
-        public void Gap_G02_NezhPom_LeavesNezhAsCode(
-            string gapId,
-            string input,
-            string actualCanonical)
+        /// <summary>
+        /// Желаемо: секц:1 — сокращение «СЕКЦ» сейчас не матчит SectionRegex.
+        /// </summary>
+        [Fact]
+        public void Parse_SekcAbbreviation_MapsToRawCodes()
         {
-            Assert.Equal(BuildingUnitKnownGaps.G02, gapId);
-            BuildingUnitTestAsserts.AssertCanonical(input, actualCanonical);
+            BuildingUnitTestAsserts.AssertCanonical("СЕКЦ 1", "code:1|code:секц");
         }
 
-        [Theory]
-        [MemberData(nameof(GapG03Cases))]
-        public void Gap_G03_Sekc_MapsToRawCodes(
-            string gapId,
-            string input,
-            string actualCanonical)
+        /// <summary>
+        /// Желаемо: ком:3|ком:4 — второй номер после запятой уходит в RawCodes.
+        /// </summary>
+        [Fact]
+        public void Parse_KomCommaList_SecondValueIsRawCode()
         {
-            Assert.Equal(BuildingUnitKnownGaps.G03, gapId);
-            BuildingUnitTestAsserts.AssertCanonical(input, actualCanonical);
-        }
-
-        [Theory]
-        [MemberData(nameof(GapG04Cases))]
-        public void Gap_G04_KomComma_SecondValueIsRawCode(
-            string gapId,
-            string input,
-            string actualCanonical)
-        {
-            Assert.Equal(BuildingUnitKnownGaps.G04, gapId);
-            BuildingUnitTestAsserts.AssertCanonical(input, actualCanonical);
+            BuildingUnitTestAsserts.AssertCanonical("КОМ. 3,4", "ком:3|code:4");
         }
 
         private static string GetPrivateStaticRegexPattern(Type declaringType, string fieldName)

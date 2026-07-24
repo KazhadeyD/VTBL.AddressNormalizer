@@ -6,7 +6,7 @@ using Xunit;
 namespace VTBL.AddressNormalizer.UnitTests.Canonicalization.BuildingUnit
 {
     /// <summary>
-    /// Единый assert-path Parse → ToCanonical для BuildingUnit-тестов (слои B/D/E).
+    /// Единый assert-path Parse → ToCanonical для BuildingUnit-тестов.
     /// </summary>
     internal static class BuildingUnitTestAsserts
     {

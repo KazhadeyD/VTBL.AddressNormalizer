@@ -8,10 +8,9 @@ using Xunit;
 namespace VTBL.AddressNormalizer.UnitTests.Canonicalization.BuildingUnit
 {
     /// <summary>
-    /// Слой C: slash / dot-slash chain (<see cref="BuildingUnitParser"/> / ExtractSlashChains).
-    /// UC-04 / architecture §2.1 Slash; review MINOR §3 (А1 early≠header).
-    /// Чек-лист: 6 chain-типов + dot-slash — существующие Facts; А1 — <see cref="Parse_EarlyMarkers_AreNotSlashChainHeaders"/>;
-    /// G06 КАБ/РАБ в dot-slash — Doc, task 3.2 / KnownGapTests, не здесь.
+    /// Slash / dot-slash цепочки <see cref="BuildingUnitParser"/>.
+    /// Early-маркеры (проезд/влад/склад) не являются slash-заголовками —
+    /// см. <see cref="Parse_EarlyMarkers_AreNotSlashChainHeaders"/>.
     /// </summary>
     public class BuildingUnitParserSlashChainTests
     {
@@ -201,9 +200,8 @@ namespace VTBL.AddressNormalizer.UnitTests.Canonicalization.BuildingUnit
         }
 
         /// <summary>
-        /// UC-04 А1 / early≠slash-header (architecture_review MINOR §3; ТЗ UC-04).
-        /// Без паттерна multi-header «ТИП/ТИП values»: early/typed путь, одна коллекция, один префикс канона;
-        /// slash-typed и RawCodes пусты. Field-focused — не копия SampleCases.
+        /// Early-маркеры без multi-header «ТИП/ТИП values»: одна коллекция, один префикс канона;
+        /// slash-typed и RawCodes пусты.
         /// </summary>
         [Theory]
         [InlineData("проезд 1", "проезд:1", nameof(BuildingUnitLocation.Passages), "1")]
@@ -224,7 +222,6 @@ namespace VTBL.AddressNormalizer.UnitTests.Canonicalization.BuildingUnit
             var filled = GetLocationCollection(location, filledCollectionName);
             Assert.Equal(new[] { expectedValue }, filled.ToArray());
 
-            // Slash-chain артефакты не появляются на early-only строке.
             Assert.Empty(location.Floors);
             Assert.Empty(location.Premises);
             Assert.Empty(location.Rooms);
@@ -234,26 +231,6 @@ namespace VTBL.AddressNormalizer.UnitTests.Canonicalization.BuildingUnit
             Assert.Empty(location.RawCodes);
 
             AssertOtherEarlyCollectionsEmpty(location, filledCollectionName);
-        }
-
-        /// <summary>
-        /// Сверка чек-листа UC-04 (слой C): якоря методов-доказательств без дубля матрицы.
-        /// | Требование | Статус | Доказательство |
-        /// | Chain ЭТ, ПОМЕЩ, КОМ, ОФИС, КАБ, РАБ | C | TwoHeader / ThreeHeader / PremiseOrCabinet |
-        /// | Dot-slash ЭТ\|ПОМЕЩ\|КОМ\|ОФИС | C | Parse_DotSlashTwoChainsInOneString_MapsAllFourTypes |
-        /// | А1 early≠header | C | Parse_EarlyMarkers_AreNotSlashChainHeaders |
-        /// | G06 КАБ/РАБ в dot-slash | Doc | KnownGapTests.Gap_G06_Doc (не здесь) |
-        /// </summary>
-        [Fact]
-        public void Slash_Checklist_Uc04_CoveredByExistingCases()
-        {
-            var type = typeof(BuildingUnitParserSlashChainTests);
-
-            Assert.NotNull(type.GetMethod(nameof(Parse_TwoHeaderChain_MapsFloorAndSecondType)));
-            Assert.NotNull(type.GetMethod(nameof(Parse_ThreeHeaderChain_MapsFloorPremiseAndRoom)));
-            Assert.NotNull(type.GetMethod(nameof(Parse_TwoHeaderPremiseOrCabinetChain_MapsBothValues)));
-            Assert.NotNull(type.GetMethod(nameof(Parse_DotSlashTwoChainsInOneString_MapsAllFourTypes)));
-            Assert.NotNull(type.GetMethod(nameof(Parse_EarlyMarkers_AreNotSlashChainHeaders)));
         }
 
         private static void AssertOtherEarlyCollectionsEmpty(
