@@ -10,51 +10,30 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
     public class CorrelationIdResolverTests
     {
         [Fact]
-        public void Resolve_CorrelationPresent_TakesCorrelationOverRequest()
+        public void Resolve_RequestIdPresent_ReturnsSameValue()
         {
-            var id = CorrelationIdResolver.Resolve("corr-1", "req-1");
-            Assert.Equal("corr-1", id);
-        }
-
-        [Fact]
-        public void Resolve_OnlyRequest_TakesRequest()
-        {
-            var id = CorrelationIdResolver.Resolve(null, "req-1");
+            var id = CorrelationIdResolver.Resolve("req-1");
             Assert.Equal("req-1", id);
         }
 
         [Fact]
-        public void Resolve_EmptyCorrelation_FallsBackToRequest()
+        public void Resolve_EmptyRequestId_GeneratesGuid()
         {
-            var id = CorrelationIdResolver.Resolve(string.Empty, "req-1");
-            Assert.Equal("req-1", id);
-        }
-
-        [Fact]
-        public void Resolve_WhitespaceCorrelation_FallsBackToRequest()
-        {
-            var id = CorrelationIdResolver.Resolve("   ", "req-1");
-            Assert.Equal("req-1", id);
-        }
-
-        [Fact]
-        public void Resolve_WhitespaceRequest_GeneratesGuid()
-        {
-            var id = CorrelationIdResolver.Resolve(null, "  \t  ");
+            var id = CorrelationIdResolver.Resolve(string.Empty);
             Assert.True(Guid.TryParseExact(id, "D", out _));
         }
 
         [Fact]
-        public void Resolve_BothAbsent_GeneratesGuid()
+        public void Resolve_WhitespaceRequestId_GeneratesGuid()
         {
-            var id = CorrelationIdResolver.Resolve(null, null);
+            var id = CorrelationIdResolver.Resolve("  \t  ");
             Assert.True(Guid.TryParseExact(id, "D", out _));
         }
 
         [Fact]
-        public void Resolve_BothEmpty_GeneratesGuid()
+        public void Resolve_Absent_GeneratesGuid()
         {
-            var id = CorrelationIdResolver.Resolve(string.Empty, string.Empty);
+            var id = CorrelationIdResolver.Resolve(null);
             Assert.True(Guid.TryParseExact(id, "D", out _));
         }
     }

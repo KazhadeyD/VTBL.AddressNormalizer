@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using VTBL.AddressNormalizer.WebApi;
+using VTBL.AddressNormalizer.WebApi.Middleware;
 using VTBL.AddressNormalizer.WebApi.Models;
 using VTBL.AddressNormalizer.WebApi.Services;
 using Xunit;
@@ -39,13 +40,13 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
                     System.Text.Encoding.UTF8,
                     "application/json")
             };
-            request.Headers.TryAddWithoutValidation("X-Correlation-Id", "err-corr-1");
+            request.Headers.TryAddWithoutValidation(CorrelationIdResolver.RequestIdHeaderName, "err-corr-1");
 
             var response = await _client.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
 
             Assert.Equal(HttpStatusCode.InternalServerError, response.StatusCode);
-            Assert.True(response.Headers.TryGetValues("X-Correlation-Id", out var corrValues));
+            Assert.True(response.Headers.TryGetValues(CorrelationIdResolver.RequestIdHeaderName, out var corrValues));
             Assert.Equal("err-corr-1", corrValues.Single());
 
             var body = JsonSerializer.Deserialize<ErrorResponse>(json, WebApiTestFixture.JsonOptions);

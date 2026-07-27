@@ -83,21 +83,6 @@ namespace VTBL.AddressNormalizer.WebApi.Swagger
             operation.Parameters ??= new List<OpenApiParameter>();
 
             if (!operation.Parameters.Any(p =>
-                    string.Equals(p.Name, CorrelationIdResolver.CorrelationIdHeaderName, StringComparison.OrdinalIgnoreCase)))
-            {
-                operation.Parameters.Add(new OpenApiParameter
-                {
-                    Name = CorrelationIdResolver.CorrelationIdHeaderName,
-                    In = ParameterLocation.Header,
-                    Required = false,
-                    Schema = StringSchema,
-                    Description =
-                        "Идентификатор корреляции запроса. Если не передан (и нет X-Request-Id) — сервер генерирует GUID. " +
-                        "Значение дублируется в response header и в NLog layout."
-                });
-            }
-
-            if (!operation.Parameters.Any(p =>
                     string.Equals(p.Name, CorrelationIdResolver.RequestIdHeaderName, StringComparison.OrdinalIgnoreCase)))
             {
                 operation.Parameters.Add(new OpenApiParameter
@@ -107,7 +92,8 @@ namespace VTBL.AddressNormalizer.WebApi.Swagger
                     Required = false,
                     Schema = StringSchema,
                     Description =
-                        "Альтернативный заголовок корреляции. Используется, если X-Correlation-Id отсутствует."
+                        "Идентификатор запроса VTBL. Если не передан — сервер генерирует GUID. " +
+                        "Значение дублируется в response header и в NLog layout."
                 });
             }
         }

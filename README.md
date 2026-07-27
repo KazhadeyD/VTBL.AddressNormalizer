@@ -10,7 +10,7 @@
 
 ```powershell
 dotnet build VTBL.AddressNormalizer.sln
-dotnet test VTBL.AddressNormalizer.sln          # 381 тестов
+dotnet test VTBL.AddressNormalizer.sln          # 376 тестов
 dotnet run --project VTBL.AddressNormalizer.Console
 dotnet run --project VTBL.AddressNormalizer.Console -- address
 dotnet run --project VTBL.AddressNormalizer.Console -- unit "КВАРТИРА 837"
@@ -36,7 +36,7 @@ dotnet run --project VTBL.AddressNormalizer.WebApi
 
 - Auth нет. Порт: `http://localhost:5000`. Swagger UI — только `Development` (`/swagger`).
 - Вход: `{ "source": "..." }` (непустая строка; иначе 400, сообщения на русском).
-- Correlation: `X-Correlation-Id` → иначе `X-Request-Id` → иначе GUID; echo в response header.
+- Correlation: `X-VTBL-Request-ID` → иначе GUID; echo в response header.
 - Batch: ошибка элемента не останавливает остальные; если упали все — одна ошибка 400/500 без `items`.
 
 ### Пример ответа `POST /api/v1/normalize`
@@ -166,6 +166,15 @@ docker compose up -d
 `localhost:1435`, БД `AddressNormalizer`, user `sa`. Init: `docker/mssql/init/`.
 
 ## История изменений
+
+### 27.07.2026 — заголовок X-VTBL-Request-ID
+
+- `X-Correlation-Id` и `X-Request-Id` заменены единым заголовком `X-VTBL-Request-ID` (request + response)
+
+### 27.07.2026 — NLog в appsettings.json
+
+- Конфигурация NLog перенесена из `nlog.config` в секцию `NLog` файла `appsettings.json`
+- Путь файловых логов: `C:\inetpub\logs\VTBL.AddressNormalizer.WebApi\webapi-*.log`
 
 ### 24.07.2026 — справочник regex
 

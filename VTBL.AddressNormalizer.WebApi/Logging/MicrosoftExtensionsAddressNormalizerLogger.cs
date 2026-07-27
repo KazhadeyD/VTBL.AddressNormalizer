@@ -10,7 +10,7 @@ namespace VTBL.AddressNormalizer.WebApi.Logging
     public sealed class MicrosoftExtensionsAddressNormalizerLogger : CoreLogger
     {
         /// <summary>
-        /// Категория для правил nlog.config / appsettings Logging:LogLevel.
+        /// Категория для правил NLog / appsettings Logging:LogLevel.
         /// </summary>
         public const string CategoryName = "VTBL.AddressNormalizer";
 

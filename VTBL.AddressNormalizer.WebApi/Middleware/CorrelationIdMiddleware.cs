@@ -21,20 +21,19 @@ namespace VTBL.AddressNormalizer.WebApi.Middleware
         }
 
         /// <summary>
-        /// Разрешает Id, устанавливает MDLC до следующего middleware и пишет <c>X-Correlation-Id</c>.
+        /// Разрешает Id, устанавливает MDLC до следующего middleware и пишет <c>X-VTBL-Request-ID</c>.
         /// </summary>
         public async Task InvokeAsync(HttpContext context)
         {
-            var correlationHeader = GetHeader(context, CorrelationIdResolver.CorrelationIdHeaderName);
             var requestHeader = GetHeader(context, CorrelationIdResolver.RequestIdHeaderName);
-            var correlationId = CorrelationIdResolver.Resolve(correlationHeader, requestHeader);
+            var correlationId = CorrelationIdResolver.Resolve(requestHeader);
 
             // ScopeContext питает ${mdlc:item=CorrelationId} в NLog 5 (эквивалент MDLC).
             using (ScopeContext.PushProperty(CorrelationIdResolver.MdlcKey, correlationId))
             {
                 context.Response.OnStarting(() =>
                 {
-                    context.Response.Headers[CorrelationIdResolver.CorrelationIdHeaderName] = correlationId;
+                    context.Response.Headers[CorrelationIdResolver.RequestIdHeaderName] = correlationId;
                     return Task.CompletedTask;
                 });
 

@@ -42,10 +42,10 @@ Unhandled → **500** `{ "error": "..." }` (`ApiExceptionFilter`).
 - Ошибка одного элемента не останавливает остальные (`status: "error"` в item).
 - Если **все** элементы упали: validation → **400**, исключения/mixed → **500**; тело — одна ошибка, без `items`.
 
-### Correlation Id
+### Request Id
 
-Приоритет: `X-Correlation-Id` → `X-Request-Id` → GUID.  
-Значение: response header `X-Correlation-Id` и NLog (`CorrelationId` в layout).
+Заголовок: `X-VTBL-Request-ID` → иначе GUID.  
+Значение: echo в response header `X-VTBL-Request-ID` и NLog (`CorrelationId` в layout).
 
 ## Контракт ответа normalize
 
@@ -86,7 +86,7 @@ Unhandled → **500** `{ "error": "..." }` (`ApiExceptionFilter`).
 ```powershell
 curl -X POST http://localhost:5000/api/v1/normalize `
   -H "Content-Type: application/json" `
-  -H "X-Correlation-Id: demo-1" `
+  -H "X-VTBL-Request-ID: demo-1" `
   -d "{\"source\":\"г Москва, ул Сухонская, д 11, кв 89\"}"
 ```
 
@@ -95,8 +95,8 @@ curl -X POST http://localhost:5000/api/v1/normalize `
 | Файл / секция | Назначение |
 |---------------|------------|
 | `appsettings.json` → `Batch:MaxItems` | Максимум элементов batch |
+| `appsettings.json` → `NLog` | Console + `C:\inetpub\logs\VTBL.AddressNormalizer.WebApi\webapi-*.log`; правило `VTBL.AddressNormalizer*` (Debug+); layout с `CorrelationId` |
 | `appsettings.Development.json` → `Logging:LogLevel:VTBL.AddressNormalizer` | Debug логов ядра в Development |
-| `nlog.config` | Console + `logs/webapi-*.log`; правило `VTBL.AddressNormalizer*` (Debug+); layout с `CorrelationId` |
 | `Properties/launchSettings.json` | URL, `ASPNETCORE_ENVIRONMENT` |
 
 ## Слои

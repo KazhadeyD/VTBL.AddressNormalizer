@@ -50,7 +50,7 @@ namespace VTBL.AddressNormalizer.WebApi
                     Description =
                         "HTTP API нормализации адресов поверх ядра AddressNormalizer.\n\n" +
                         "**Auth:** отсутствует.\n\n" +
-                        "**Correlation:** передайте `X-Correlation-Id` или `X-Request-Id`; иначе сервер сгенерирует GUID. " +
+                        "**Request ID:** передайте `X-VTBL-Request-ID`; иначе сервер сгенерирует GUID. " +
                         "Значение пишется в response header и в NLog.\n\n" +
                         "**Валидация:** пустая / null / whitespace строка `source` → HTTP 400.\n\n" +
                         "**Batch:** per-item ошибки не останавливают обработку; если упали все элементы — одна ошибка (400/500)."

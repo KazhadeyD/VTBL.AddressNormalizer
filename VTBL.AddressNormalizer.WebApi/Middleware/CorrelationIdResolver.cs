@@ -8,14 +8,9 @@ namespace VTBL.AddressNormalizer.WebApi.Middleware
     public static class CorrelationIdResolver
     {
         /// <summary>
-        /// Имя response/request заголовка Correlation Id.
+        /// Имя request/response заголовка идентификатора запроса VTBL.
         /// </summary>
-        public const string CorrelationIdHeaderName = "X-Correlation-Id";
-
-        /// <summary>
-        /// Имя request заголовка Request Id (fallback).
-        /// </summary>
-        public const string RequestIdHeaderName = "X-Request-Id";
+        public const string RequestIdHeaderName = "X-VTBL-Request-ID";
 
         /// <summary>
         /// Ключ NLog MDLC / ScopeContext для Correlation Id.
@@ -23,15 +18,12 @@ namespace VTBL.AddressNormalizer.WebApi.Middleware
         public const string MdlcKey = "CorrelationId";
 
         /// <summary>
-        /// Выбирает Correlation Id: non-whitespace <paramref name="correlationIdHeader"/>,
-        /// иначе non-whitespace <paramref name="requestIdHeader"/>, иначе новый GUID ("D").
+        /// Выбирает Correlation Id: non-whitespace <paramref name="requestIdHeader"/>,
+        /// иначе новый GUID ("D").
         /// Whitespace и пустая строка считаются отсутствием заголовка.
         /// </summary>
-        public static string Resolve(string correlationIdHeader, string requestIdHeader)
+        public static string Resolve(string requestIdHeader)
         {
-            if (!string.IsNullOrWhiteSpace(correlationIdHeader))
-                return correlationIdHeader;
-
             if (!string.IsNullOrWhiteSpace(requestIdHeader))
                 return requestIdHeader;
 

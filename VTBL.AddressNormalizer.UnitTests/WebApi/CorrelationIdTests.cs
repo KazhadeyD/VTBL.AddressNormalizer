@@ -3,6 +3,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using VTBL.AddressNormalizer.WebApi.Middleware;
 using Xunit;
 
 namespace VTBL.AddressNormalizer.UnitTests.WebApi
@@ -20,53 +21,28 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
         }
 
         [Fact]
-        public async Task Post_WithCorrelationId_EchoesSameValue()
+        public async Task Post_WithRequestId_EchoesSameValue()
         {
             using var request = CreateNormalizeRequest();
-            request.Headers.TryAddWithoutValidation("X-Correlation-Id", "abc");
+            request.Headers.TryAddWithoutValidation(CorrelationIdResolver.RequestIdHeaderName, "abc");
 
             var response = await _client.SendAsync(request);
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            Assert.Equal("abc", GetCorrelationId(response));
+            Assert.Equal("abc", GetRequestId(response));
         }
 
         [Fact]
-        public async Task Post_OnlyRequestId_EchoesRequestAsCorrelation()
+        public async Task Post_WhitespaceRequestId_ReturnsNonEmptyGuid()
         {
             using var request = CreateNormalizeRequest();
-            request.Headers.TryAddWithoutValidation("X-Request-Id", "req-1");
+            request.Headers.TryAddWithoutValidation(CorrelationIdResolver.RequestIdHeaderName, "   ");
 
             var response = await _client.SendAsync(request);
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            Assert.Equal("req-1", GetCorrelationId(response));
-        }
-
-        [Fact]
-        public async Task Post_BothHeadersDifferent_PrefersCorrelation()
-        {
-            using var request = CreateNormalizeRequest();
-            request.Headers.TryAddWithoutValidation("X-Correlation-Id", "corr-wins");
-            request.Headers.TryAddWithoutValidation("X-Request-Id", "req-loses");
-
-            var response = await _client.SendAsync(request);
-
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            Assert.Equal("corr-wins", GetCorrelationId(response));
-        }
-
-        [Fact]
-        public async Task Post_WhitespaceCorrelation_ValidRequest_UsesRequest()
-        {
-            using var request = CreateNormalizeRequest();
-            request.Headers.TryAddWithoutValidation("X-Correlation-Id", "   ");
-            request.Headers.TryAddWithoutValidation("X-Request-Id", "req-from-fallback");
-
-            var response = await _client.SendAsync(request);
-
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            Assert.Equal("req-from-fallback", GetCorrelationId(response));
+            var id = GetRequestId(response);
+            Assert.True(Guid.TryParseExact(id, "D", out _));
         }
 
         [Fact]
@@ -77,13 +53,13 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
             var response = await _client.SendAsync(request);
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            var id = GetCorrelationId(response);
+            var id = GetRequestId(response);
             Assert.False(string.IsNullOrWhiteSpace(id));
             Assert.True(Guid.TryParseExact(id, "D", out _));
         }
 
         [Fact]
-        public async Task AnyPost_ReturnsNonEmptyCorrelationIdHeader()
+        public async Task AnyPost_ReturnsNonEmptyRequestIdHeader()
         {
             var response = await WebApiTestFixture.PostJsonAsync(
                 _client,
@@ -91,7 +67,7 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
                 "{\"source\":\"г Москва, ул Сухонская, д 11, кв 89\"}");
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            Assert.True(response.Headers.TryGetValues("X-Correlation-Id", out var values));
+            Assert.True(response.Headers.TryGetValues(CorrelationIdResolver.RequestIdHeaderName, out var values));
             Assert.Contains(values, v => !string.IsNullOrWhiteSpace(v));
         }
 
@@ -106,9 +82,9 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
             };
         }
 
-        private static string GetCorrelationId(HttpResponseMessage response)
+        private static string GetRequestId(HttpResponseMessage response)
         {
-            Assert.True(response.Headers.TryGetValues("X-Correlation-Id", out var values));
+            Assert.True(response.Headers.TryGetValues(CorrelationIdResolver.RequestIdHeaderName, out var values));
             return values.Single();
         }
     }

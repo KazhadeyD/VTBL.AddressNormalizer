@@ -18,10 +18,4 @@
     <ProjectReference Include="..\VTBL.AddressNormalizer.Infrastructure\VTBL.AddressNormalizer.Infrastructure.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Content Update="nlog.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-
 </Project>
