@@ -99,7 +99,8 @@ curl -X POST http://localhost:5000/api/v1/normalize `
 | `appsettings.json` → `Batch:MaxItems` | Максимум элементов batch |
 | `appsettings.json` → `NLog` | Console + `C:\inetpub\logs\VTBL.AddressNormalizer.WebApi\webapi-*.log`; правило `VTBL.AddressNormalizer*` (Debug+); layout с `CorrelationId` |
 | `appsettings.Development.json` → `Logging:LogLevel:VTBL.AddressNormalizer` | Debug логов ядра в Development |
-| `Properties/launchSettings.json` | URL, `ASPNETCORE_ENVIRONMENT` |
+| `web.config` → `ASPNETCORE_ENVIRONMENT` | IIS: `Development` (Swagger + DeveloperExceptionPage); на Prod сменить на `Production` |
+| `Properties/launchSettings.json` | URL, `ASPNETCORE_ENVIRONMENT` (локальный `dotnet run`) |
 
 ## Слои
 

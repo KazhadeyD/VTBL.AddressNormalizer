@@ -363,3 +363,7 @@ MigrationBackup/
 FodyWeavers.xsd
 # Pipeline artifacts (orchestrator)
 docs/implementation/
+
+# Cursor / agent directory docs (local only)
+**/.AGENTS.md
+.AGENTS.md

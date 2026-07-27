@@ -170,6 +170,10 @@ docker compose up -d
 
 ## История изменений
 
+### 27.07.2026 — IIS web.config: ASPNETCORE_ENVIRONMENT
+
+- В `VTBL.AddressNormalizer.WebApi/web.config` задано `ASPNETCORE_ENVIRONMENT=Development` для IIS (Swagger / `IsDevelopment`)
+
 ### 27.07.2026 — indoorValue.marks (sparse)
 
 - `IndoorValueDto`: вместо 20 typed-категорий — `marks[]` с `{ id, name, values }`
