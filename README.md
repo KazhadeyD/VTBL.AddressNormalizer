@@ -117,6 +117,10 @@ var split = sp.GetRequiredService<IBuildingLocationExtractor>()
 // Indoor  → "кв 89"
 ```
 
+## Справочник regex
+
+Полный разбор production-регулярок (лексемы, фабрика, парсер, BuildingAddress): [docs/REGEX-REFERENCE.md](docs/REGEX-REFERENCE.md).
+
 ## Канонические префиксы (BuildingUnit)
 
 Контракт matching — `Canonical` + `Hash`. Префиксы **не менять** без миграции данных.
@@ -162,6 +166,10 @@ docker compose up -d
 `localhost:1435`, БД `AddressNormalizer`, user `sa`. Init: `docker/mssql/init/`.
 
 ## История изменений
+
+### 24.07.2026 — справочник regex
+
+- Добавлен [docs/REGEX-REFERENCE.md](docs/REGEX-REFERENCE.md): глоссарий конструкций .NET Regex + каталог всех production-паттернов (IndoorMarkerLexemes/Factory/Patterns, BuildingUnitParser, Canonicalizer, Roman/Range, BuildingAddress, синонимы геотипов) с разбором лексем и примерами
 
 ### 24.07.2026 — голые слова → note; ShortRoom только с цифры
 
