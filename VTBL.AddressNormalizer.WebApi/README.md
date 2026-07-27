@@ -31,7 +31,8 @@ dotnet run --project VTBL.AddressNormalizer.WebApi
 | POST | `/api/v1/unit/normalize` | `{ "source": "..." }` | `200` + `indoorValue` + top-level `canonical`/`hash` |
 | POST | `/api/v1/address/extract` | `{ "source": "..." }` | `200` + `extracted` |
 | POST | `/api/v1/address/canonicalize` | `{ "source": "..." }` | `200` + `canonical` |
-| GET | `/health` | — | `200` `{ "status": "Healthy" }` |
+| GET | `/health` | — | `200` `{ "status": "Healthy", "checks": { ... } }` |
+| GET | `/health/live` | — | `200` liveness-only (`self`) |
 
 Пустой / null / whitespace `source` → **400** `{ "error": "..." }` (русский текст).  
 Unhandled → **500** `{ "error": "..." }` (`ApiExceptionFilter`).

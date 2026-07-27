@@ -2,14 +2,17 @@ using System;
 using System.IO;
 using System.Reflection;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.OpenApi.Models;
 using VTBL.AddressNormalizer.Infrastructure.Composition;
 using VTBL.AddressNormalizer.WebApi.Logging;
 using VTBL.AddressNormalizer.WebApi.Filters;
+using VTBL.AddressNormalizer.WebApi.Health;
 using VTBL.AddressNormalizer.WebApi.Middleware;
 using VTBL.AddressNormalizer.WebApi.Options;
 using VTBL.AddressNormalizer.WebApi.Services;
@@ -66,6 +69,13 @@ namespace VTBL.AddressNormalizer.WebApi
             services.AddAddressNormalizerLogging();
             services.AddAddressNormalizer();
             services.AddSingleton<IAddressNormalizationService, AddressNormalizationService>();
+            services
+                .AddHealthChecks()
+                .AddCheck("self", () => HealthCheckResult.Healthy("HTTP host запущен."), tags: new[] { "live" })
+                .AddCheck<AddressNormalizerReadinessHealthCheck>(
+                    "address_normalizer_readiness",
+                    failureStatus: HealthStatus.Unhealthy,
+                    tags: new[] { "ready" });
         }
 
         /// <summary>
@@ -92,6 +102,16 @@ namespace VTBL.AddressNormalizer.WebApi
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHealthChecks("/health", new HealthCheckOptions
+                {
+                    Predicate = _ => true,
+                    ResponseWriter = HealthCheckResponseWriter.WriteAsync
+                });
+                endpoints.MapHealthChecks("/health/live", new HealthCheckOptions
+                {
+                    Predicate = check => check.Tags.Contains("live"),
+                    ResponseWriter = HealthCheckResponseWriter.WriteAsync
+                });
             });
         }
     }

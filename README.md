@@ -10,7 +10,7 @@
 
 ```powershell
 dotnet build VTBL.AddressNormalizer.sln
-dotnet test VTBL.AddressNormalizer.sln          # 376 тестов
+dotnet test VTBL.AddressNormalizer.sln          # 377 тестов
 dotnet run --project VTBL.AddressNormalizer.Console
 dotnet run --project VTBL.AddressNormalizer.Console -- address
 dotnet run --project VTBL.AddressNormalizer.Console -- unit "КВАРТИРА 837"
@@ -32,7 +32,8 @@ dotnet run --project VTBL.AddressNormalizer.WebApi
 | POST | `/api/v1/unit/normalize` | Только indoor / unit |
 | POST | `/api/v1/address/extract` | Только outdoor |
 | POST | `/api/v1/address/canonicalize` | Канон building location (без extract) |
-| GET | `/health` | Liveness |
+| GET | `/health` | Health checks (self + readiness) |
+| GET | `/health/live` | Liveness (`self`) |
 
 - Auth нет. Порт: `http://localhost:5000`. Swagger UI — только `Development` (`/swagger`).
 - Вход: `{ "source": "..." }` (непустая строка; иначе 400, сообщения на русском).
@@ -166,6 +167,12 @@ docker compose up -d
 `localhost:1435`, БД `AddressNormalizer`, user `sa`. Init: `docker/mssql/init/`.
 
 ## История изменений
+
+### 27.07.2026 — нормальный health check
+
+- `GET /health` переведён на ASP.NET Core HealthChecks: JSON с итоговым `status` и деталями `checks`
+- Добавлен `GET /health/live` (только liveness check `self`)
+- Readiness-проверка валидирует `Batch:MaxItems` и делает синтетический вызов `IAddressNormalizationService`
 
 ### 27.07.2026 — заголовок X-VTBL-Request-ID
 

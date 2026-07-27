@@ -2,7 +2,6 @@ using System.Net;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
-using VTBL.AddressNormalizer.WebApi.Models;
 using Xunit;
 
 namespace VTBL.AddressNormalizer.UnitTests.WebApi
@@ -27,10 +26,28 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
             var body = await response.Content.ReadAsStringAsync();
-            var dto = JsonSerializer.Deserialize<HealthResponse>(body, WebApiTestFixture.JsonOptions);
+            using var json = JsonDocument.Parse(body);
+            Assert.Equal("Healthy", json.RootElement.GetProperty("status").GetString());
 
-            Assert.NotNull(dto);
-            Assert.Equal("Healthy", dto.Status);
+            var checks = json.RootElement.GetProperty("checks");
+            Assert.True(checks.TryGetProperty("self", out _));
+            Assert.True(checks.TryGetProperty("address_normalizer_readiness", out _));
+        }
+
+        [Fact]
+        public async Task HealthLive_Get_ReturnsOnlyLivenessCheck()
+        {
+            var response = await _client.GetAsync("/health/live");
+
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+            var body = await response.Content.ReadAsStringAsync();
+            using var json = JsonDocument.Parse(body);
+            Assert.Equal("Healthy", json.RootElement.GetProperty("status").GetString());
+
+            var checks = json.RootElement.GetProperty("checks");
+            Assert.True(checks.TryGetProperty("self", out _));
+            Assert.False(checks.TryGetProperty("address_normalizer_readiness", out _));
         }
     }
 }

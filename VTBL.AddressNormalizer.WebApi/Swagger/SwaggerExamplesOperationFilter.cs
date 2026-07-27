@@ -230,7 +230,25 @@ namespace VTBL.AddressNormalizer.WebApi.Swagger
 
         private static readonly IOpenApiAny HealthResponseExample = new OpenApiObject
         {
-            ["status"] = new OpenApiString("Healthy")
+            ["status"] = new OpenApiString("Healthy"),
+            ["totalDurationMs"] = new OpenApiDouble(0.74),
+            ["checks"] = new OpenApiObject
+            {
+                ["self"] = new OpenApiObject
+                {
+                    ["status"] = new OpenApiString("Healthy"),
+                    ["description"] = new OpenApiString("HTTP host запущен."),
+                    ["durationMs"] = new OpenApiDouble(0.02),
+                    ["error"] = new OpenApiNull()
+                },
+                ["address_normalizer_readiness"] = new OpenApiObject
+                {
+                    ["status"] = new OpenApiString("Healthy"),
+                    ["description"] = new OpenApiString("Нормализация и конфигурация доступны."),
+                    ["durationMs"] = new OpenApiDouble(0.72),
+                    ["error"] = new OpenApiNull()
+                }
+            }
         };
 
         private static OpenApiObject SampleIndoorWithApartment()
