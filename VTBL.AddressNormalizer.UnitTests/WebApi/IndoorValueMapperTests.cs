@@ -1,6 +1,4 @@
-using System;
 using System.Linq;
-using System.Reflection;
 using VTBL.AddressNormalizer.Abstractions.BuildingUnit;
 using VTBL.AddressNormalizer.WebApi.Mapping;
 using VTBL.AddressNormalizer.WebApi.Models;
@@ -13,64 +11,17 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
     /// </summary>
     public class IndoorValueMapperTests
     {
-        private static readonly string[] ExpectedPropertyNames =
-        {
-            nameof(IndoorValueDto.Floors),
-            nameof(IndoorValueDto.Premises),
-            nameof(IndoorValueDto.Rooms),
-            nameof(IndoorValueDto.Offices),
-            nameof(IndoorValueDto.Workplaces),
-            nameof(IndoorValueDto.Parts),
-            nameof(IndoorValueDto.Apartments),
-            nameof(IndoorValueDto.Cabinets),
-            nameof(IndoorValueDto.Entrances),
-            nameof(IndoorValueDto.Passages),
-            nameof(IndoorValueDto.Holdings),
-            nameof(IndoorValueDto.Storages),
-            nameof(IndoorValueDto.Blocks),
-            nameof(IndoorValueDto.Sections),
-            nameof(IndoorValueDto.Mailboxes),
-            nameof(IndoorValueDto.Literas),
-            nameof(IndoorValueDto.Ranges),
-            nameof(IndoorValueDto.RawCodes),
-            nameof(IndoorValueDto.Notes),
-            nameof(IndoorValueDto.Unparsed)
-        };
-
         [Fact]
-        public void ToIndoorValueDto_EmptyLocation_ReturnsAll20CategoriesWithNamesAndEmptyValues()
+        public void ToIndoorValueDto_EmptyLocation_ReturnsEmptyMarks()
         {
             var dto = IndoorValueMapper.ToIndoorValueDto(new BuildingUnitLocation());
 
-            AssertAll20CategoriesPresent(dto);
-
-            Assert.Equal(IndoorValueMapper.CategoryNames.Floors, dto.Floors.Name);
-            Assert.Equal(IndoorValueMapper.CategoryNames.Premises, dto.Premises.Name);
-            Assert.Equal(IndoorValueMapper.CategoryNames.Rooms, dto.Rooms.Name);
-            Assert.Equal(IndoorValueMapper.CategoryNames.Offices, dto.Offices.Name);
-            Assert.Equal(IndoorValueMapper.CategoryNames.Workplaces, dto.Workplaces.Name);
-            Assert.Equal(IndoorValueMapper.CategoryNames.Parts, dto.Parts.Name);
-            Assert.Equal(IndoorValueMapper.CategoryNames.Apartments, dto.Apartments.Name);
-            Assert.Equal(IndoorValueMapper.CategoryNames.Cabinets, dto.Cabinets.Name);
-            Assert.Equal(IndoorValueMapper.CategoryNames.Entrances, dto.Entrances.Name);
-            Assert.Equal(IndoorValueMapper.CategoryNames.Passages, dto.Passages.Name);
-            Assert.Equal(IndoorValueMapper.CategoryNames.Holdings, dto.Holdings.Name);
-            Assert.Equal(IndoorValueMapper.CategoryNames.Storages, dto.Storages.Name);
-            Assert.Equal(IndoorValueMapper.CategoryNames.Blocks, dto.Blocks.Name);
-            Assert.Equal(IndoorValueMapper.CategoryNames.Sections, dto.Sections.Name);
-            Assert.Equal(IndoorValueMapper.CategoryNames.Mailboxes, dto.Mailboxes.Name);
-            Assert.Equal(IndoorValueMapper.CategoryNames.Literas, dto.Literas.Name);
-            Assert.Equal(IndoorValueMapper.CategoryNames.Ranges, dto.Ranges.Name);
-            Assert.Equal(IndoorValueMapper.CategoryNames.RawCodes, dto.RawCodes.Name);
-            Assert.Equal(IndoorValueMapper.CategoryNames.Notes, dto.Notes.Name);
-            Assert.Equal(IndoorValueMapper.CategoryNames.Unparsed, dto.Unparsed.Name);
-
-            Assert.Empty(dto.Apartments.Values);
-            Assert.Empty(dto.Floors.Values);
+            Assert.NotNull(dto.Marks);
+            Assert.Empty(dto.Marks);
         }
 
         [Fact]
-        public void ToIndoorValueDto_WithApartments_CopiesValuesAndLeavesOtherEmpty()
+        public void ToIndoorValueDto_WithApartmentsAndFloors_ReturnsOnlyPopulatedMarks()
         {
             var location = new BuildingUnitLocation();
             location.Apartments.Add("89");
@@ -78,41 +29,42 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
 
             var dto = IndoorValueMapper.ToIndoorValueDto(location);
 
-            Assert.Equal(new[] { "89" }, dto.Apartments.Values);
-            Assert.Equal(IndoorValueMapper.CategoryNames.Apartments, dto.Apartments.Name);
-            Assert.Equal(new[] { "2" }, dto.Floors.Values);
-            Assert.Empty(dto.Premises.Values);
-            Assert.Empty(dto.Rooms.Values);
-            Assert.Empty(dto.Offices.Values);
-            Assert.Empty(dto.Unparsed.Values);
+            Assert.Equal(2, dto.Marks.Count);
+
+            var apartment = IndoorValueTestHelper.GetMark(dto, IndoorValueMapper.MarkIds.Apartment);
+            Assert.NotNull(apartment);
+            Assert.Equal(IndoorValueMapper.CategoryNames.Apartments, apartment.Name);
+            Assert.Equal(new[] { "89" }, apartment.Values);
+
+            var floor = IndoorValueTestHelper.GetMark(dto, IndoorValueMapper.MarkIds.Floor);
+            Assert.NotNull(floor);
+            Assert.Equal(IndoorValueMapper.CategoryNames.Floors, floor.Name);
+            Assert.Equal(new[] { "2" }, floor.Values);
+
+            Assert.Null(IndoorValueTestHelper.GetMark(dto, IndoorValueMapper.MarkIds.Premise));
         }
 
         [Fact]
-        public void ToIndoorValueDto_NullLocation_ReturnsEmptyCategories()
+        public void ToIndoorValueDto_NullLocation_ReturnsEmptyMarks()
         {
             var dto = IndoorValueMapper.ToIndoorValueDto(null);
 
-            AssertAll20CategoriesPresent(dto);
-            Assert.Empty(dto.Apartments.Values);
+            Assert.NotNull(dto.Marks);
+            Assert.Empty(dto.Marks);
         }
 
-        private static void AssertAll20CategoriesPresent(IndoorValueDto dto)
+        [Fact]
+        public void ToIndoorValueDto_PreservesCatalogOrder()
         {
-            var properties = typeof(IndoorValueDto)
-                .GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                .Where(p => p.PropertyType == typeof(IndoorCategoryDto))
-                .ToArray();
+            var location = new BuildingUnitLocation();
+            location.Apartments.Add("89");
+            location.Floors.Add("2");
 
-            Assert.Equal(20, properties.Length);
-            Assert.Equal(ExpectedPropertyNames.OrderBy(x => x), properties.Select(p => p.Name).OrderBy(x => x));
+            var dto = IndoorValueMapper.ToIndoorValueDto(location);
 
-            foreach (var property in properties)
-            {
-                var category = (IndoorCategoryDto)property.GetValue(dto);
-                Assert.NotNull(category);
-                Assert.False(string.IsNullOrWhiteSpace(category.Name), $"{property.Name}.Name");
-                Assert.NotNull(category.Values);
-            }
+            Assert.Equal(
+                new[] { IndoorValueMapper.MarkIds.Floor, IndoorValueMapper.MarkIds.Apartment },
+                dto.Marks.Select(mark => mark.Id).ToArray());
         }
     }
 }

@@ -251,60 +251,34 @@ namespace VTBL.AddressNormalizer.WebApi.Swagger
             }
         };
 
-        private static OpenApiObject SampleIndoorWithApartment()
-        {
-            var indoor = EmptyIndoor();
-            indoor["apartments"] = Category("квартира", "89");
-            return indoor;
-        }
-
-        private static OpenApiObject SampleIndoorFloorAndApartment()
-        {
-            var indoor = EmptyIndoor();
-            indoor["floors"] = Category("этаж", "2");
-            indoor["apartments"] = Category("квартира", "89");
-            return indoor;
-        }
-
-        private static OpenApiObject EmptyIndoor() => new OpenApiObject
+        private static OpenApiObject SampleIndoorWithApartment() => new OpenApiObject
         {
             ["hash"] = new OpenApiString("b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef12345678"),
-            ["floors"] = EmptyCategory("этаж"),
-            ["premises"] = EmptyCategory("помещение"),
-            ["rooms"] = EmptyCategory("комната"),
-            ["offices"] = EmptyCategory("офис"),
-            ["workplaces"] = EmptyCategory("рабочее место"),
-            ["parts"] = EmptyCategory("часть помещения"),
-            ["apartments"] = EmptyCategory("квартира"),
-            ["cabinets"] = EmptyCategory("кабинет"),
-            ["entrances"] = EmptyCategory("подъезд"),
-            ["passages"] = EmptyCategory("проезд"),
-            ["holdings"] = EmptyCategory("владение"),
-            ["storages"] = EmptyCategory("склад"),
-            ["blocks"] = EmptyCategory("блок"),
-            ["sections"] = EmptyCategory("секция"),
-            ["mailboxes"] = EmptyCategory("а/я"),
-            ["literas"] = EmptyCategory("литера"),
-            ["ranges"] = EmptyCategory("диапазон"),
-            ["rawCodes"] = EmptyCategory("код"),
-            ["notes"] = EmptyCategory("примечание"),
-            ["unparsed"] = EmptyCategory("неразобранное")
+            ["marks"] = new OpenApiArray
+            {
+                Mark("apartment", "квартира", "89")
+            }
         };
 
-        private static OpenApiObject EmptyCategory(string name) => new OpenApiObject
+        private static OpenApiObject SampleIndoorFloorAndApartment() => new OpenApiObject
         {
-            ["name"] = new OpenApiString(name),
-            ["values"] = new OpenApiArray()
+            ["hash"] = new OpenApiString("b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef12345678"),
+            ["marks"] = new OpenApiArray
+            {
+                Mark("floor", "этаж", "2"),
+                Mark("apartment", "квартира", "89")
+            }
         };
 
-        private static OpenApiObject Category(string name, params string[] values)
+        private static OpenApiObject Mark(string id, string name, params string[] values)
         {
             var arr = new OpenApiArray();
-            foreach (var v in values)
-                arr.Add(new OpenApiString(v));
+            foreach (var value in values)
+                arr.Add(new OpenApiString(value));
 
             return new OpenApiObject
             {
+                ["id"] = new OpenApiString(id),
                 ["name"] = new OpenApiString(name),
                 ["values"] = arr
             };

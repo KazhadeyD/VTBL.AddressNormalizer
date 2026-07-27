@@ -63,8 +63,9 @@ Unhandled → **500** `{ "error": "..." }` (`ApiExceptionFilter`).
     },
     "indoorValue": {
       "hash": "<sha256 от unit canonical>",
-      "apartments": { "name": "квартира", "values": ["89"] },
-      "floors": { "name": "этаж", "values": [] }
+      "marks": [
+        { "id": "apartment", "name": "квартира", "values": ["89"] }
+      ]
     }
   }
 }
@@ -78,9 +79,9 @@ Unhandled → **500** `{ "error": "..." }` (`ApiExceptionFilter`).
 | `dadataOutdoor.fiasId` | Заглушка v1 = `null` |
 | `dadataOutdoor.dadata` | Заглушка v1 = `null` |
 | `indoorValue.hash` | SHA256 unit-канона (`ToCanonical`) |
-| `indoorValue.*` | 20 категорий `{ name, values }` |
+| `indoorValue.marks` | Sparse-массив `{ id, name, values }`; только категории с данными |
 
-**Unit** (`/api/v1/unit/normalize`): те же категории в `indoorValue` + top-level `canonical` и `hash` (дублирует `indoorValue.hash`).
+**Unit** (`/api/v1/unit/normalize`): тот же `indoorValue.marks` + top-level `canonical` и `hash` (дублирует `indoorValue.hash`).
 
 ## Пример запроса
 

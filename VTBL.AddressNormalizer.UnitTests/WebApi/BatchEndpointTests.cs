@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging.Abstractions;
 using VTBL.AddressNormalizer.WebApi;
+using VTBL.AddressNormalizer.WebApi.Mapping;
 using VTBL.AddressNormalizer.WebApi.Models;
 using VTBL.AddressNormalizer.WebApi.Services;
 using Xunit;
@@ -55,8 +56,8 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
 
             AssertOkValueMatchesCore(SourceA, dto.Items[0].Value);
             AssertOkValueMatchesCore(SourceB, dto.Items[1].Value);
-            Assert.Contains("89", dto.Items[0].Value.IndoorValue.Apartments.Values);
-            Assert.Empty(dto.Items[1].Value.IndoorValue.Apartments.Values);
+            Assert.Contains("89", IndoorValueTestHelper.GetMarkValues(dto.Items[0].Value.IndoorValue, IndoorValueMapper.MarkIds.Apartment));
+            Assert.Empty(IndoorValueTestHelper.GetMarkValues(dto.Items[1].Value.IndoorValue, IndoorValueMapper.MarkIds.Apartment));
         }
 
         [Fact]

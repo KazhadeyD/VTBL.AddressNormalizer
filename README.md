@@ -10,7 +10,7 @@
 
 ```powershell
 dotnet build VTBL.AddressNormalizer.sln
-dotnet test VTBL.AddressNormalizer.sln          # 377 тестов
+dotnet test VTBL.AddressNormalizer.sln          # 378 тестов
 dotnet run --project VTBL.AddressNormalizer.Console
 dotnet run --project VTBL.AddressNormalizer.Console -- address
 dotnet run --project VTBL.AddressNormalizer.Console -- unit "КВАРТИРА 837"
@@ -55,15 +55,17 @@ dotnet run --project VTBL.AddressNormalizer.WebApi
     },
     "indoorValue": {
       "hash": "<sha256 от unit canonical>",
-      "apartments": { "name": "квартира", "values": ["89"] },
-      "floors": { "name": "этаж", "values": [] }
+      "marks": [
+        { "id": "apartment", "name": "квартира", "values": ["89"] }
+      ]
     }
   }
 }
 ```
 
 - `dadataOutdoor.fiasId` / `dadata` в v1 всегда `null` (заглушки).
-- `indoorValue.hash` — SHA256 unit-канона (`ToCanonical`); пустые категории: `values: []`.
+- `indoorValue.hash` — SHA256 unit-канона (`ToCanonical`).
+- `indoorValue.marks` — sparse-массив категорий `{ id, name, values }`; пустые категории не включаются.
 - Unit-endpoint дополнительно отдаёт top-level `canonical` и `hash` (тот же hash, что в `indoorValue`).
 
 ## Архитектура
@@ -167,6 +169,12 @@ docker compose up -d
 `localhost:1435`, БД `AddressNormalizer`, user `sa`. Init: `docker/mssql/init/`.
 
 ## История изменений
+
+### 27.07.2026 — indoorValue.marks (sparse)
+
+- `IndoorValueDto`: вместо 20 typed-категорий — `marks[]` с `{ id, name, values }`
+- В ответ попадают только категории с непустыми `values` (sparse)
+- Стабильные id: `floor`, `apartment`, `premise`, … (`IndoorValueMapper.MarkIds`)
 
 ### 27.07.2026 — нормальный health check
 

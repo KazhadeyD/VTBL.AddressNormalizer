@@ -2,6 +2,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
+using VTBL.AddressNormalizer.WebApi.Mapping;
 using VTBL.AddressNormalizer.WebApi.Models;
 using Xunit;
 
@@ -42,7 +43,7 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
             Assert.Equal(expectedCanonical, dto.Canonical);
             Assert.Equal(expectedHash, dto.Hash);
             Assert.Equal(expectedHash, dto.IndoorValue.Hash);
-            Assert.Contains("89", dto.IndoorValue.Apartments.Values);
+            Assert.Contains("89", IndoorValueTestHelper.GetMarkValues(dto.IndoorValue, IndoorValueMapper.MarkIds.Apartment));
 
             using var doc = JsonDocument.Parse(body);
             Assert.False(doc.RootElement.TryGetProperty("category", out _));

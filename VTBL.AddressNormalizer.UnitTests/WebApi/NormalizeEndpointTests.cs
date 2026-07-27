@@ -1,9 +1,9 @@
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
+using VTBL.AddressNormalizer.WebApi.Mapping;
 using VTBL.AddressNormalizer.WebApi.Models;
 using Xunit;
 
@@ -14,30 +14,6 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
     /// </summary>
     public class NormalizeEndpointTests : IClassFixture<WebApiTestFixture>
     {
-        private static readonly string[] IndoorCategoryPropertyNames =
-        {
-            nameof(IndoorValueDto.Floors),
-            nameof(IndoorValueDto.Premises),
-            nameof(IndoorValueDto.Rooms),
-            nameof(IndoorValueDto.Offices),
-            nameof(IndoorValueDto.Workplaces),
-            nameof(IndoorValueDto.Parts),
-            nameof(IndoorValueDto.Apartments),
-            nameof(IndoorValueDto.Cabinets),
-            nameof(IndoorValueDto.Entrances),
-            nameof(IndoorValueDto.Passages),
-            nameof(IndoorValueDto.Holdings),
-            nameof(IndoorValueDto.Storages),
-            nameof(IndoorValueDto.Blocks),
-            nameof(IndoorValueDto.Sections),
-            nameof(IndoorValueDto.Mailboxes),
-            nameof(IndoorValueDto.Literas),
-            nameof(IndoorValueDto.Ranges),
-            nameof(IndoorValueDto.RawCodes),
-            nameof(IndoorValueDto.Notes),
-            nameof(IndoorValueDto.Unparsed)
-        };
-
         private readonly HttpClient _client;
 
         public NormalizeEndpointTests(WebApiTestFixture factory)
@@ -77,14 +53,15 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
             Assert.Equal(outdoorCanonical, dto.Value.DadataOutdoor.OutdoorCanonical);
             Assert.Equal(expectedHash, dto.Value.DadataOutdoor.Hash);
 
-            AssertAll20IndoorCategoriesPresent(dto.Value.IndoorValue);
             Assert.Equal(unitHash, dto.Value.IndoorValue.Hash);
-            Assert.Contains("89", dto.Value.IndoorValue.Apartments.Values);
-            Assert.Equal("квартира", dto.Value.IndoorValue.Apartments.Name);
+            var apartment = IndoorValueTestHelper.GetMark(dto.Value.IndoorValue, IndoorValueMapper.MarkIds.Apartment);
+            Assert.NotNull(apartment);
+            Assert.Contains("89", apartment.Values);
+            Assert.Equal("квартира", apartment.Name);
         }
 
         [Fact]
-        public async Task Normalize_AddressWithoutIndoor_AllIndoorValuesEmpty()
+        public async Task Normalize_AddressWithoutIndoor_ReturnsEmptyMarks()
         {
             var response = await WebApiTestFixture.PostJsonAsync(
                 _client,
@@ -97,8 +74,8 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
             var dto = JsonSerializer.Deserialize<NormalizeResponse>(body, WebApiTestFixture.JsonOptions);
 
             Assert.NotNull(dto?.Value?.IndoorValue);
-            AssertAll20IndoorCategoriesPresent(dto.Value.IndoorValue);
-            AssertAllIndoorValuesEmpty(dto.Value.IndoorValue);
+            Assert.NotNull(dto.Value.IndoorValue.Marks);
+            Assert.Empty(dto.Value.IndoorValue.Marks);
         }
 
         [Fact]
@@ -115,40 +92,6 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
             using var doc = JsonDocument.Parse(body);
             Assert.True(doc.RootElement.TryGetProperty("error", out var error));
             Assert.False(string.IsNullOrWhiteSpace(error.GetString()));
-        }
-
-        private static void AssertAll20IndoorCategoriesPresent(IndoorValueDto indoor)
-        {
-            var properties = typeof(IndoorValueDto)
-                .GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                .Where(p => p.PropertyType == typeof(IndoorCategoryDto))
-                .ToArray();
-
-            Assert.Equal(20, properties.Length);
-            Assert.Equal(
-                IndoorCategoryPropertyNames.OrderBy(x => x),
-                properties.Select(p => p.Name).OrderBy(x => x));
-
-            foreach (var property in properties)
-            {
-                var category = (IndoorCategoryDto)property.GetValue(indoor);
-                Assert.NotNull(category);
-                Assert.False(string.IsNullOrWhiteSpace(category.Name), $"{property.Name}.Name");
-                Assert.NotNull(category.Values);
-            }
-        }
-
-        private static void AssertAllIndoorValuesEmpty(IndoorValueDto indoor)
-        {
-            var properties = typeof(IndoorValueDto)
-                .GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                .Where(p => p.PropertyType == typeof(IndoorCategoryDto));
-
-            foreach (var property in properties)
-            {
-                var category = (IndoorCategoryDto)property.GetValue(indoor);
-                Assert.Empty(category.Values);
-            }
         }
     }
 }

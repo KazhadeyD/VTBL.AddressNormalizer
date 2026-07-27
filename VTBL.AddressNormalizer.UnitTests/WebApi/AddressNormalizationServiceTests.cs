@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Logging.Abstractions;
+using VTBL.AddressNormalizer.WebApi.Mapping;
 using VTBL.AddressNormalizer.WebApi.Models;
 using VTBL.AddressNormalizer.WebApi.Services;
 using Xunit;
@@ -55,40 +56,17 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
             var unitCanonical = AddressNormalizerTestHost.Canonicalizer.ToCanonical(unitLocation);
             var unitHash = AddressNormalizerTestHost.Hash.ComputeSha256(unitCanonical);
             Assert.Equal(unitHash, value.IndoorValue.Hash);
-            Assert.Contains("89", value.IndoorValue.Apartments.Values);
-            Assert.Equal("квартира", value.IndoorValue.Apartments.Name);
+            Assert.Contains("89", IndoorValueTestHelper.GetMarkValues(value.IndoorValue, IndoorValueMapper.MarkIds.Apartment));
+            Assert.Equal("квартира", IndoorValueTestHelper.GetMark(value.IndoorValue, IndoorValueMapper.MarkIds.Apartment).Name);
         }
 
         [Fact]
-        public void NormalizeFull_WithoutIndoor_AllIndoorValuesEmpty()
+        public void NormalizeFull_WithoutIndoor_ReturnsEmptyMarks()
         {
             var value = _sut.NormalizeFull(SampleOutdoorOnly);
 
-            Assert.All(
-                new[]
-                {
-                    value.IndoorValue.Floors.Values,
-                    value.IndoorValue.Premises.Values,
-                    value.IndoorValue.Rooms.Values,
-                    value.IndoorValue.Offices.Values,
-                    value.IndoorValue.Workplaces.Values,
-                    value.IndoorValue.Parts.Values,
-                    value.IndoorValue.Apartments.Values,
-                    value.IndoorValue.Cabinets.Values,
-                    value.IndoorValue.Entrances.Values,
-                    value.IndoorValue.Passages.Values,
-                    value.IndoorValue.Holdings.Values,
-                    value.IndoorValue.Storages.Values,
-                    value.IndoorValue.Blocks.Values,
-                    value.IndoorValue.Sections.Values,
-                    value.IndoorValue.Mailboxes.Values,
-                    value.IndoorValue.Literas.Values,
-                    value.IndoorValue.Ranges.Values,
-                    value.IndoorValue.RawCodes.Values,
-                    value.IndoorValue.Notes.Values,
-                    value.IndoorValue.Unparsed.Values
-                },
-                values => Assert.Empty(values));
+            Assert.NotNull(value.IndoorValue.Marks);
+            Assert.Empty(value.IndoorValue.Marks);
         }
 
         [Fact]
@@ -104,7 +82,7 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
             Assert.Equal(expectedCanonical, result.Canonical);
             Assert.Equal(expectedHash, result.Hash);
             Assert.Equal(expectedHash, result.IndoorValue.Hash);
-            Assert.Contains("10", result.IndoorValue.Apartments.Values);
+            Assert.Contains("10", IndoorValueTestHelper.GetMarkValues(result.IndoorValue, IndoorValueMapper.MarkIds.Apartment));
         }
 
         [Fact]
@@ -215,7 +193,7 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
             var expected = _sut.NormalizeFull(SampleWithIndoor);
             Assert.Equal(expected.DadataOutdoor.Hash, outcome.Items[0].Value.DadataOutdoor.Hash);
             Assert.Equal(expected.DadataOutdoor.Extracted, outcome.Items[0].Value.DadataOutdoor.Extracted);
-            Assert.Contains("89", outcome.Items[0].Value.IndoorValue.Apartments.Values);
+            Assert.Contains("89", IndoorValueTestHelper.GetMarkValues(outcome.Items[0].Value.IndoorValue, IndoorValueMapper.MarkIds.Apartment));
         }
 
         [Fact]
