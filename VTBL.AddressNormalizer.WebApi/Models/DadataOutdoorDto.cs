@@ -15,10 +15,10 @@ namespace VTBL.AddressNormalizer.WebApi.Models
         /// Читаемый канон outdoor (building location).
         /// </summary>
         /// <example>г Москва, ул Сухонская, д 11</example>
-        public string OutdoorCanonical { get; set; }
+        public string NormalizedAddress { get; set; }
 
         /// <summary>
-        /// SHA256 (hex, lowercase) от <see cref="OutdoorCanonical"/>.
+        /// SHA256 (hex, lowercase) от <see cref="NormalizedAddress"/>.
         /// </summary>
         public string Hash { get; set; }
 

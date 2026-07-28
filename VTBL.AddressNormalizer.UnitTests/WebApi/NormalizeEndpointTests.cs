@@ -50,7 +50,7 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
             Assert.Null(dto.Value.BuildingValue.Dadata);
             Assert.NotNull(dto.Value.BuildingValue);
             Assert.Equal(split.Outdoor, dto.Value.BuildingValue.Extracted);
-            Assert.Equal(outdoorCanonical, dto.Value.BuildingValue.OutdoorCanonical);
+            Assert.Equal(outdoorCanonical, dto.Value.BuildingValue.NormalizedAddress);
             Assert.Equal(expectedHash, dto.Value.BuildingValue.Hash);
 
             Assert.Equal(unitHash, dto.Value.IndoorValue.Hash);

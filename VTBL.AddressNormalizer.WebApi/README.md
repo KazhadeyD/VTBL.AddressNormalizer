@@ -56,8 +56,8 @@ Unhandled → **500** `{ "error": "..." }` (`ApiExceptionFilter`).
   "value": {
     "buildingValue": {
       "extracted": "г Москва, ул Сухонская, д 11",
-      "outdoorCanonical": "г Москва, ул Сухонская, д 11",
-      "hash": "<sha256 от outdoorCanonical>",
+      "normalizedAddress": "г Москва, ул Сухонская, д 11",
+      "hash": "<sha256 от normalizedAddress>",
       "fiasId": null,
       "dadata": null
     },
@@ -74,8 +74,8 @@ Unhandled → **500** `{ "error": "..." }` (`ApiExceptionFilter`).
 | Поле | Смысл |
 |------|--------|
 | `buildingValue.extracted` | Outdoor после extract |
-| `buildingValue.outdoorCanonical` | Канон outdoor |
-| `buildingValue.hash` | SHA256(outdoorCanonical) |
+| `buildingValue.normalizedAddress` | Канон outdoor |
+| `buildingValue.hash` | SHA256(normalizedAddress) |
 | `buildingValue.fiasId` | Заглушка v1 = `null` |
 | `buildingValue.dadata` | Заглушка v1 = `null` |
 | `indoorValue.hash` | SHA256 unit-канона (`ToCanonical`) |

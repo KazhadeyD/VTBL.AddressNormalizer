@@ -142,7 +142,7 @@ namespace VTBL.AddressNormalizer.WebApi.Swagger
                 ["buildingValue"] = new OpenApiObject
                 {
                     ["extracted"] = new OpenApiString("г Москва, ул Сухонская, д 11"),
-                    ["outdoorCanonical"] = new OpenApiString("г Москва, ул Сухонская, д 11"),
+                    ["normalizedAddress"] = new OpenApiString("г Москва, ул Сухонская, д 11"),
                     ["hash"] = new OpenApiString("a1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456"),
                     ["fiasId"] = new OpenApiNull(),
                     ["dadata"] = new OpenApiNull()
@@ -179,7 +179,7 @@ namespace VTBL.AddressNormalizer.WebApi.Swagger
                         ["buildingValue"] = new OpenApiObject
                         {
                             ["extracted"] = new OpenApiString("г Москва, ул Сухонская, д 11"),
-                            ["outdoorCanonical"] = new OpenApiString("г Москва, ул Сухонская, д 11"),
+                            ["normalizedAddress"] = new OpenApiString("г Москва, ул Сухонская, д 11"),
                             ["hash"] = new OpenApiString("a1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456"),
                             ["fiasId"] = new OpenApiNull(),
                             ["dadata"] = new OpenApiNull()

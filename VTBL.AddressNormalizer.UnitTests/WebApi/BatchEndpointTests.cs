@@ -140,7 +140,7 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
             Assert.Null(value.BuildingValue.FiasId);
             Assert.Null(value.BuildingValue.Dadata);
             Assert.Equal(split.Outdoor, value.BuildingValue.Extracted);
-            Assert.Equal(outdoorCanonical, value.BuildingValue.OutdoorCanonical);
+            Assert.Equal(outdoorCanonical, value.BuildingValue.NormalizedAddress);
             Assert.Equal(expectedHash, value.BuildingValue.Hash);
             var unitLocation = AddressNormalizerTestHost.Parser.Parse(split.Indoor);
             var unitCanonical = AddressNormalizerTestHost.Canonicalizer.ToCanonical(unitLocation);

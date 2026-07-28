@@ -209,7 +209,7 @@ namespace VTBL.AddressNormalizer.WebApi.Services
                 BuildingValue = new DadataOutdoorDto
                 {
                     Extracted = split.Outdoor,
-                    OutdoorCanonical = outdoorCanonical,
+                    NormalizedAddress = outdoorCanonical,
                     Hash = outdoorHash,
                     FiasId = null,
                     Dadata = null

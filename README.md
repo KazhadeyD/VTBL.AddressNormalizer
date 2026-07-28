@@ -48,8 +48,8 @@ dotnet run --project VTBL.AddressNormalizer.WebApi
   "value": {
     "buildingValue": {
       "extracted": "г Москва, ул Сухонская, д 11",
-      "outdoorCanonical": "г Москва, ул Сухонская, д 11",
-      "hash": "<sha256 от outdoorCanonical>",
+      "normalizedAddress": "г Москва, ул Сухонская, д 11",
+      "hash": "<sha256 от normalizedAddress>",
       "fiasId": null,
       "dadata": null
     },
