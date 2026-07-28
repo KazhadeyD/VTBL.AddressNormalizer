@@ -21,7 +21,7 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
         }
 
         [Fact]
-        public void ToIndoorValueDto_WithApartmentsAndFloors_ReturnsOnlyPopulatedMarks()
+        public void ToIndoorValueDto_WithApartmentsAndFloors_ReturnsOnlyPopulatedUnits()
         {
             var location = new BuildingUnitLocation();
             location.Apartments.Add("89");

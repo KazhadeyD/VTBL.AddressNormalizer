@@ -138,7 +138,8 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
 
             Assert.NotNull(value);
             Assert.Null(value.BuildingValue.FiasId);
-            Assert.Null(value.BuildingValue.Dadata);
+            Assert.NotNull(value.BuildingValue.Suggest);
+            Assert.NotNull(value.BuildingValue.Clean);
             Assert.Equal(split.Outdoor, value.BuildingValue.Extracted);
             Assert.Equal(outdoorCanonical, value.BuildingValue.NormalizedAddress);
             Assert.Equal(expectedHash, value.BuildingValue.Hash);

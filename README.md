@@ -51,7 +51,21 @@ dotnet run --project VTBL.AddressNormalizer.WebApi
       "normalizedAddress": "г Москва, ул Сухонская, д 11",
       "hash": "<sha256 от normalizedAddress>",
       "fiasId": null,
-      "dadata": null
+      "suggest": {
+        "suggestions": [
+          {
+            "value": "г Москва, ул Сухонская, д 11",
+            "unrestrictedValue": "г Москва, ул Сухонская, д 11",
+            "data": { "source": "г Москва, ул Сухонская, д 11", "result": "г Москва, ул Сухонская, д 11", "country": "Россия", "countryIsoCode": "RU" }
+          }
+        ]
+      },
+      "clean": {
+        "source": "г Москва, ул Сухонская, д 11",
+        "result": "г Москва, ул Сухонская, д 11",
+        "country": "Россия",
+        "countryIsoCode": "RU"
+      }
     },
     "indoorValue": {
       "extracted": "кв 89",
@@ -64,7 +78,8 @@ dotnet run --project VTBL.AddressNormalizer.WebApi
 }
 ```
 
-- `buildingValue.fiasId` / `dadata` в v1 всегда `null` (заглушки).
+- `buildingValue.fiasId` в v1 пока `null`.
+- `buildingValue.suggest` / `buildingValue.clean` — типизированные заглушки под будущую интеграцию DaData.
 - `indoorValue.extracted` — indoor после extract (внутренний хвост адреса).
 - `indoorValue.hash` — SHA256 unit-канона (`ToCanonical`).
 - `indoorValue.units` — sparse-массив категорий `{ id, name, values }`; пустые категории не включаются.
@@ -171,6 +186,12 @@ docker compose up -d
 `localhost:1435`, БД `AddressNormalizer`, user `sa`. Init: `docker/mssql/init/`.
 
 ## История изменений
+
+### 28.07.2026 — DaData suggest/clean заглушки
+
+- В `buildingValue` вместо сырого `dadata` добавлены два типизированных объекта: `suggest` и `clean`
+- DTO повторяют публичную структуру ответов DaData `suggest/address` и `clean/address`
+- Пока без реальных HTTP-вызовов: сервис возвращает структурные заглушки
 
 ### 28.07.2026 — indoorValue.units
 

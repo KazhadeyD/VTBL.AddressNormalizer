@@ -39,7 +39,7 @@ namespace VTBL.AddressNormalizer.WebApi.Controllers
         /// 1. extract outdoor / indoor через ядро (`ExtractSplit`);
         /// 2. канонизация outdoor + SHA256 → `buildingValue`;
         /// 3. indoor: Parse → ToCanonical → SHA256 → `indoorValue` (категории + hash);
-        /// 4. `buildingValue.fiasId` и `buildingValue.dadata` в v1 всегда `null`.
+        /// 4. `buildingValue.suggest` и `buildingValue.clean` пока возвращаются как заглушки.
         ///
         /// Пример запроса:
         ///

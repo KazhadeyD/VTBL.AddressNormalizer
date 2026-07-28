@@ -28,8 +28,13 @@ namespace VTBL.AddressNormalizer.WebApi.Models
         public string FiasId { get; set; }
 
         /// <summary>
-        /// Сырой ответ / строка DaData. В v1 всегда <c>null</c> (заглушка).
+        /// Заглушка структуры ответа DaData suggest/address.
         /// </summary>
-        public string Dadata { get; set; }
+        public DadataSuggestAddressDto Suggest { get; set; }
+
+        /// <summary>
+        /// Заглушка структуры ответа DaData clean/address.
+        /// </summary>
+        public DadataCleanAddressDto Clean { get; set; }
     }
 }

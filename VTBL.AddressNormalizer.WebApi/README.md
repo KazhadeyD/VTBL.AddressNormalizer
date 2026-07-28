@@ -59,7 +59,21 @@ Unhandled → **500** `{ "error": "..." }` (`ApiExceptionFilter`).
       "normalizedAddress": "г Москва, ул Сухонская, д 11",
       "hash": "<sha256 от normalizedAddress>",
       "fiasId": null,
-      "dadata": null
+      "suggest": {
+        "suggestions": [
+          {
+            "value": "г Москва, ул Сухонская, д 11",
+            "unrestrictedValue": "г Москва, ул Сухонская, д 11",
+            "data": { "source": "г Москва, ул Сухонская, д 11", "result": "г Москва, ул Сухонская, д 11", "country": "Россия", "countryIsoCode": "RU" }
+          }
+        ]
+      },
+      "clean": {
+        "source": "г Москва, ул Сухонская, д 11",
+        "result": "г Москва, ул Сухонская, д 11",
+        "country": "Россия",
+        "countryIsoCode": "RU"
+      }
     },
     "indoorValue": {
       "extracted": "кв 89",
@@ -78,7 +92,8 @@ Unhandled → **500** `{ "error": "..." }` (`ApiExceptionFilter`).
 | `buildingValue.normalizedAddress` | Канон outdoor |
 | `buildingValue.hash` | SHA256(normalizedAddress) |
 | `buildingValue.fiasId` | Заглушка v1 = `null` |
-| `buildingValue.dadata` | Заглушка v1 = `null` |
+| `buildingValue.suggest` | Заглушка структуры ответа DaData `suggest/address` |
+| `buildingValue.clean` | Заглушка структуры ответа DaData `clean/address` |
 | `indoorValue.extracted` | Indoor после extract (внутренний хвост адреса) |
 | `indoorValue.hash` | SHA256 unit-канона (`ToCanonical`) |
 | `indoorValue.units` | Sparse-массив `{ id, name, values }`; только категории с данными |

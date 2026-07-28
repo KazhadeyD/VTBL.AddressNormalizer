@@ -145,7 +145,8 @@ namespace VTBL.AddressNormalizer.WebApi.Swagger
                     ["normalizedAddress"] = new OpenApiString("г Москва, ул Сухонская, д 11"),
                     ["hash"] = new OpenApiString("a1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456"),
                     ["fiasId"] = new OpenApiNull(),
-                    ["dadata"] = new OpenApiNull()
+                    ["suggest"] = SuggestStub("г Москва, ул Сухонская, д 11"),
+                    ["clean"] = CleanStub("г Москва, ул Сухонская, д 11")
                 },
                 ["indoorValue"] = SampleIndoorWithApartment()
             }
@@ -182,7 +183,8 @@ namespace VTBL.AddressNormalizer.WebApi.Swagger
                             ["normalizedAddress"] = new OpenApiString("г Москва, ул Сухонская, д 11"),
                             ["hash"] = new OpenApiString("a1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456"),
                             ["fiasId"] = new OpenApiNull(),
-                            ["dadata"] = new OpenApiNull()
+                            ["suggest"] = SuggestStub("г Москва, ул Сухонская, д 11"),
+                            ["clean"] = CleanStub("г Москва, ул Сухонская, д 11")
                         },
                         ["indoorValue"] = SampleIndoorWithApartment()
                     },
@@ -249,6 +251,125 @@ namespace VTBL.AddressNormalizer.WebApi.Swagger
                     ["error"] = new OpenApiNull()
                 }
             }
+        };
+
+        private static OpenApiObject SuggestStub(string address) => new OpenApiObject
+        {
+            ["suggestions"] = new OpenApiArray
+            {
+                new OpenApiObject
+                {
+                    ["value"] = new OpenApiString(address),
+                    ["unrestrictedValue"] = new OpenApiString(address),
+                    ["data"] = AddressDataStub(address, address)
+                }
+            }
+        };
+
+        private static OpenApiObject CleanStub(string address) => AddressDataStub(address, address);
+
+        private static OpenApiObject AddressDataStub(string source, string result) => new OpenApiObject
+        {
+            ["source"] = new OpenApiString(source),
+            ["result"] = new OpenApiString(result),
+            ["postalCode"] = new OpenApiNull(),
+            ["country"] = new OpenApiString("Россия"),
+            ["countryIsoCode"] = new OpenApiString("RU"),
+            ["federalDistrict"] = new OpenApiNull(),
+            ["regionFiasId"] = new OpenApiNull(),
+            ["regionKladrId"] = new OpenApiNull(),
+            ["regionIsoCode"] = new OpenApiNull(),
+            ["regionWithType"] = new OpenApiNull(),
+            ["regionType"] = new OpenApiNull(),
+            ["regionTypeFull"] = new OpenApiNull(),
+            ["region"] = new OpenApiNull(),
+            ["areaFiasId"] = new OpenApiNull(),
+            ["areaKladrId"] = new OpenApiNull(),
+            ["areaWithType"] = new OpenApiNull(),
+            ["areaType"] = new OpenApiNull(),
+            ["areaTypeFull"] = new OpenApiNull(),
+            ["area"] = new OpenApiNull(),
+            ["cityFiasId"] = new OpenApiNull(),
+            ["cityKladrId"] = new OpenApiNull(),
+            ["cityWithType"] = new OpenApiNull(),
+            ["cityType"] = new OpenApiNull(),
+            ["cityTypeFull"] = new OpenApiNull(),
+            ["city"] = new OpenApiNull(),
+            ["cityArea"] = new OpenApiNull(),
+            ["cityDistrictFiasId"] = new OpenApiNull(),
+            ["cityDistrictKladrId"] = new OpenApiNull(),
+            ["cityDistrictWithType"] = new OpenApiNull(),
+            ["cityDistrictType"] = new OpenApiNull(),
+            ["cityDistrictTypeFull"] = new OpenApiNull(),
+            ["cityDistrict"] = new OpenApiNull(),
+            ["settlementFiasId"] = new OpenApiNull(),
+            ["settlementKladrId"] = new OpenApiNull(),
+            ["settlementWithType"] = new OpenApiNull(),
+            ["settlementType"] = new OpenApiNull(),
+            ["settlementTypeFull"] = new OpenApiNull(),
+            ["settlement"] = new OpenApiNull(),
+            ["streetFiasId"] = new OpenApiNull(),
+            ["streetKladrId"] = new OpenApiNull(),
+            ["streetWithType"] = new OpenApiNull(),
+            ["streetType"] = new OpenApiNull(),
+            ["streetTypeFull"] = new OpenApiNull(),
+            ["street"] = new OpenApiNull(),
+            ["steadFiasId"] = new OpenApiNull(),
+            ["steadKladrId"] = new OpenApiNull(),
+            ["steadCadnum"] = new OpenApiNull(),
+            ["steadType"] = new OpenApiNull(),
+            ["steadTypeFull"] = new OpenApiNull(),
+            ["stead"] = new OpenApiNull(),
+            ["houseFiasId"] = new OpenApiNull(),
+            ["houseKladrId"] = new OpenApiNull(),
+            ["houseCadnum"] = new OpenApiNull(),
+            ["houseFlatCount"] = new OpenApiNull(),
+            ["houseType"] = new OpenApiNull(),
+            ["houseTypeFull"] = new OpenApiNull(),
+            ["house"] = new OpenApiNull(),
+            ["blockType"] = new OpenApiNull(),
+            ["blockTypeFull"] = new OpenApiNull(),
+            ["block"] = new OpenApiNull(),
+            ["entrance"] = new OpenApiNull(),
+            ["floor"] = new OpenApiNull(),
+            ["flatFiasId"] = new OpenApiNull(),
+            ["flatCadnum"] = new OpenApiNull(),
+            ["flatType"] = new OpenApiNull(),
+            ["flatTypeFull"] = new OpenApiNull(),
+            ["flat"] = new OpenApiNull(),
+            ["flatArea"] = new OpenApiNull(),
+            ["squareMeterPrice"] = new OpenApiNull(),
+            ["flatPrice"] = new OpenApiNull(),
+            ["postalBox"] = new OpenApiNull(),
+            ["roomFiasId"] = new OpenApiNull(),
+            ["roomCadnum"] = new OpenApiNull(),
+            ["roomType"] = new OpenApiNull(),
+            ["roomTypeFull"] = new OpenApiNull(),
+            ["room"] = new OpenApiNull(),
+            ["fiasId"] = new OpenApiNull(),
+            ["fiasCode"] = new OpenApiNull(),
+            ["fiasLevel"] = new OpenApiNull(),
+            ["fiasActualityState"] = new OpenApiNull(),
+            ["kladrId"] = new OpenApiNull(),
+            ["geonameId"] = new OpenApiNull(),
+            ["capitalMarker"] = new OpenApiNull(),
+            ["okato"] = new OpenApiNull(),
+            ["oktmo"] = new OpenApiNull(),
+            ["taxOffice"] = new OpenApiNull(),
+            ["taxOfficeLegal"] = new OpenApiNull(),
+            ["timezone"] = new OpenApiNull(),
+            ["geoLat"] = new OpenApiNull(),
+            ["geoLon"] = new OpenApiNull(),
+            ["beltwayHit"] = new OpenApiNull(),
+            ["beltwayDistance"] = new OpenApiNull(),
+            ["metro"] = new OpenApiNull(),
+            ["divisions"] = new OpenApiNull(),
+            ["qcGeo"] = new OpenApiNull(),
+            ["qcComplete"] = new OpenApiNull(),
+            ["qcHouse"] = new OpenApiNull(),
+            ["historyValues"] = new OpenApiNull(),
+            ["unparsedParts"] = new OpenApiNull(),
+            ["qc"] = new OpenApiNull()
         };
 
         private static OpenApiObject SampleIndoorWithApartment() => new OpenApiObject
