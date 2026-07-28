@@ -53,6 +53,7 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
             Assert.Equal(outdoorCanonical, dto.Value.BuildingValue.NormalizedAddress);
             Assert.Equal(expectedHash, dto.Value.BuildingValue.Hash);
 
+            Assert.Equal(split.Indoor, dto.Value.IndoorValue.Extracted);
             Assert.Equal(unitHash, dto.Value.IndoorValue.Hash);
             var apartment = IndoorValueTestHelper.GetMark(dto.Value.IndoorValue, IndoorValueMapper.MarkIds.Apartment);
             Assert.NotNull(apartment);
@@ -72,8 +73,10 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
 
             var body = await response.Content.ReadAsStringAsync();
             var dto = JsonSerializer.Deserialize<NormalizeResponse>(body, WebApiTestFixture.JsonOptions);
+            var split = AddressNormalizerTestHost.BuildingLocationExtractor.ExtractSplit("г Москва, ул Сухонская, д 11");
 
             Assert.NotNull(dto?.Value?.IndoorValue);
+            Assert.Equal(split.Indoor, dto.Value.IndoorValue.Extracted);
             Assert.NotNull(dto.Value.IndoorValue.Marks);
             Assert.Empty(dto.Value.IndoorValue.Marks);
         }

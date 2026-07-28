@@ -55,6 +55,7 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
             var unitLocation = AddressNormalizerTestHost.Parser.Parse(split.Indoor);
             var unitCanonical = AddressNormalizerTestHost.Canonicalizer.ToCanonical(unitLocation);
             var unitHash = AddressNormalizerTestHost.Hash.ComputeSha256(unitCanonical);
+            Assert.Equal(split.Indoor, value.IndoorValue.Extracted);
             Assert.Equal(unitHash, value.IndoorValue.Hash);
             Assert.Contains("89", IndoorValueTestHelper.GetMarkValues(value.IndoorValue, IndoorValueMapper.MarkIds.Apartment));
             Assert.Equal("квартира", IndoorValueTestHelper.GetMark(value.IndoorValue, IndoorValueMapper.MarkIds.Apartment).Name);
@@ -64,7 +65,9 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
         public void NormalizeFull_WithoutIndoor_ReturnsEmptyMarks()
         {
             var value = _sut.NormalizeFull(SampleOutdoorOnly);
+            var split = AddressNormalizerTestHost.BuildingLocationExtractor.ExtractSplit(SampleOutdoorOnly);
 
+            Assert.Equal(split.Indoor, value.IndoorValue.Extracted);
             Assert.NotNull(value.IndoorValue.Marks);
             Assert.Empty(value.IndoorValue.Marks);
         }
@@ -81,6 +84,7 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
 
             Assert.Equal(expectedCanonical, result.Canonical);
             Assert.Equal(expectedHash, result.Hash);
+            Assert.Equal(source, result.IndoorValue.Extracted);
             Assert.Equal(expectedHash, result.IndoorValue.Hash);
             Assert.Contains("10", IndoorValueTestHelper.GetMarkValues(result.IndoorValue, IndoorValueMapper.MarkIds.Apartment));
         }

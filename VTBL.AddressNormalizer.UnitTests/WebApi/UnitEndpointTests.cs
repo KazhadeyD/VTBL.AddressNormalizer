@@ -42,6 +42,7 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
             Assert.Equal(source, dto.Source);
             Assert.Equal(expectedCanonical, dto.Canonical);
             Assert.Equal(expectedHash, dto.Hash);
+            Assert.Equal(source, dto.IndoorValue.Extracted);
             Assert.Equal(expectedHash, dto.IndoorValue.Hash);
             Assert.Contains("89", IndoorValueTestHelper.GetMarkValues(dto.IndoorValue, IndoorValueMapper.MarkIds.Apartment));
 

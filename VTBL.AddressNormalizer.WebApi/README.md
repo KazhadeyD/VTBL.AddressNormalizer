@@ -62,6 +62,7 @@ Unhandled → **500** `{ "error": "..." }` (`ApiExceptionFilter`).
       "dadata": null
     },
     "indoorValue": {
+      "extracted": "кв 89",
       "hash": "<sha256 от unit canonical>",
       "marks": [
         { "id": "apartment", "name": "квартира", "values": ["89"] }
@@ -78,6 +79,7 @@ Unhandled → **500** `{ "error": "..." }` (`ApiExceptionFilter`).
 | `buildingValue.hash` | SHA256(normalizedAddress) |
 | `buildingValue.fiasId` | Заглушка v1 = `null` |
 | `buildingValue.dadata` | Заглушка v1 = `null` |
+| `indoorValue.extracted` | Indoor после extract (внутренний хвост адреса) |
 | `indoorValue.hash` | SHA256 unit-канона (`ToCanonical`) |
 | `indoorValue.marks` | Sparse-массив `{ id, name, values }`; только категории с данными |
 

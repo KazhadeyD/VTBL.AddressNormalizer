@@ -63,6 +63,7 @@ namespace VTBL.AddressNormalizer.WebApi.Services
 
             var (location, canonical, hash) = NormalizeUnitCore(source);
             var indoor = IndoorValueMapper.ToIndoorValueDto(location);
+            indoor.Extracted = source;
             indoor.Hash = hash;
             return new UnitNormalizeResult
             {
@@ -202,6 +203,7 @@ namespace VTBL.AddressNormalizer.WebApi.Services
             var outdoorHash = _canonicalHash.ComputeSha256(outdoorCanonical);
             var (location, _, indoorHash) = NormalizeUnitCore(split.Indoor);
             var indoor = IndoorValueMapper.ToIndoorValueDto(location);
+            indoor.Extracted = split.Indoor;
             indoor.Hash = indoorHash;
 
             return new NormalizeValueDto

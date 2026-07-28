@@ -9,6 +9,11 @@ namespace VTBL.AddressNormalizer.WebApi.Models
     public class IndoorValueDto
     {
         /// <summary>
+        /// Indoor-часть после extract (хвост адреса после outdoor).
+        /// </summary>
+        public string Extracted { get; set; }
+
+        /// <summary>
         /// SHA256 (hex, lowercase) от канонической строки unit (<c>ToCanonical</c>).
         /// </summary>
         public string Hash { get; set; }

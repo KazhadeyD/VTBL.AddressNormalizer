@@ -145,6 +145,7 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
             var unitLocation = AddressNormalizerTestHost.Parser.Parse(split.Indoor);
             var unitCanonical = AddressNormalizerTestHost.Canonicalizer.ToCanonical(unitLocation);
             var unitHash = AddressNormalizerTestHost.Hash.ComputeSha256(unitCanonical);
+            Assert.Equal(split.Indoor, value.IndoorValue.Extracted);
             Assert.Equal(unitHash, value.IndoorValue.Hash);
         }
 

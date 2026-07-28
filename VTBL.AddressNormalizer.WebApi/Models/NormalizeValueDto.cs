@@ -11,7 +11,7 @@ namespace VTBL.AddressNormalizer.WebApi.Models
         public DadataOutdoorDto BuildingValue { get; set; }
 
         /// <summary>
-        /// Indoor: все категории <c>BuildingUnitLocation</c> как { name, values } + hash канона unit.
+        /// Indoor: extracted-фрагмент, hash канона unit и sparse-массив категорий { id, name, values }.
         /// </summary>
         public IndoorValueDto IndoorValue { get; set; }
     }
