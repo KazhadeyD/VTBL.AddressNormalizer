@@ -189,6 +189,13 @@ docker compose up -d
 
 ## История изменений
 
+### 28.07.2026 — Startup: Swagger и Health extensions
+
+- Регистрация Swagger вынесена в `AddWebApiSwagger()`
+- Health checks вынесены в `AddWebApiHealthChecks()` и `MapWebApiHealthChecks()`
+- `Startup.cs` сгруппирован по секциям Options / MVC / OpenAPI / Domain / Health
+- Development pipeline объединён в один блок
+
 ### 28.07.2026 — обёртка IDadataService
 
 - Добавлены `IDadataService` и `DadataService` для вызовов DaData suggest/address и clean/address

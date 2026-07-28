@@ -130,9 +130,10 @@ Services/Dadata/ → IDadataService (suggest/clean DaData)
 Mapping/       → BuildingUnitLocation → IndoorValueDto
 Middleware/    → Correlation Id, RequestLogging
 Filters/       → ApiExceptionFilter (500)
+Health/        → readiness/liveness, AddWebApiHealthChecks, MapWebApiHealthChecks
 Logging/       → AddAddressNormalizerLogging → MEL/NLog
 Models/        → DTO запросов/ответов
-Swagger/       → примеры OpenAPI
+Swagger/       → OpenAPI, примеры, AddWebApiSwagger()
 ```
 
 DI (`Startup`): `AddAddressNormalizerLogging()` → `AddAddressNormalizer()` → `IDadataService` → `AddressNormalizationService`.
