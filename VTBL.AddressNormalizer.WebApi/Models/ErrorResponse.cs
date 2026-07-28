@@ -3,12 +3,12 @@ using System.Text.Json.Serialization;
 namespace VTBL.AddressNormalizer.WebApi.Models
 {
     /// <summary>
-    /// Тело ошибки с единственным полем <c>error</c>.
+    /// Ответ с описанием ошибки.
     /// </summary>
     public class ErrorResponse
     {
         /// <summary>
-        /// Человекочитаемый текст ошибки.
+        /// Краткое пояснение, почему запрос не удалось обработать.
         /// </summary>
         /// <example>source должен быть непустой строкой</example>
         [JsonPropertyName("error")]

@@ -1,6 +1,6 @@
 # VTBL.AddressNormalizer.WebApi
 
-HTTP API нормализации адресов поверх ядра (`AddAddressNormalizer` + `IAddressNormalizationService`).
+HTTP API для нормализации адресов и внутренних адресных частей поверх ядра (`AddAddressNormalizer` + `IAddressNormalizationService`).
 
 Общее описание решения — в [корневом README](../README.md).
 
@@ -31,7 +31,7 @@ dotnet run --project VTBL.AddressNormalizer.WebApi
 | POST | `/api/v1/unit/normalize` | `{ "source": "..." }` | `200` + `indoorValue` + top-level `canonical`/`hash` |
 | POST | `/api/v1/address/extract` | `{ "source": "..." }` | `200` + `extracted` |
 | POST | `/api/v1/address/canonicalize` | `{ "source": "..." }` | `200` + `canonical` |
-| GET | `/health` | — | `200` `{ "status": "Healthy", "service": { "assemblyVersion": "...", "startedAtUtc": "...", "uptimeMs": 1234 }, "checks": { ... } }` |
+| GET | `/health` | — | `200` `{ "status": "Healthy", "service": { "assemblyVersion": "...", "startedAtUtc": "...", "uptimeMs": 1234, "uptime": "00:20:34" }, "checks": { ... } }` |
 | GET | `/health/live` | — | `200` liveness-only (`self`) |
 
 Пустой / null / whitespace `source` → **400** `{ "error": "..." }` (русский текст).  
@@ -45,8 +45,8 @@ Unhandled → **500** `{ "error": "..." }` (`ApiExceptionFilter`).
 
 ### Request Id
 
-Заголовок: `X-VTBL-Request-ID` → иначе GUID.  
-Значение: echo в response header `X-VTBL-Request-ID` и NLog (`CorrelationId` в layout).
+Можно передать заголовок `X-VTBL-Request-ID`. Если он не указан, сервис сгенерирует его автоматически.  
+Это значение возвращается в response header `X-VTBL-Request-ID` и пишется в NLog (`CorrelationId` в layout).
 
 ## Контракт ответа normalize
 

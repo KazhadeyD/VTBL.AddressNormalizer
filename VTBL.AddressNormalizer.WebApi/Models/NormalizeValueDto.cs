@@ -3,18 +3,18 @@ using System.Text.Json.Serialization;
 namespace VTBL.AddressNormalizer.WebApi.Models
 {
     /// <summary>
-    /// Value полной нормализации: buildingValue и indoorValue.
+    /// Результат полной нормализации адреса.
     /// </summary>
     public class NormalizeValueDto
     {
         /// <summary>
-        /// Результат нормализации outdoor-части с payload DaData.
+        /// Результат для building-части адреса: извлечённый фрагмент, нормализованный адрес, hash и данные DaData.
         /// </summary>
         [JsonPropertyName("buildingValue")]
         public DadataOutdoorDto BuildingValue { get; set; }
 
         /// <summary>
-        /// Результат indoor-нормализации: extracted, hash и sparse-массив units.
+        /// Результат для indoor-части адреса: извлечённый фрагмент, hash и категории внутренней адресации.
         /// </summary>
         [JsonPropertyName("indoorValue")]
         public IndoorValueDto IndoorValue { get; set; }

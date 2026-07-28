@@ -35,10 +35,10 @@ dotnet run --project VTBL.AddressNormalizer.WebApi
 | GET | `/health` | Health checks (self + readiness) |
 | GET | `/health/live` | Liveness (`self`) |
 
-- Auth нет. Порт: `http://localhost:5000`. Swagger UI — только `Development` (`/swagger`).
-- Вход: `{ "source": "..." }` (непустая строка; иначе 400, сообщения на русском).
-- Correlation: `X-VTBL-Request-ID` → иначе GUID; echo в response header.
-- Batch: ошибка элемента не останавливает остальные; если упали все — одна ошибка 400/500 без `items`.
+- Авторизация не требуется. Порт: `http://localhost:5000`. Swagger UI доступен только в `Development` по пути `/swagger`.
+- API ожидает тело вида `{ "source": "..." }`. Если поле `source` отсутствует, пустое или состоит только из пробелов, сервис вернёт `400`.
+- Идентификатор запроса можно передать в заголовке `X-VTBL-Request-ID`. Если он не указан, сервис сгенерирует его автоматически и вернёт в response header.
+- В batch-режиме ошибка одного элемента не останавливает обработку остальных. Если не удалось обработать весь пакет целиком, API вернёт одну общую ошибку без `items`.
 
 ### Пример ответа `POST /api/v1/normalize`
 
@@ -186,6 +186,23 @@ docker compose up -d
 `localhost:1435`, БД `AddressNormalizer`, user `sa`. Init: `docker/mssql/init/`.
 
 ## История изменений
+
+### 28.07.2026 — health: форматированный uptime
+
+- В блок `service` ответа health добавлено строковое поле `uptime`
+- `uptimeMs` сохранён числом для машинной обработки
+- Формат `uptime`: `hh:mm:ss`, а при аптайме больше суток — `d.hh:mm:ss`
+
+### 28.07.2026 — Swagger: верхнее описание без машинного тона
+
+- Переписан общий `Description` Swagger-документа в `Startup.cs`
+- Убраны служебные формулировки вроде `per-item`, `Auth нет`, `whitespace строка`
+- Формулировки в Swagger и README синхронизированы
+
+### 28.07.2026 — Swagger: человеческие описания
+
+- XML-комментарии публичных endpoints и DTO в `VTBL.AddressNormalizer.WebApi` переписаны в более продуктовый тон
+- Уточнены формулировки для `normalize`, `batch`, `unit`, `extract`, `canonicalize`, а также для ключевых DTO публичного JSON-контракта
 
 ### 28.07.2026 — health: версия сборки и время старта
 

@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 namespace VTBL.AddressNormalizer.WebApi.Models
 {
     /// <summary>
-    /// Административное и муниципальное деление DaData.
+    /// Сведения о делении адреса по административной и муниципальной структуре.
     /// </summary>
     public class DadataAddressDivisionsDto
     {

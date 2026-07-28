@@ -11,7 +11,7 @@ using VTBL.AddressNormalizer.WebApi.Services;
 namespace VTBL.AddressNormalizer.WebApi.Controllers
 {
     /// <summary>
-    /// Полная нормализация адресной строки: outdoor (extract + canonical + hash) и structured indoor.
+    /// Нормализует адрес целиком: отдельно building-часть и отдельно indoor-часть.
     /// </summary>
     [ApiController]
     [Route("api/v1/normalize")]
@@ -21,7 +21,7 @@ namespace VTBL.AddressNormalizer.WebApi.Controllers
         private readonly BatchOptions _batchOptions;
 
         /// <summary>
-        /// Создаёт контроллер normalize/batch.
+        /// Создаёт контроллер для одиночной и пакетной нормализации адресов.
         /// </summary>
         public NormalizeController(
             IAddressNormalizationService service,
@@ -32,23 +32,22 @@ namespace VTBL.AddressNormalizer.WebApi.Controllers
         }
 
         /// <summary>
-        /// Полная нормализация одного адреса.
+        /// Нормализует один адрес и возвращает результат по building- и indoor-частям.
         /// </summary>
         /// <remarks>
-        /// Разбирает полную адресную строку:
-        /// 1. extract outdoor / indoor через ядро (`ExtractSplit`);
-        /// 2. канонизация outdoor + SHA256 → `buildingValue`;
-        /// 3. indoor: Parse → ToCanonical → SHA256 → `indoorValue` (категории + hash);
-        /// 4. `buildingValue.suggest` и `buildingValue.clean` пока возвращаются как заглушки.
+        /// Разбирает полную адресную строку в два независимых результата.
+        /// Для building-части возвращает извлечённый фрагмент, нормализованный адрес, hash и данные DaData.
+        /// Для indoor-части возвращает извлечённый фрагмент, категории внутренней адресации и hash канонической строки.
+        /// Поля <c>buildingValue.suggest</c> и <c>buildingValue.clean</c> пока заполняются заглушками.
         ///
         /// Пример запроса:
         ///
         ///     POST /api/v1/normalize
         ///     { "source": "г Москва, ул Сухонская, д 11, кв 89" }
         /// </remarks>
-        /// <param name="request">Обёртка с полем <c>source</c> (непустая строка).</param>
-        /// <response code="200">Успешная нормализация.</response>
-        /// <response code="400">Тело отсутствует или <c>source</c> пустой / whitespace.</response>
+        /// <param name="request">Запрос с полем <c>source</c>.</param>
+        /// <response code="200">Адрес успешно нормализован.</response>
+        /// <response code="400">Тело запроса отсутствует или поле <c>source</c> не заполнено.</response>
         [HttpPost]
         [Produces("application/json")]
         [Consumes("application/json")]
@@ -76,19 +75,19 @@ namespace VTBL.AddressNormalizer.WebApi.Controllers
         }
 
         /// <summary>
-        /// Batch полной нормализации массива адресов.
+        /// Нормализует массив адресов и возвращает результат по каждому элементу отдельно.
         /// </summary>
         /// <remarks>
-        /// Обрабатывает каждый элемент независимо (тот же пайплайн, что у одиночного normalize).
-        /// При ошибке одного элемента остальные продолжают обрабатываться; в ответе 200 —
-        /// массив <c>items</c> со статусами <c>ok</c>/<c>error</c>.
-        /// Если упали **все** элементы: validation → 400, runtime/mixed → 500 (одна ошибка, без items).
-        /// Лимит размера задаётся конфигурацией <c>Batch:MaxItems</c> (по умолчанию 100).
+        /// Каждый адрес обрабатывается независимо по тем же правилам, что и в одиночной нормализации.
+        /// Если часть элементов завершилась с ошибкой, остальные всё равно будут обработаны,
+        /// а результат вернётся в массиве <c>items</c> со статусами <c>ok</c> и <c>error</c>.
+        /// Если не удалось обработать все элементы, API вернёт одну общую ошибку без массива результатов.
+        /// Максимальный размер batch задаётся параметром <c>Batch:MaxItems</c>.
         /// </remarks>
-        /// <param name="request">Объект с массивом <c>items[].source</c>.</param>
-        /// <response code="200">Частичный или полный успех; per-item статусы в <c>items</c>.</response>
-        /// <response code="400">Невалидный запрос или все элементы провалили валидацию.</response>
-        /// <response code="500">Все элементы упали с исключением (или mixed all-fail).</response>
+        /// <param name="request">Запрос с массивом <c>items</c>, где каждый элемент содержит поле <c>source</c>.</param>
+        /// <response code="200">Полный или частичный успех; результат по каждому элементу возвращается в <c>items</c>.</response>
+        /// <response code="400">Запрос невалиден или ни один элемент не прошёл валидацию.</response>
+        /// <response code="500">Ни один элемент не удалось обработать из-за исключений во время выполнения.</response>
         [HttpPost("batch")]
         [Produces("application/json")]
         [Consumes("application/json")]

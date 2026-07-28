@@ -8,7 +8,7 @@ using VTBL.AddressNormalizer.WebApi.Services;
 namespace VTBL.AddressNormalizer.WebApi.Controllers
 {
     /// <summary>
-    /// Нормализация indoor / unit-строки без полного адреса.
+    /// Нормализует indoor-часть адреса без building-части.
     /// </summary>
     [ApiController]
     [Route("api/v1/unit")]
@@ -17,7 +17,7 @@ namespace VTBL.AddressNormalizer.WebApi.Controllers
         private readonly IAddressNormalizationService _service;
 
         /// <summary>
-        /// Создаёт контроллер unit.
+        /// Создаёт контроллер нормализации indoor-строк.
         /// </summary>
         public UnitController(IAddressNormalizationService service)
         {
@@ -25,20 +25,21 @@ namespace VTBL.AddressNormalizer.WebApi.Controllers
         }
 
         /// <summary>
-        /// Нормализация indoor/unit-строки.
+        /// Нормализует indoor-строку и возвращает структурированный результат.
         /// </summary>
         /// <remarks>
-        /// Использует Parse → ToCanonical → SHA256: структурированный <c>indoorValue</c>
-        /// (все категории с русским name и values), top-level канон и hash.
+        /// Возвращает извлечённый indoor-фрагмент, категории внутренней адресации,
+        /// каноническую строку и её hash.
+        /// Подходит для случаев, когда building-часть адреса уже известна или не нужна.
         ///
         /// Пример:
         ///
         ///     POST /api/v1/unit/normalize
         ///     { "source": "ЭТАЖ 2, КВАРТИРА 89" }
         /// </remarks>
-        /// <param name="request">Обёртка с непустым <c>source</c>.</param>
-        /// <response code="200">Успешная нормализация unit.</response>
-        /// <response code="400">Тело отсутствует или <c>source</c> пустой / whitespace.</response>
+        /// <param name="request">Запрос с полем <c>source</c>.</param>
+        /// <response code="200">Indoor-строка успешно нормализована.</response>
+        /// <response code="400">Тело запроса отсутствует или поле <c>source</c> не заполнено.</response>
         [HttpPost("normalize")]
         [Produces("application/json")]
         [Consumes("application/json")]

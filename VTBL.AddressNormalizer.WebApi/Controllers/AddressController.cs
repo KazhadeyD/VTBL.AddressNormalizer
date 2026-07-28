@@ -8,7 +8,7 @@ using VTBL.AddressNormalizer.WebApi.Services;
 namespace VTBL.AddressNormalizer.WebApi.Controllers
 {
     /// <summary>
-    /// Операции над outdoor-частью адреса: extract и canonicalize.
+    /// Операции над building-частью адреса: извлечение и канонизация.
     /// </summary>
     [ApiController]
     [Route("api/v1/address")]
@@ -17,7 +17,7 @@ namespace VTBL.AddressNormalizer.WebApi.Controllers
         private readonly IAddressNormalizationService _service;
 
         /// <summary>
-        /// Создаёт контроллер address.
+        /// Создаёт контроллер операций над building-частью адреса.
         /// </summary>
         public AddressController(IAddressNormalizationService service)
         {
@@ -25,16 +25,16 @@ namespace VTBL.AddressNormalizer.WebApi.Controllers
         }
 
         /// <summary>
-        /// Извлечение outdoor-части адреса (отсечение indoor).
+        /// Возвращает из исходной строки только building-часть адреса.
         /// </summary>
         /// <remarks>
-        /// Возвращает только outdoor-строку без канонизации и без indoor-разбора.
-        /// Если indoor-маркеров нет — <c>extracted</c> совпадает с исходной (нормализованной extract-логикой) строкой;
-        /// если строка целиком indoor — <c>extracted</c> может быть пустой.
+        /// Метод отделяет building-часть от indoor-хвоста, но не канонизирует адрес.
+        /// Если indoor-маркеров нет, поле <c>extracted</c> обычно совпадает с исходной строкой.
+        /// Если строка содержит только indoor-часть, <c>extracted</c> может оказаться пустым.
         /// </remarks>
-        /// <param name="request">Обёртка с непустым <c>source</c>.</param>
-        /// <response code="200">Outdoor-часть извлечена.</response>
-        /// <response code="400">Тело отсутствует или <c>source</c> пустой / whitespace.</response>
+        /// <param name="request">Запрос с полем <c>source</c>.</param>
+        /// <response code="200">Building-часть адреса успешно извлечена.</response>
+        /// <response code="400">Тело запроса отсутствует или поле <c>source</c> не заполнено.</response>
         [HttpPost("extract")]
         [Produces("application/json")]
         [Consumes("application/json")]
@@ -62,15 +62,15 @@ namespace VTBL.AddressNormalizer.WebApi.Controllers
         }
 
         /// <summary>
-        /// Канонизация building location (без предварительного extract).
+        /// Приводит building-часть адреса к нормализованному виду.
         /// </summary>
         /// <remarks>
-        /// Принимает уже outdoor (или строку, которую нужно канонизировать как building location).
-        /// Не выполняет скрытый extract и не возвращает hash — только читаемый канон.
+        /// Метод принимает строку как building-часть адреса и возвращает только нормализованное представление.
+        /// Скрытое извлечение indoor-части не выполняется, hash в ответ не добавляется.
         /// </remarks>
-        /// <param name="request">Обёртка с непустым <c>source</c>.</param>
-        /// <response code="200">Каноническая строка.</response>
-        /// <response code="400">Тело отсутствует или <c>source</c> пустой / whitespace.</response>
+        /// <param name="request">Запрос с полем <c>source</c>.</param>
+        /// <response code="200">Нормализованный building-адрес.</response>
+        /// <response code="400">Тело запроса отсутствует или поле <c>source</c> не заполнено.</response>
         [HttpPost("canonicalize")]
         [Produces("application/json")]
         [Consumes("application/json")]

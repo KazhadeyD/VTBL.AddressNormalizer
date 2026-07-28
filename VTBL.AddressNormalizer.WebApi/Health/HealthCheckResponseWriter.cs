@@ -32,7 +32,8 @@ namespace VTBL.AddressNormalizer.WebApi.Health
                 {
                     assemblyVersion = AssemblyVersion,
                     startedAtUtc = StartedAtUtc,
-                    uptimeMs = (DateTimeOffset.UtcNow - StartedAtUtc).TotalMilliseconds
+                    uptimeMs = (DateTimeOffset.UtcNow - StartedAtUtc).TotalMilliseconds,
+                    uptime = FormatUptime(DateTimeOffset.UtcNow - StartedAtUtc)
                 },
                 totalDurationMs = report.TotalDuration.TotalMilliseconds,
                 checks = report.Entries.ToDictionary(
@@ -55,6 +56,14 @@ namespace VTBL.AddressNormalizer.WebApi.Health
             return assembly.GetName().Version?.ToString()
                 ?? assembly.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version
                 ?? "unknown";
+        }
+
+        private static string FormatUptime(TimeSpan uptime)
+        {
+            if (uptime.TotalDays >= 1)
+                return $"{(int)uptime.TotalDays}.{uptime:hh\\:mm\\:ss}";
+
+            return uptime.ToString(@"hh\:mm\:ss");
         }
     }
 }
