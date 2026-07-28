@@ -56,7 +56,7 @@ dotnet run --project VTBL.AddressNormalizer.WebApi
     "indoorValue": {
       "extracted": "кв 89",
       "hash": "<sha256 от unit canonical>",
-      "marks": [
+      "units": [
         { "id": "apartment", "name": "квартира", "values": ["89"] }
       ]
     }
@@ -67,7 +67,7 @@ dotnet run --project VTBL.AddressNormalizer.WebApi
 - `buildingValue.fiasId` / `dadata` в v1 всегда `null` (заглушки).
 - `indoorValue.extracted` — indoor после extract (внутренний хвост адреса).
 - `indoorValue.hash` — SHA256 unit-канона (`ToCanonical`).
-- `indoorValue.marks` — sparse-массив категорий `{ id, name, values }`; пустые категории не включаются.
+- `indoorValue.units` — sparse-массив категорий `{ id, name, values }`; пустые категории не включаются.
 - Unit-endpoint дополнительно отдаёт top-level `canonical` и `hash` (тот же hash, что в `indoorValue`).
 
 ## Архитектура
@@ -171,6 +171,11 @@ docker compose up -d
 `localhost:1435`, БД `AddressNormalizer`, user `sa`. Init: `docker/mssql/init/`.
 
 ## История изменений
+
+### 28.07.2026 — indoorValue.units
+
+- Поле `indoorValue.marks` переименовано в `indoorValue.units`
+- Контракт, Swagger и тесты обновлены под `units`
 
 ### 27.07.2026 — IIS web.config: ASPNETCORE_ENVIRONMENT
 

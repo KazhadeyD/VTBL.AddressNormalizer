@@ -3,7 +3,7 @@ using System.Collections.Generic;
 namespace VTBL.AddressNormalizer.WebApi.Models
 {
     /// <summary>
-    /// Structured <c>indoorValue</c>: <c>hash</c> от unit-канона и sparse-массив <c>marks</c>
+    /// Structured <c>indoorValue</c>: <c>hash</c> от unit-канона и sparse-массив <c>units</c>
     /// (только категории с непустыми <c>values</c>).
     /// </summary>
     public class IndoorValueDto
@@ -21,6 +21,6 @@ namespace VTBL.AddressNormalizer.WebApi.Models
         /// <summary>
         /// Категории indoor с данными; пустые категории не включаются.
         /// </summary>
-        public IList<IndoorMarkDto> Marks { get; set; } = new List<IndoorMarkDto>();
+        public IList<IndoorMarkDto> Units { get; set; } = new List<IndoorMarkDto>();
     }
 }

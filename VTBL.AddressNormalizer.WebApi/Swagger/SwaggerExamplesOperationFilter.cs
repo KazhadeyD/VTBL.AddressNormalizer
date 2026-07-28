@@ -255,7 +255,7 @@ namespace VTBL.AddressNormalizer.WebApi.Swagger
         {
             ["extracted"] = new OpenApiString("кв 89"),
             ["hash"] = new OpenApiString("b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef12345678"),
-            ["marks"] = new OpenApiArray
+            ["units"] = new OpenApiArray
             {
                 Mark("apartment", "квартира", "89")
             }
@@ -265,7 +265,7 @@ namespace VTBL.AddressNormalizer.WebApi.Swagger
         {
             ["extracted"] = new OpenApiString("ЭТАЖ 2, КВАРТИРА 89"),
             ["hash"] = new OpenApiString("b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef12345678"),
-            ["marks"] = new OpenApiArray
+            ["units"] = new OpenApiArray
             {
                 Mark("floor", "этаж", "2"),
                 Mark("apartment", "квартира", "89")

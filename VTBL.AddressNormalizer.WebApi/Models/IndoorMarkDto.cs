@@ -1,7 +1,7 @@
 namespace VTBL.AddressNormalizer.WebApi.Models
 {
     /// <summary>
-    /// Одна категория indoor в массиве <c>marks</c>: стабильный id, русское имя и значения.
+    /// Одна категория indoor в массиве <c>units</c>: стабильный id, русское имя и значения.
     /// </summary>
     public class IndoorMarkDto
     {

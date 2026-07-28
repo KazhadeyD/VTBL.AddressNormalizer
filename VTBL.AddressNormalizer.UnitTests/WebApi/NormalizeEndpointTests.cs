@@ -62,7 +62,7 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
         }
 
         [Fact]
-        public async Task Normalize_AddressWithoutIndoor_ReturnsEmptyMarks()
+        public async Task Normalize_AddressWithoutIndoor_ReturnsEmptyUnits()
         {
             var response = await WebApiTestFixture.PostJsonAsync(
                 _client,
@@ -77,8 +77,8 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
 
             Assert.NotNull(dto?.Value?.IndoorValue);
             Assert.Equal(split.Indoor, dto.Value.IndoorValue.Extracted);
-            Assert.NotNull(dto.Value.IndoorValue.Marks);
-            Assert.Empty(dto.Value.IndoorValue.Marks);
+            Assert.NotNull(dto.Value.IndoorValue.Units);
+            Assert.Empty(dto.Value.IndoorValue.Units);
         }
 
         [Fact]

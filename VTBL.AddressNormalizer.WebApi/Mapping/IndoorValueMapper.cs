@@ -8,12 +8,12 @@ namespace VTBL.AddressNormalizer.WebApi.Mapping
 {
     /// <summary>
     /// Маппинг <see cref="BuildingUnitLocation"/> → <see cref="IndoorValueDto"/>
-    /// (sparse <c>marks</c> с id, русским <c>name</c> и <c>values</c>).
+    /// (sparse <c>units</c> с id, русским <c>name</c> и <c>values</c>).
     /// </summary>
     public static class IndoorValueMapper
     {
         /// <summary>
-        /// Стабильные id категорий для JSON <c>marks[].id</c>.
+        /// Стабильные id категорий для JSON <c>units[].id</c>.
         /// </summary>
         public static class MarkIds
         {
@@ -91,13 +91,13 @@ namespace VTBL.AddressNormalizer.WebApi.Mapping
         };
 
         /// <summary>
-        /// Строит <see cref="IndoorValueDto"/> с sparse <c>marks</c> — только категории с данными.
+        /// Строит <see cref="IndoorValueDto"/> с sparse <c>units</c> — только категории с данными.
         /// </summary>
         /// <param name="location">Локация unit; <c>null</c> трактуется как пустая локация.</param>
         public static IndoorValueDto ToIndoorValueDto(BuildingUnitLocation location)
         {
             var src = location ?? new BuildingUnitLocation();
-            var marks = new List<IndoorMarkDto>(Catalog.Length);
+            var units = new List<IndoorMarkDto>(Catalog.Length);
 
             foreach (var (id, name, getValues) in Catalog)
             {
@@ -105,7 +105,7 @@ namespace VTBL.AddressNormalizer.WebApi.Mapping
                 if (values.Length == 0)
                     continue;
 
-                marks.Add(new IndoorMarkDto
+                units.Add(new IndoorMarkDto
                 {
                     Id = id,
                     Name = name,
@@ -115,7 +115,7 @@ namespace VTBL.AddressNormalizer.WebApi.Mapping
 
             return new IndoorValueDto
             {
-                Marks = marks
+                Units = units
             };
         }
 

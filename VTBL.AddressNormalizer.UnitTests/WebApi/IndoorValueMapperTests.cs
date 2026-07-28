@@ -12,12 +12,12 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
     public class IndoorValueMapperTests
     {
         [Fact]
-        public void ToIndoorValueDto_EmptyLocation_ReturnsEmptyMarks()
+        public void ToIndoorValueDto_EmptyLocation_ReturnsEmptyUnits()
         {
             var dto = IndoorValueMapper.ToIndoorValueDto(new BuildingUnitLocation());
 
-            Assert.NotNull(dto.Marks);
-            Assert.Empty(dto.Marks);
+            Assert.NotNull(dto.Units);
+            Assert.Empty(dto.Units);
         }
 
         [Fact]
@@ -29,7 +29,7 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
 
             var dto = IndoorValueMapper.ToIndoorValueDto(location);
 
-            Assert.Equal(2, dto.Marks.Count);
+            Assert.Equal(2, dto.Units.Count);
 
             var apartment = IndoorValueTestHelper.GetMark(dto, IndoorValueMapper.MarkIds.Apartment);
             Assert.NotNull(apartment);
@@ -45,12 +45,12 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
         }
 
         [Fact]
-        public void ToIndoorValueDto_NullLocation_ReturnsEmptyMarks()
+        public void ToIndoorValueDto_NullLocation_ReturnsEmptyUnits()
         {
             var dto = IndoorValueMapper.ToIndoorValueDto(null);
 
-            Assert.NotNull(dto.Marks);
-            Assert.Empty(dto.Marks);
+            Assert.NotNull(dto.Units);
+            Assert.Empty(dto.Units);
         }
 
         [Fact]
@@ -64,7 +64,7 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
 
             Assert.Equal(
                 new[] { IndoorValueMapper.MarkIds.Floor, IndoorValueMapper.MarkIds.Apartment },
-                dto.Marks.Select(mark => mark.Id).ToArray());
+                dto.Units.Select(mark => mark.Id).ToArray());
         }
     }
 }

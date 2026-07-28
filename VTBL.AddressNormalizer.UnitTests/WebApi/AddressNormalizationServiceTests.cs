@@ -62,14 +62,14 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
         }
 
         [Fact]
-        public void NormalizeFull_WithoutIndoor_ReturnsEmptyMarks()
+        public void NormalizeFull_WithoutIndoor_ReturnsEmptyUnits()
         {
             var value = _sut.NormalizeFull(SampleOutdoorOnly);
             var split = AddressNormalizerTestHost.BuildingLocationExtractor.ExtractSplit(SampleOutdoorOnly);
 
             Assert.Equal(split.Indoor, value.IndoorValue.Extracted);
-            Assert.NotNull(value.IndoorValue.Marks);
-            Assert.Empty(value.IndoorValue.Marks);
+            Assert.NotNull(value.IndoorValue.Units);
+            Assert.Empty(value.IndoorValue.Units);
         }
 
         [Fact]

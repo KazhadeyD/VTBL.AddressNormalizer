@@ -5,16 +5,16 @@ using VTBL.AddressNormalizer.WebApi.Models;
 namespace VTBL.AddressNormalizer.UnitTests.WebApi
 {
     /// <summary>
-    /// Хелперы для assert по sparse <c>marks</c> в <see cref="IndoorValueDto"/>.
+    /// Хелперы для assert по sparse <c>units</c> в <see cref="IndoorValueDto"/>.
     /// </summary>
     internal static class IndoorValueTestHelper
     {
         public static IndoorMarkDto GetMark(IndoorValueDto indoor, string id)
         {
-            if (indoor?.Marks == null)
+            if (indoor?.Units == null)
                 return null;
 
-            return indoor.Marks.FirstOrDefault(mark =>
+            return indoor.Units.FirstOrDefault(mark =>
                 string.Equals(mark.Id, id, StringComparison.Ordinal));
         }
 
