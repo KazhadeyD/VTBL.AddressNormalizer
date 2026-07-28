@@ -126,6 +126,7 @@ curl -X POST http://localhost:5000/api/v1/normalize `
 ```
 Controllers/   → IAddressNormalizationService
 Services/      → оркестрация (ExtractSplit, Parse, ToCanonical, hash, mapper)
+Services/Dadata/ → IDadataService (suggest/clean DaData)
 Mapping/       → BuildingUnitLocation → IndoorValueDto
 Middleware/    → Correlation Id, RequestLogging
 Filters/       → ApiExceptionFilter (500)
@@ -134,7 +135,7 @@ Models/        → DTO запросов/ответов
 Swagger/       → примеры OpenAPI
 ```
 
-DI (`Startup`): `AddAddressNormalizerLogging()` → `AddAddressNormalizer()` → `AddressNormalizationService`.
+DI (`Startup`): `AddAddressNormalizerLogging()` → `AddAddressNormalizer()` → `IDadataService` → `AddressNormalizationService`.
 
 **Логирование (тексты на русском):**
 - `RequestLoggingMiddleware` — HTTP method/path/status/duration (skip `/health`, `/swagger`)

@@ -27,7 +27,8 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
                 AddressNormalizerTestHost.BuildingAddressCanonicalizer,
                 AddressNormalizerTestHost.Parser,
                 AddressNormalizerTestHost.Canonicalizer,
-                AddressNormalizerTestHost.Hash);
+                AddressNormalizerTestHost.Hash,
+                new StubDadataService());
 
         [Theory]
         [InlineData(null)]
@@ -303,7 +304,8 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
                     AddressNormalizerTestHost.BuildingAddressCanonicalizer,
                     AddressNormalizerTestHost.Parser,
                     AddressNormalizerTestHost.Canonicalizer,
-                    AddressNormalizerTestHost.Hash)
+                    AddressNormalizerTestHost.Hash,
+                    new StubDadataService())
             {
             }
 

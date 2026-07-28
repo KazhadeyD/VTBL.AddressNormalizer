@@ -4,7 +4,11 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using VTBL.AddressNormalizer.WebApi;
+using VTBL.AddressNormalizer.WebApi.Services.Dadata;
 
 namespace VTBL.AddressNormalizer.UnitTests.WebApi
 {
@@ -26,6 +30,11 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
             builder.UseEnvironment("Production");
+            builder.ConfigureTestServices(services =>
+            {
+                services.RemoveAll<IDadataService>();
+                services.AddSingleton<IDadataService, StubDadataService>();
+            });
         }
 
         /// <summary>

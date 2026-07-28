@@ -81,7 +81,7 @@ dotnet run --project VTBL.AddressNormalizer.WebApi
 ```
 
 - `buildingValue.fiasId` берётся из `dadata.suggest.suggestions[0].data.house_fias_id`, fallback — `dadata.clean.house_fias_id`.
-- `buildingValue.dadata.suggest` / `buildingValue.dadata.clean` — типизированные заглушки под будущую интеграцию DaData.
+- `buildingValue.dadata.suggest` / `buildingValue.dadata.clean` — данные DaData через `IDadataService` (HTTP-реализация заполняется отдельно).
 - `indoorValue.extracted` — indoor после extract (внутренний хвост адреса).
 - `indoorValue.hash` — SHA256 unit-канона (`ToCanonical`).
 - `indoorValue.units` — sparse-массив категорий `{ id, name, values }`; пустые категории не включаются.
@@ -188,6 +188,12 @@ docker compose up -d
 `localhost:1435`, БД `AddressNormalizer`, user `sa`. Init: `docker/mssql/init/`.
 
 ## История изменений
+
+### 28.07.2026 — обёртка IDadataService
+
+- Добавлены `IDadataService` и `DadataService` для вызовов DaData suggest/address и clean/address
+- `AddressNormalizationService` получает `buildingValue.dadata` через сервис; реализация HTTP пока пустая
+- В тестах используется `StubDadataService`
 
 ### 28.07.2026 — buildingValue.dadata
 

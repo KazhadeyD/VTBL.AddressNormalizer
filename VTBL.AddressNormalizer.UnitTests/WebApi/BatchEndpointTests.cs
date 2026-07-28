@@ -224,7 +224,8 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
                             AddressNormalizerTestHost.BuildingAddressCanonicalizer,
                             AddressNormalizerTestHost.Parser,
                             AddressNormalizerTestHost.Canonicalizer,
-                            AddressNormalizerTestHost.Hash));
+                            AddressNormalizerTestHost.Hash,
+                            new StubDadataService()));
                 });
             }
         }
@@ -237,8 +238,9 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
                 VTBL.AddressNormalizer.Abstractions.BuildingAddress.IBuildingAddressCanonicalizer addressCanonicalizer,
                 VTBL.AddressNormalizer.Abstractions.BuildingUnit.IBuildingUnitParser unitParser,
                 VTBL.AddressNormalizer.Abstractions.BuildingUnit.IBuildingUnitCanonicalizer unitCanonicalizer,
-                VTBL.AddressNormalizer.Abstractions.Shared.ICanonicalHash canonicalHash)
-                : base(logger, locationExtractor, addressCanonicalizer, unitParser, unitCanonicalizer, canonicalHash)
+                VTBL.AddressNormalizer.Abstractions.Shared.ICanonicalHash canonicalHash,
+                VTBL.AddressNormalizer.WebApi.Services.Dadata.IDadataService dadataService)
+                : base(logger, locationExtractor, addressCanonicalizer, unitParser, unitCanonicalizer, canonicalHash, dadataService)
             {
             }
 

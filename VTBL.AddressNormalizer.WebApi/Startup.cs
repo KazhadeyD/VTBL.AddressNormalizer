@@ -16,6 +16,7 @@ using VTBL.AddressNormalizer.WebApi.Health;
 using VTBL.AddressNormalizer.WebApi.Middleware;
 using VTBL.AddressNormalizer.WebApi.Options;
 using VTBL.AddressNormalizer.WebApi.Services;
+using VTBL.AddressNormalizer.WebApi.Services.Dadata;
 using VTBL.AddressNormalizer.WebApi.Swagger;
 
 namespace VTBL.AddressNormalizer.WebApi
@@ -71,6 +72,7 @@ namespace VTBL.AddressNormalizer.WebApi
 
             services.AddAddressNormalizerLogging();
             services.AddAddressNormalizer();
+            services.AddSingleton<IDadataService, DadataService>();
             services.AddSingleton<IAddressNormalizationService, AddressNormalizationService>();
             services
                 .AddHealthChecks()

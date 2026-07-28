@@ -38,7 +38,7 @@ namespace VTBL.AddressNormalizer.WebApi.Controllers
         /// Разбирает полную адресную строку в два независимых результата.
         /// Для building-части возвращает извлечённый фрагмент, нормализованный адрес, hash и данные DaData.
         /// Для indoor-части возвращает извлечённый фрагмент, категории внутренней адресации и hash канонической строки.
-        /// Поле <c>buildingValue.dadata</c> пока заполняется заглушками для <c>suggest</c> и <c>clean</c>.
+        /// Поле <c>buildingValue.dadata</c> заполняется через <see cref="Services.Dadata.IDadataService"/>.
         ///
         /// Пример запроса:
         ///
