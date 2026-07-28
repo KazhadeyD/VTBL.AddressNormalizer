@@ -1,29 +1,22 @@
+using System.Text.Json.Serialization;
+
 namespace VTBL.AddressNormalizer.WebApi.Models
 {
     /// <summary>
-    /// Результат одного элемента batch (только в HTTP 200).
+    /// Результат одного элемента batch-запроса.
     /// </summary>
     public class BatchItemResultDto
     {
-        /// <summary>
-        /// Статус элемента: <c>ok</c> или <c>error</c>.
-        /// </summary>
-        /// <example>ok</example>
+        [JsonPropertyName("status")]
         public string Status { get; set; }
 
-        /// <summary>
-        /// Исходная строка элемента (<c>null</c> во входе сериализуется как пустая строка).
-        /// </summary>
+        [JsonPropertyName("source")]
         public string Source { get; set; }
 
-        /// <summary>
-        /// Value полной нормализации; заполняется только при <c>status=ok</c>.
-        /// </summary>
+        [JsonPropertyName("value")]
         public NormalizeValueDto Value { get; set; }
 
-        /// <summary>
-        /// Текст ошибки; заполняется только при <c>status=error</c>.
-        /// </summary>
+        [JsonPropertyName("error")]
         public string Error { get; set; }
     }
 }

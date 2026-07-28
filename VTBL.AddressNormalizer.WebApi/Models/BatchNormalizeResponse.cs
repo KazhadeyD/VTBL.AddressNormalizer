@@ -1,15 +1,14 @@
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace VTBL.AddressNormalizer.WebApi.Models
 {
     /// <summary>
-    /// Ответ batch при частичном/полном успехе (HTTP 200).
+    /// Ответ batch-нормализации.
     /// </summary>
     public class BatchNormalizeResponse
     {
-        /// <summary>
-        /// Per-item результаты в порядке входа (<c>ok</c> / <c>error</c>).
-        /// </summary>
+        [JsonPropertyName("items")]
         public IList<BatchItemResultDto> Items { get; set; }
     }
 }

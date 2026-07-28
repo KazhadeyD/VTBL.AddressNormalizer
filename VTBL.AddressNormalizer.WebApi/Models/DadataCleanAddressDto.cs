@@ -1,7 +1,7 @@
 namespace VTBL.AddressNormalizer.WebApi.Models
 {
     /// <summary>
-    /// Один объект из ответа DaData clean/address.
+    /// Один элемент из ответа DaData clean/address.
     /// </summary>
     public class DadataCleanAddressDto : DadataAddressDataDto
     {

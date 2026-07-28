@@ -46,7 +46,7 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
             Assert.NotNull(dto);
             Assert.Equal(source, dto.Source);
             Assert.NotNull(dto.Value);
-            Assert.Null(dto.Value.BuildingValue.FiasId);
+            Assert.Equal("suggest-house-fias-id", dto.Value.BuildingValue.FiasId);
             Assert.NotNull(dto.Value.BuildingValue);
             Assert.NotNull(dto.Value.BuildingValue.Suggest);
             Assert.NotNull(dto.Value.BuildingValue.Clean);

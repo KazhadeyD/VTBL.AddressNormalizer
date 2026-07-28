@@ -1,19 +1,16 @@
+using System.Text.Json.Serialization;
+
 namespace VTBL.AddressNormalizer.WebApi.Models
 {
     /// <summary>
-    /// Ответ canonicalize building location (<c>POST /api/v1/address/canonicalize</c>).
-    /// Hash не возвращается.
+    /// Ответ canonicalize для building-адреса.
     /// </summary>
     public class CanonicalizeResponse
     {
-        /// <summary>
-        /// Исходная строка запроса.
-        /// </summary>
+        [JsonPropertyName("source")]
         public string Source { get; set; }
 
-        /// <summary>
-        /// Читаемая каноническая строка building location.
-        /// </summary>
+        [JsonPropertyName("canonical")]
         public string Canonical { get; set; }
     }
 }

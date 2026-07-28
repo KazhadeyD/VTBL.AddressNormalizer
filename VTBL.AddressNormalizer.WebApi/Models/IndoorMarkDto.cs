@@ -1,26 +1,20 @@
+using System;
+using System.Text.Json.Serialization;
+
 namespace VTBL.AddressNormalizer.WebApi.Models
 {
     /// <summary>
-    /// Одна категория indoor в массиве <c>units</c>: стабильный id, русское имя и значения.
+    /// Одна indoor-категория в массиве <c>units</c>.
     /// </summary>
     public class IndoorMarkDto
     {
-        /// <summary>
-        /// Стабильный машинный идентификатор категории (camelCase, единственное число).
-        /// </summary>
-        /// <example>apartment</example>
+        [JsonPropertyName("id")]
         public string Id { get; set; }
 
-        /// <summary>
-        /// Русское отображаемое имя категории.
-        /// </summary>
-        /// <example>квартира</example>
+        [JsonPropertyName("name")]
         public string Name { get; set; }
 
-        /// <summary>
-        /// Значения категории.
-        /// </summary>
-        /// <example>["89"]</example>
-        public string[] Values { get; set; } = System.Array.Empty<string>();
+        [JsonPropertyName("values")]
+        public string[] Values { get; set; } = Array.Empty<string>();
     }
 }

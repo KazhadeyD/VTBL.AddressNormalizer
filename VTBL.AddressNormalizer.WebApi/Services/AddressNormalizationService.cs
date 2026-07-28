@@ -205,6 +205,8 @@ namespace VTBL.AddressNormalizer.WebApi.Services
             var indoor = IndoorValueMapper.ToIndoorValueDto(location);
             indoor.Extracted = split.Indoor;
             indoor.Hash = indoorHash;
+            var suggest = CreateSuggestStub(split.Outdoor, outdoorCanonical);
+            var clean = CreateCleanStub(split.Outdoor, outdoorCanonical);
 
             return new NormalizeValueDto
             {
@@ -213,16 +215,26 @@ namespace VTBL.AddressNormalizer.WebApi.Services
                     Extracted = split.Outdoor,
                     NormalizedAddress = outdoorCanonical,
                     Hash = outdoorHash,
-                    FiasId = null,
-                    Suggest = CreateSuggestStub(split.Outdoor, outdoorCanonical),
-                    Clean = CreateCleanStub(split.Outdoor, outdoorCanonical)
+                    FiasId = ResolveBuildingFiasId(suggest, clean),
+                    Suggest = suggest,
+                    Clean = clean
                 },
                 IndoorValue = indoor
             };
         }
 
+        private static string ResolveBuildingFiasId(DadataSuggestAddressDto suggest, DadataCleanAddressDto clean)
+        {
+            var suggestHouseFiasId = suggest?.Suggestions?[0]?.Data?.HouseFiasId;
+            if (!string.IsNullOrWhiteSpace(suggestHouseFiasId))
+                return suggestHouseFiasId;
+
+            return string.IsNullOrWhiteSpace(clean?.HouseFiasId) ? null : clean.HouseFiasId;
+        }
+
         private static DadataSuggestAddressDto CreateSuggestStub(string extracted, string normalizedAddress)
         {
+            var data = CreateAddressDataStub(extracted, normalizedAddress, houseFiasId: "suggest-house-fias-id");
             return new DadataSuggestAddressDto
             {
                 Suggestions = new[]
@@ -231,7 +243,7 @@ namespace VTBL.AddressNormalizer.WebApi.Services
                     {
                         Value = normalizedAddress,
                         UnrestrictedValue = normalizedAddress,
-                        Data = CreateAddressDataStub(extracted, normalizedAddress)
+                        Data = data
                     }
                 }
             };
@@ -239,7 +251,7 @@ namespace VTBL.AddressNormalizer.WebApi.Services
 
         private static DadataCleanAddressDto CreateCleanStub(string extracted, string normalizedAddress)
         {
-            var data = CreateAddressDataStub(extracted, normalizedAddress);
+            var data = CreateAddressDataStub(extracted, normalizedAddress, houseFiasId: "clean-house-fias-id");
             return new DadataCleanAddressDto
             {
                 Source = data.Source,
@@ -345,7 +357,7 @@ namespace VTBL.AddressNormalizer.WebApi.Services
             };
         }
 
-        private static DadataAddressDataDto CreateAddressDataStub(string extracted, string normalizedAddress)
+        private static DadataAddressDataDto CreateAddressDataStub(string extracted, string normalizedAddress, string houseFiasId)
         {
             return new DadataAddressDataDto
             {
@@ -399,7 +411,7 @@ namespace VTBL.AddressNormalizer.WebApi.Services
                 SteadType = null,
                 SteadTypeFull = null,
                 Stead = null,
-                HouseFiasId = null,
+                HouseFiasId = houseFiasId,
                 HouseKladrId = null,
                 HouseCadnum = null,
                 HouseFlatCount = null,

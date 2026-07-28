@@ -1,40 +1,31 @@
+using System.Text.Json.Serialization;
+
 namespace VTBL.AddressNormalizer.WebApi.Models
 {
     /// <summary>
-    /// Блок outdoor-результата (<c>buildingValue</c>): extract + canonical + hash + заглушки DaData/FIAS.
+    /// Результат для buildingValue: extracted, normalizedAddress, hash и payload DaData.
     /// </summary>
     public class DadataOutdoorDto
     {
-        /// <summary>
-        /// Outdoor-часть после extract (без indoor-хвоста).
-        /// </summary>
-        /// <example>г Москва, ул Сухонская, д 11</example>
+        [JsonPropertyName("extracted")]
         public string Extracted { get; set; }
 
-        /// <summary>
-        /// Читаемый канон outdoor (building location).
-        /// </summary>
-        /// <example>г Москва, ул Сухонская, д 11</example>
+        [JsonPropertyName("normalizedAddress")]
         public string NormalizedAddress { get; set; }
 
-        /// <summary>
-        /// SHA256 (hex, lowercase) от <see cref="NormalizedAddress"/>.
-        /// </summary>
+        [JsonPropertyName("hash")]
         public string Hash { get; set; }
 
         /// <summary>
-        /// Идентификатор FIAS. В v1 всегда <c>null</c> (заглушка под будущую интеграцию).
+        /// Заполняется по правилу: suggest.house_fias_id, затем clean.house_fias_id.
         /// </summary>
+        [JsonPropertyName("fiasId")]
         public string FiasId { get; set; }
 
-        /// <summary>
-        /// Заглушка структуры ответа DaData suggest/address.
-        /// </summary>
+        [JsonPropertyName("suggest")]
         public DadataSuggestAddressDto Suggest { get; set; }
 
-        /// <summary>
-        /// Заглушка структуры ответа DaData clean/address.
-        /// </summary>
+        [JsonPropertyName("clean")]
         public DadataCleanAddressDto Clean { get; set; }
     }
 }

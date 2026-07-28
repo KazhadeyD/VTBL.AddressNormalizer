@@ -1,15 +1,14 @@
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace VTBL.AddressNormalizer.WebApi.Models
 {
     /// <summary>
-    /// Запрос batch-нормализации (<c>POST /api/v1/normalize/batch</c>).
+    /// Запрос batch-нормализации.
     /// </summary>
     public class BatchNormalizeRequest
     {
-        /// <summary>
-        /// Элементы batch; каждый содержит свой <c>source</c>. Не пустой; размер ≤ <c>Batch:MaxItems</c>.
-        /// </summary>
+        [JsonPropertyName("items")]
         public IList<SourceRequest> Items { get; set; }
     }
 }

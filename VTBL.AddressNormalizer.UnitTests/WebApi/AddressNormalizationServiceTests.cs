@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Microsoft.Extensions.Logging.Abstractions;
 using VTBL.AddressNormalizer.WebApi.Mapping;
 using VTBL.AddressNormalizer.WebApi.Models;
@@ -47,7 +48,7 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
             var outdoorCanonical = AddressNormalizerTestHost.BuildingAddressCanonicalizer.ToCanonical(split.Outdoor);
             var expectedHash = AddressNormalizerTestHost.Hash.ComputeSha256(outdoorCanonical);
 
-            Assert.Null(value.BuildingValue.FiasId);
+            Assert.Equal("suggest-house-fias-id", value.BuildingValue.FiasId);
             Assert.NotNull(value.BuildingValue.Suggest);
             Assert.NotNull(value.BuildingValue.Clean);
             Assert.Equal(split.Outdoor, value.BuildingValue.Extracted);
@@ -91,6 +92,53 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
         }
 
         [Fact]
+        public void ResolveBuildingFiasId_WhenSuggestHasHouseFiasId_PrefersSuggest()
+        {
+            var suggest = new DadataSuggestAddressDto
+            {
+                Suggestions = new[]
+                {
+                    new DadataSuggestAddressSuggestionDto
+                    {
+                        Data = new DadataAddressDataDto
+                        {
+                            HouseFiasId = "suggest-id"
+                        }
+                    }
+                }
+            };
+
+            var clean = new DadataCleanAddressDto
+            {
+                HouseFiasId = "clean-id"
+            };
+
+            Assert.Equal("suggest-id", InvokeResolveBuildingFiasId(suggest, clean));
+        }
+
+        [Fact]
+        public void ResolveBuildingFiasId_WhenSuggestMissing_FallsBackToClean()
+        {
+            var suggest = new DadataSuggestAddressDto
+            {
+                Suggestions = new[]
+                {
+                    new DadataSuggestAddressSuggestionDto
+                    {
+                        Data = new DadataAddressDataDto()
+                    }
+                }
+            };
+
+            var clean = new DadataCleanAddressDto
+            {
+                HouseFiasId = "clean-id"
+            };
+
+            Assert.Equal("clean-id", InvokeResolveBuildingFiasId(suggest, clean));
+        }
+
+        [Fact]
         public void ExtractOutdoor_MatchesExtractSplitOutdoor()
         {
             var expected = AddressNormalizerTestHost.BuildingLocationExtractor.ExtractSplit(SampleWithIndoor).Outdoor;
@@ -104,6 +152,16 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
             var expected = AddressNormalizerTestHost.BuildingAddressCanonicalizer.ToCanonical(SampleWithIndoor);
 
             Assert.Equal(expected, _sut.Canonicalize(SampleWithIndoor));
+        }
+
+        private static string InvokeResolveBuildingFiasId(DadataSuggestAddressDto suggest, DadataCleanAddressDto clean)
+        {
+            var method = typeof(AddressNormalizationService).GetMethod(
+                "ResolveBuildingFiasId",
+                BindingFlags.Static | BindingFlags.NonPublic);
+
+            Assert.NotNull(method);
+            return (string)method.Invoke(null, new object[] { suggest, clean });
         }
 
         [Fact]

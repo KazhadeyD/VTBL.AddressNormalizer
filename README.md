@@ -55,8 +55,8 @@ dotnet run --project VTBL.AddressNormalizer.WebApi
         "suggestions": [
           {
             "value": "г Москва, ул Сухонская, д 11",
-            "unrestrictedValue": "г Москва, ул Сухонская, д 11",
-            "data": { "source": "г Москва, ул Сухонская, д 11", "result": "г Москва, ул Сухонская, д 11", "country": "Россия", "countryIsoCode": "RU" }
+            "unrestricted_value": "г Москва, ул Сухонская, д 11",
+            "data": { "source": "г Москва, ул Сухонская, д 11", "result": "г Москва, ул Сухонская, д 11", "country": "Россия", "country_iso_code": "RU" }
           }
         ]
       },
@@ -64,7 +64,7 @@ dotnet run --project VTBL.AddressNormalizer.WebApi
         "source": "г Москва, ул Сухонская, д 11",
         "result": "г Москва, ул Сухонская, д 11",
         "country": "Россия",
-        "countryIsoCode": "RU"
+        "country_iso_code": "RU"
       }
     },
     "indoorValue": {
@@ -78,7 +78,7 @@ dotnet run --project VTBL.AddressNormalizer.WebApi
 }
 ```
 
-- `buildingValue.fiasId` в v1 пока `null`.
+- `buildingValue.fiasId` берётся из `suggest.suggestions[0].data.houseFiasId`, fallback — `clean.houseFiasId`.
 - `buildingValue.suggest` / `buildingValue.clean` — типизированные заглушки под будущую интеграцию DaData.
 - `indoorValue.extracted` — indoor после extract (внутренний хвост адреса).
 - `indoorValue.hash` — SHA256 unit-канона (`ToCanonical`).
@@ -187,11 +187,24 @@ docker compose up -d
 
 ## История изменений
 
+### 28.07.2026 — health: версия сборки и время старта
+
+- В JSON-ответ `GET /health` и `GET /health/live` добавлен блок `service`
+- `service.assemblyVersion` берётся из сборки `VTBL.AddressNormalizer.WebApi`
+- `service.startedAtUtc` и `service.uptimeMs` рассчитываются локально в `HealthCheckResponseWriter`, без протаскивания состояния через всё приложение
+
+### 28.07.2026 — DaData snake_case и кодировка DTO
+
+- Внутренние DTO для `buildingValue.suggest` / `buildingValue.clean` приведены к публичному контракту DaData: `snake_case` в JSON (`unrestricted_value`, `house_fias_id`, `country_iso_code`, ...)
+- Swagger и README обновлены под те же ключи, чтобы документация не расходилась с реальной сериализацией
+- Перезаписаны WebApi DTO-модели в корректной UTF-8 кодировке, чтобы убрать битые русские комментарии
+
 ### 28.07.2026 — DaData suggest/clean заглушки
 
 - В `buildingValue` вместо сырого `dadata` добавлены два типизированных объекта: `suggest` и `clean`
 - DTO повторяют публичную структуру ответов DaData `suggest/address` и `clean/address`
 - Пока без реальных HTTP-вызовов: сервис возвращает структурные заглушки
+- `buildingValue.fiasId` теперь заполняется по правилу: `suggest.house_fias_id` → `clean.house_fias_id` → `null`
 
 ### 28.07.2026 — indoorValue.units
 
@@ -310,7 +323,7 @@ docker compose up -d
 
 ### 23.07.2026 — DTO normalize
 
- - `fiasId` и `dadata` внутри `buildingValue` (v1 = `null`)
+ - `fiasId`, `suggest` и `clean` внутри `buildingValue` (сейчас stub-значения)
 - `indoorValue.hash` = SHA256 unit-канона; unit endpoint сохраняет top-level `canonical`/`hash`
 
 ### 23.07.2026 — XML summary

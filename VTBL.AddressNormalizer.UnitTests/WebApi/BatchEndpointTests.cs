@@ -137,7 +137,7 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
             var expectedHash = AddressNormalizerTestHost.Hash.ComputeSha256(outdoorCanonical);
 
             Assert.NotNull(value);
-            Assert.Null(value.BuildingValue.FiasId);
+            Assert.Equal("suggest-house-fias-id", value.BuildingValue.FiasId);
             Assert.NotNull(value.BuildingValue.Suggest);
             Assert.NotNull(value.BuildingValue.Clean);
             Assert.Equal(split.Outdoor, value.BuildingValue.Extracted);

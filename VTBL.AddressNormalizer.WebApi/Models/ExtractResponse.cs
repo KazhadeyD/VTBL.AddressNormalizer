@@ -1,18 +1,16 @@
+using System.Text.Json.Serialization;
+
 namespace VTBL.AddressNormalizer.WebApi.Models
 {
     /// <summary>
-    /// Ответ extract outdoor (<c>POST /api/v1/address/extract</c>).
+    /// Ответ extract для building-части адреса.
     /// </summary>
     public class ExtractResponse
     {
-        /// <summary>
-        /// Исходная строка запроса.
-        /// </summary>
+        [JsonPropertyName("source")]
         public string Source { get; set; }
 
-        /// <summary>
-        /// Извлечённая outdoor-часть (без indoor-хвоста).
-        /// </summary>
+        [JsonPropertyName("extracted")]
         public string Extracted { get; set; }
     }
 }

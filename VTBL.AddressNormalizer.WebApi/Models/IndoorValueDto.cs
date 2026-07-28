@@ -1,26 +1,20 @@
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace VTBL.AddressNormalizer.WebApi.Models
 {
     /// <summary>
-    /// Structured <c>indoorValue</c>: <c>hash</c> от unit-канона и sparse-массив <c>units</c>
-    /// (только категории с непустыми <c>values</c>).
+    /// Структурированное indoorValue: extracted, hash канона и sparse-массив units.
     /// </summary>
     public class IndoorValueDto
     {
-        /// <summary>
-        /// Indoor-часть после extract (хвост адреса после outdoor).
-        /// </summary>
+        [JsonPropertyName("extracted")]
         public string Extracted { get; set; }
 
-        /// <summary>
-        /// SHA256 (hex, lowercase) от канонической строки unit (<c>ToCanonical</c>).
-        /// </summary>
+        [JsonPropertyName("hash")]
         public string Hash { get; set; }
 
-        /// <summary>
-        /// Категории indoor с данными; пустые категории не включаются.
-        /// </summary>
+        [JsonPropertyName("units")]
         public IList<IndoorMarkDto> Units { get; set; } = new List<IndoorMarkDto>();
     }
 }

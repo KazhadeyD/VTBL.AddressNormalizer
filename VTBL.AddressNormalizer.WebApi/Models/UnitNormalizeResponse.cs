@@ -1,28 +1,22 @@
+using System.Text.Json.Serialization;
+
 namespace VTBL.AddressNormalizer.WebApi.Models
 {
     /// <summary>
-    /// Ответ нормализации indoor/unit (<c>POST /api/v1/unit/normalize</c>).
+    /// Ответ нормализации indoor или unit-строки.
     /// </summary>
     public class UnitNormalizeResponse
     {
-        /// <summary>
-        /// Исходная строка запроса.
-        /// </summary>
+        [JsonPropertyName("source")]
         public string Source { get; set; }
 
-        /// <summary>
-        /// Indoor: все категории локации с русским name и values.
-        /// </summary>
+        [JsonPropertyName("indoorValue")]
         public IndoorValueDto IndoorValue { get; set; }
 
-        /// <summary>
-        /// Каноническая строка unit (для matching).
-        /// </summary>
+        [JsonPropertyName("canonical")]
         public string Canonical { get; set; }
 
-        /// <summary>
-        /// SHA256 hex (lowercase) от <see cref="Canonical"/>.
-        /// </summary>
+        [JsonPropertyName("hash")]
         public string Hash { get; set; }
     }
 }

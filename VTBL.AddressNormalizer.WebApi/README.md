@@ -31,7 +31,7 @@ dotnet run --project VTBL.AddressNormalizer.WebApi
 | POST | `/api/v1/unit/normalize` | `{ "source": "..." }` | `200` + `indoorValue` + top-level `canonical`/`hash` |
 | POST | `/api/v1/address/extract` | `{ "source": "..." }` | `200` + `extracted` |
 | POST | `/api/v1/address/canonicalize` | `{ "source": "..." }` | `200` + `canonical` |
-| GET | `/health` | — | `200` `{ "status": "Healthy", "checks": { ... } }` |
+| GET | `/health` | — | `200` `{ "status": "Healthy", "service": { "assemblyVersion": "...", "startedAtUtc": "...", "uptimeMs": 1234 }, "checks": { ... } }` |
 | GET | `/health/live` | — | `200` liveness-only (`self`) |
 
 Пустой / null / whitespace `source` → **400** `{ "error": "..." }` (русский текст).  
@@ -63,8 +63,8 @@ Unhandled → **500** `{ "error": "..." }` (`ApiExceptionFilter`).
         "suggestions": [
           {
             "value": "г Москва, ул Сухонская, д 11",
-            "unrestrictedValue": "г Москва, ул Сухонская, д 11",
-            "data": { "source": "г Москва, ул Сухонская, д 11", "result": "г Москва, ул Сухонская, д 11", "country": "Россия", "countryIsoCode": "RU" }
+            "unrestricted_value": "г Москва, ул Сухонская, д 11",
+            "data": { "source": "г Москва, ул Сухонская, д 11", "result": "г Москва, ул Сухонская, д 11", "country": "Россия", "country_iso_code": "RU" }
           }
         ]
       },
@@ -72,7 +72,7 @@ Unhandled → **500** `{ "error": "..." }` (`ApiExceptionFilter`).
         "source": "г Москва, ул Сухонская, д 11",
         "result": "г Москва, ул Сухонская, д 11",
         "country": "Россия",
-        "countryIsoCode": "RU"
+        "country_iso_code": "RU"
       }
     },
     "indoorValue": {
@@ -91,7 +91,7 @@ Unhandled → **500** `{ "error": "..." }` (`ApiExceptionFilter`).
 | `buildingValue.extracted` | Outdoor после extract |
 | `buildingValue.normalizedAddress` | Канон outdoor |
 | `buildingValue.hash` | SHA256(normalizedAddress) |
-| `buildingValue.fiasId` | Заглушка v1 = `null` |
+| `buildingValue.fiasId` | `suggest.suggestions[0].data.houseFiasId` → fallback `clean.houseFiasId` |
 | `buildingValue.suggest` | Заглушка структуры ответа DaData `suggest/address` |
 | `buildingValue.clean` | Заглушка структуры ответа DaData `clean/address` |
 | `indoorValue.extracted` | Indoor после extract (внутренний хвост адреса) |

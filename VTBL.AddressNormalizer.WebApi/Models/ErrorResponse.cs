@@ -1,7 +1,9 @@
+using System.Text.Json.Serialization;
+
 namespace VTBL.AddressNormalizer.WebApi.Models
 {
     /// <summary>
-    /// Тело ошибки (HTTP 400 / 500): одно поле <c>error</c>.
+    /// Тело ошибки с единственным полем <c>error</c>.
     /// </summary>
     public class ErrorResponse
     {
@@ -9,6 +11,7 @@ namespace VTBL.AddressNormalizer.WebApi.Models
         /// Человекочитаемый текст ошибки.
         /// </summary>
         /// <example>source должен быть непустой строкой</example>
+        [JsonPropertyName("error")]
         public string Error { get; set; }
     }
 }
