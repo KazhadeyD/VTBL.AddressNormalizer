@@ -206,7 +206,7 @@ namespace VTBL.AddressNormalizer.WebApi.Services
 
             return new NormalizeValueDto
             {
-                DadataOutdoor = new DadataOutdoorDto
+                BuildingValue = new DadataOutdoorDto
                 {
                     Extracted = split.Outdoor,
                     OutdoorCanonical = outdoorCanonical,

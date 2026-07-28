@@ -1,7 +1,7 @@
 namespace VTBL.AddressNormalizer.WebApi.Models
 {
     /// <summary>
-    /// Блок outdoor-результата (<c>dadataOutdoor</c>): extract + canonical + hash + заглушки DaData/FIAS.
+    /// Блок outdoor-результата (<c>buildingValue</c>): extract + canonical + hash + заглушки DaData/FIAS.
     /// </summary>
     public class DadataOutdoorDto
     {

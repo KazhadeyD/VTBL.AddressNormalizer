@@ -46,7 +46,7 @@ dotnet run --project VTBL.AddressNormalizer.WebApi
 {
   "source": "г Москва, ул Сухонская, д 11, кв 89",
   "value": {
-    "dadataOutdoor": {
+    "buildingValue": {
       "extracted": "г Москва, ул Сухонская, д 11",
       "outdoorCanonical": "г Москва, ул Сухонская, д 11",
       "hash": "<sha256 от outdoorCanonical>",
@@ -63,7 +63,7 @@ dotnet run --project VTBL.AddressNormalizer.WebApi
 }
 ```
 
-- `dadataOutdoor.fiasId` / `dadata` в v1 всегда `null` (заглушки).
+- `buildingValue.fiasId` / `dadata` в v1 всегда `null` (заглушки).
 - `indoorValue.hash` — SHA256 unit-канона (`ToCanonical`).
 - `indoorValue.marks` — sparse-массив категорий `{ id, name, values }`; пустые категории не включаются.
 - Unit-endpoint дополнительно отдаёт top-level `canonical` и `hash` (тот же hash, что в `indoorValue`).
@@ -277,12 +277,12 @@ docker compose up -d
 
 ### 23.07.2026 — README актуализированы
 
-- Корневой и WebApi README приведены к текущему контракту API (dadataOutdoor / indoorValue.hash)
+- Корневой и WebApi README приведены к текущему контракту API (buildingValue / indoorValue.hash)
 - История сжата; убраны устаревшие счётчики тестов из промежуточных записей
 
 ### 23.07.2026 — DTO normalize
 
-- `fiasId` и `dadata` внутри `dadataOutdoor` (v1 = `null`)
+ - `fiasId` и `dadata` внутри `buildingValue` (v1 = `null`)
 - `indoorValue.hash` = SHA256 unit-канона; unit endpoint сохраняет top-level `canonical`/`hash`
 
 ### 23.07.2026 — XML summary

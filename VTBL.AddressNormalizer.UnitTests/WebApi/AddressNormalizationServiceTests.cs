@@ -47,11 +47,11 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
             var outdoorCanonical = AddressNormalizerTestHost.BuildingAddressCanonicalizer.ToCanonical(split.Outdoor);
             var expectedHash = AddressNormalizerTestHost.Hash.ComputeSha256(outdoorCanonical);
 
-            Assert.Null(value.DadataOutdoor.FiasId);
-            Assert.Null(value.DadataOutdoor.Dadata);
-            Assert.Equal(split.Outdoor, value.DadataOutdoor.Extracted);
-            Assert.Equal(outdoorCanonical, value.DadataOutdoor.OutdoorCanonical);
-            Assert.Equal(expectedHash, value.DadataOutdoor.Hash);
+            Assert.Null(value.BuildingValue.FiasId);
+            Assert.Null(value.BuildingValue.Dadata);
+            Assert.Equal(split.Outdoor, value.BuildingValue.Extracted);
+            Assert.Equal(outdoorCanonical, value.BuildingValue.OutdoorCanonical);
+            Assert.Equal(expectedHash, value.BuildingValue.Hash);
             var unitLocation = AddressNormalizerTestHost.Parser.Parse(split.Indoor);
             var unitCanonical = AddressNormalizerTestHost.Canonicalizer.ToCanonical(unitLocation);
             var unitHash = AddressNormalizerTestHost.Hash.ComputeSha256(unitCanonical);
@@ -191,8 +191,8 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
             Assert.Equal("error", outcome.Items[1].Status);
 
             var expected = _sut.NormalizeFull(SampleWithIndoor);
-            Assert.Equal(expected.DadataOutdoor.Hash, outcome.Items[0].Value.DadataOutdoor.Hash);
-            Assert.Equal(expected.DadataOutdoor.Extracted, outcome.Items[0].Value.DadataOutdoor.Extracted);
+            Assert.Equal(expected.BuildingValue.Hash, outcome.Items[0].Value.BuildingValue.Hash);
+            Assert.Equal(expected.BuildingValue.Extracted, outcome.Items[0].Value.BuildingValue.Extracted);
             Assert.Contains("89", IndoorValueTestHelper.GetMarkValues(outcome.Items[0].Value.IndoorValue, IndoorValueMapper.MarkIds.Apartment));
         }
 

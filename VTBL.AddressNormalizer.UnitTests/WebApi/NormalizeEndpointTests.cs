@@ -46,12 +46,12 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
             Assert.NotNull(dto);
             Assert.Equal(source, dto.Source);
             Assert.NotNull(dto.Value);
-            Assert.Null(dto.Value.DadataOutdoor.FiasId);
-            Assert.Null(dto.Value.DadataOutdoor.Dadata);
-            Assert.NotNull(dto.Value.DadataOutdoor);
-            Assert.Equal(split.Outdoor, dto.Value.DadataOutdoor.Extracted);
-            Assert.Equal(outdoorCanonical, dto.Value.DadataOutdoor.OutdoorCanonical);
-            Assert.Equal(expectedHash, dto.Value.DadataOutdoor.Hash);
+            Assert.Null(dto.Value.BuildingValue.FiasId);
+            Assert.Null(dto.Value.BuildingValue.Dadata);
+            Assert.NotNull(dto.Value.BuildingValue);
+            Assert.Equal(split.Outdoor, dto.Value.BuildingValue.Extracted);
+            Assert.Equal(outdoorCanonical, dto.Value.BuildingValue.OutdoorCanonical);
+            Assert.Equal(expectedHash, dto.Value.BuildingValue.Hash);
 
             Assert.Equal(unitHash, dto.Value.IndoorValue.Hash);
             var apartment = IndoorValueTestHelper.GetMark(dto.Value.IndoorValue, IndoorValueMapper.MarkIds.Apartment);

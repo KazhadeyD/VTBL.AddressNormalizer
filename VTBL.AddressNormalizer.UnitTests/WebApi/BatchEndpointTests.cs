@@ -137,11 +137,11 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
             var expectedHash = AddressNormalizerTestHost.Hash.ComputeSha256(outdoorCanonical);
 
             Assert.NotNull(value);
-            Assert.Null(value.DadataOutdoor.FiasId);
-            Assert.Null(value.DadataOutdoor.Dadata);
-            Assert.Equal(split.Outdoor, value.DadataOutdoor.Extracted);
-            Assert.Equal(outdoorCanonical, value.DadataOutdoor.OutdoorCanonical);
-            Assert.Equal(expectedHash, value.DadataOutdoor.Hash);
+            Assert.Null(value.BuildingValue.FiasId);
+            Assert.Null(value.BuildingValue.Dadata);
+            Assert.Equal(split.Outdoor, value.BuildingValue.Extracted);
+            Assert.Equal(outdoorCanonical, value.BuildingValue.OutdoorCanonical);
+            Assert.Equal(expectedHash, value.BuildingValue.Hash);
             var unitLocation = AddressNormalizerTestHost.Parser.Parse(split.Indoor);
             var unitCanonical = AddressNormalizerTestHost.Canonicalizer.ToCanonical(unitLocation);
             var unitHash = AddressNormalizerTestHost.Hash.ComputeSha256(unitCanonical);

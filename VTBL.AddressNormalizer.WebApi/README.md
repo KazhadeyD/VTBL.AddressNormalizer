@@ -26,7 +26,7 @@ dotnet run --project VTBL.AddressNormalizer.WebApi
 
 | Method | Path | Тело | Успех |
 |--------|------|------|--------|
-| POST | `/api/v1/normalize` | `{ "source": "..." }` | `200` + `dadataOutdoor` + `indoorValue` |
+| POST | `/api/v1/normalize` | `{ "source": "..." }` | `200` + `buildingValue` + `indoorValue` |
 | POST | `/api/v1/normalize/batch` | `{ "items": [ { "source": "..." }, ... ] }` | `200` + per-item `ok`/`error` |
 | POST | `/api/v1/unit/normalize` | `{ "source": "..." }` | `200` + `indoorValue` + top-level `canonical`/`hash` |
 | POST | `/api/v1/address/extract` | `{ "source": "..." }` | `200` + `extracted` |
@@ -54,7 +54,7 @@ Unhandled → **500** `{ "error": "..." }` (`ApiExceptionFilter`).
 {
   "source": "г Москва, ул Сухонская, д 11, кв 89",
   "value": {
-    "dadataOutdoor": {
+    "buildingValue": {
       "extracted": "г Москва, ул Сухонская, д 11",
       "outdoorCanonical": "г Москва, ул Сухонская, д 11",
       "hash": "<sha256 от outdoorCanonical>",
@@ -73,11 +73,11 @@ Unhandled → **500** `{ "error": "..." }` (`ApiExceptionFilter`).
 
 | Поле | Смысл |
 |------|--------|
-| `dadataOutdoor.extracted` | Outdoor после extract |
-| `dadataOutdoor.outdoorCanonical` | Канон outdoor |
-| `dadataOutdoor.hash` | SHA256(outdoorCanonical) |
-| `dadataOutdoor.fiasId` | Заглушка v1 = `null` |
-| `dadataOutdoor.dadata` | Заглушка v1 = `null` |
+| `buildingValue.extracted` | Outdoor после extract |
+| `buildingValue.outdoorCanonical` | Канон outdoor |
+| `buildingValue.hash` | SHA256(outdoorCanonical) |
+| `buildingValue.fiasId` | Заглушка v1 = `null` |
+| `buildingValue.dadata` | Заглушка v1 = `null` |
 | `indoorValue.hash` | SHA256 unit-канона (`ToCanonical`) |
 | `indoorValue.marks` | Sparse-массив `{ id, name, values }`; только категории с данными |
 
