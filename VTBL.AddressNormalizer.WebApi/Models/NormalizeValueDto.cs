@@ -11,7 +11,7 @@ namespace VTBL.AddressNormalizer.WebApi.Models
         /// Результат для building-части адреса: извлечённый фрагмент, нормализованный адрес, hash и данные DaData.
         /// </summary>
         [JsonPropertyName("buildingValue")]
-        public DadataOutdoorDto BuildingValue { get; set; }
+        public BuildingValueDto BuildingValue { get; set; }
 
         /// <summary>
         /// Результат для indoor-части адреса: извлечённый фрагмент, hash и категории внутренней адресации.

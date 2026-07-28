@@ -3,9 +3,9 @@ using System.Text.Json.Serialization;
 namespace VTBL.AddressNormalizer.WebApi.Models
 {
     /// <summary>
-    /// Результат нормализации building-части адреса.
+    /// Результат нормализации building-части адреса (<c>buildingValue</c>).
     /// </summary>
-    public class DadataOutdoorDto
+    public class BuildingValueDto
     {
         /// <summary>
         /// Фрагмент исходной строки, распознанный как building-часть адреса.
@@ -26,21 +26,15 @@ namespace VTBL.AddressNormalizer.WebApi.Models
         public string Hash { get; set; }
 
         /// <summary>
-        /// FIAS ID дома. Берётся из <c>suggest.house_fias_id</c>, а если его нет — из <c>clean.house_fias_id</c>.
+        /// FIAS ID дома. Берётся из <c>dadata.suggest</c>, а если его нет — из <c>dadata.clean</c>.
         /// </summary>
         [JsonPropertyName("fiasId")]
         public string FiasId { get; set; }
 
         /// <summary>
-        /// Структура ответа DaData suggest/address. Пока заполняется заглушкой.
+        /// Данные DaData для building-части адреса.
         /// </summary>
-        [JsonPropertyName("suggest")]
-        public DadataSuggestAddressDto Suggest { get; set; }
-
-        /// <summary>
-        /// Структура ответа DaData clean/address. Пока заполняется заглушкой.
-        /// </summary>
-        [JsonPropertyName("clean")]
-        public DadataCleanAddressDto Clean { get; set; }
+        [JsonPropertyName("dadata")]
+        public DadataDto Dadata { get; set; }
     }
 }

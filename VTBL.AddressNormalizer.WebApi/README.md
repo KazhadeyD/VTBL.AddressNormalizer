@@ -59,20 +59,22 @@ Unhandled → **500** `{ "error": "..." }` (`ApiExceptionFilter`).
       "normalizedAddress": "г Москва, ул Сухонская, д 11",
       "hash": "<sha256 от normalizedAddress>",
       "fiasId": null,
-      "suggest": {
-        "suggestions": [
-          {
-            "value": "г Москва, ул Сухонская, д 11",
-            "unrestricted_value": "г Москва, ул Сухонская, д 11",
-            "data": { "source": "г Москва, ул Сухонская, д 11", "result": "г Москва, ул Сухонская, д 11", "country": "Россия", "country_iso_code": "RU" }
-          }
-        ]
-      },
-      "clean": {
-        "source": "г Москва, ул Сухонская, д 11",
-        "result": "г Москва, ул Сухонская, д 11",
-        "country": "Россия",
-        "country_iso_code": "RU"
+      "dadata": {
+        "suggest": {
+          "suggestions": [
+            {
+              "value": "г Москва, ул Сухонская, д 11",
+              "unrestricted_value": "г Москва, ул Сухонская, д 11",
+              "data": { "source": "г Москва, ул Сухонская, д 11", "result": "г Москва, ул Сухонская, д 11", "country": "Россия", "country_iso_code": "RU" }
+            }
+          ]
+        },
+        "clean": {
+          "source": "г Москва, ул Сухонская, д 11",
+          "result": "г Москва, ул Сухонская, д 11",
+          "country": "Россия",
+          "country_iso_code": "RU"
+        }
       }
     },
     "indoorValue": {
@@ -91,9 +93,9 @@ Unhandled → **500** `{ "error": "..." }` (`ApiExceptionFilter`).
 | `buildingValue.extracted` | Outdoor после extract |
 | `buildingValue.normalizedAddress` | Канон outdoor |
 | `buildingValue.hash` | SHA256(normalizedAddress) |
-| `buildingValue.fiasId` | `suggest.suggestions[0].data.houseFiasId` → fallback `clean.houseFiasId` |
-| `buildingValue.suggest` | Заглушка структуры ответа DaData `suggest/address` |
-| `buildingValue.clean` | Заглушка структуры ответа DaData `clean/address` |
+| `buildingValue.fiasId` | `dadata.suggest.suggestions[0].data.house_fias_id` → fallback `dadata.clean.house_fias_id` |
+| `buildingValue.dadata.suggest` | Заглушка структуры ответа DaData `suggest/address` |
+| `buildingValue.dadata.clean` | Заглушка структуры ответа DaData `clean/address` |
 | `indoorValue.extracted` | Indoor после extract (внутренний хвост адреса) |
 | `indoorValue.hash` | SHA256 unit-канона (`ToCanonical`) |
 | `indoorValue.units` | Sparse-массив `{ id, name, values }`; только категории с данными |

@@ -145,8 +145,11 @@ namespace VTBL.AddressNormalizer.WebApi.Swagger
                     ["normalizedAddress"] = new OpenApiString("г Москва, ул Сухонская, д 11"),
                     ["hash"] = new OpenApiString("a1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456"),
                     ["fiasId"] = new OpenApiNull(),
-                    ["suggest"] = SuggestStub("г Москва, ул Сухонская, д 11"),
-                    ["clean"] = CleanStub("г Москва, ул Сухонская, д 11")
+                    ["dadata"] = new OpenApiObject
+                    {
+                        ["suggest"] = SuggestStub("г Москва, ул Сухонская, д 11"),
+                        ["clean"] = CleanStub("г Москва, ул Сухонская, д 11")
+                    }
                 },
                 ["indoorValue"] = SampleIndoorWithApartment()
             }
@@ -183,8 +186,11 @@ namespace VTBL.AddressNormalizer.WebApi.Swagger
                             ["normalizedAddress"] = new OpenApiString("г Москва, ул Сухонская, д 11"),
                             ["hash"] = new OpenApiString("a1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456"),
                             ["fiasId"] = new OpenApiNull(),
-                            ["suggest"] = SuggestStub("г Москва, ул Сухонская, д 11"),
-                            ["clean"] = CleanStub("г Москва, ул Сухонская, д 11")
+                            ["dadata"] = new OpenApiObject
+                            {
+                                ["suggest"] = SuggestStub("г Москва, ул Сухонская, д 11"),
+                                ["clean"] = CleanStub("г Москва, ул Сухонская, д 11")
+                            }
                         },
                         ["indoorValue"] = SampleIndoorWithApartment()
                     },

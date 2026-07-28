@@ -48,8 +48,9 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
             Assert.NotNull(dto.Value);
             Assert.Equal("suggest-house-fias-id", dto.Value.BuildingValue.FiasId);
             Assert.NotNull(dto.Value.BuildingValue);
-            Assert.NotNull(dto.Value.BuildingValue.Suggest);
-            Assert.NotNull(dto.Value.BuildingValue.Clean);
+            Assert.NotNull(dto.Value.BuildingValue.Dadata);
+            Assert.NotNull(dto.Value.BuildingValue.Dadata.Suggest);
+            Assert.NotNull(dto.Value.BuildingValue.Dadata.Clean);
             Assert.Equal(split.Outdoor, dto.Value.BuildingValue.Extracted);
             Assert.Equal(outdoorCanonical, dto.Value.BuildingValue.NormalizedAddress);
             Assert.Equal(expectedHash, dto.Value.BuildingValue.Hash);

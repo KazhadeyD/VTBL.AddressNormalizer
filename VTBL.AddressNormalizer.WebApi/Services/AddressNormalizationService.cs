@@ -210,14 +210,17 @@ namespace VTBL.AddressNormalizer.WebApi.Services
 
             return new NormalizeValueDto
             {
-                BuildingValue = new DadataOutdoorDto
+                BuildingValue = new BuildingValueDto
                 {
                     Extracted = split.Outdoor,
                     NormalizedAddress = outdoorCanonical,
                     Hash = outdoorHash,
                     FiasId = ResolveBuildingFiasId(suggest, clean),
-                    Suggest = suggest,
-                    Clean = clean
+                    Dadata = new DadataDto
+                    {
+                        Suggest = suggest,
+                        Clean = clean
+                    }
                 },
                 IndoorValue = indoor
             };

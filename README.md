@@ -51,20 +51,22 @@ dotnet run --project VTBL.AddressNormalizer.WebApi
       "normalizedAddress": "г Москва, ул Сухонская, д 11",
       "hash": "<sha256 от normalizedAddress>",
       "fiasId": null,
-      "suggest": {
-        "suggestions": [
-          {
-            "value": "г Москва, ул Сухонская, д 11",
-            "unrestricted_value": "г Москва, ул Сухонская, д 11",
-            "data": { "source": "г Москва, ул Сухонская, д 11", "result": "г Москва, ул Сухонская, д 11", "country": "Россия", "country_iso_code": "RU" }
-          }
-        ]
-      },
-      "clean": {
-        "source": "г Москва, ул Сухонская, д 11",
-        "result": "г Москва, ул Сухонская, д 11",
-        "country": "Россия",
-        "country_iso_code": "RU"
+      "dadata": {
+        "suggest": {
+          "suggestions": [
+            {
+              "value": "г Москва, ул Сухонская, д 11",
+              "unrestricted_value": "г Москва, ул Сухонская, д 11",
+              "data": { "source": "г Москва, ул Сухонская, д 11", "result": "г Москва, ул Сухонская, д 11", "country": "Россия", "country_iso_code": "RU" }
+            }
+          ]
+        },
+        "clean": {
+          "source": "г Москва, ул Сухонская, д 11",
+          "result": "г Москва, ул Сухонская, д 11",
+          "country": "Россия",
+          "country_iso_code": "RU"
+        }
       }
     },
     "indoorValue": {
@@ -78,8 +80,8 @@ dotnet run --project VTBL.AddressNormalizer.WebApi
 }
 ```
 
-- `buildingValue.fiasId` берётся из `suggest.suggestions[0].data.houseFiasId`, fallback — `clean.houseFiasId`.
-- `buildingValue.suggest` / `buildingValue.clean` — типизированные заглушки под будущую интеграцию DaData.
+- `buildingValue.fiasId` берётся из `dadata.suggest.suggestions[0].data.house_fias_id`, fallback — `dadata.clean.house_fias_id`.
+- `buildingValue.dadata.suggest` / `buildingValue.dadata.clean` — типизированные заглушки под будущую интеграцию DaData.
 - `indoorValue.extracted` — indoor после extract (внутренний хвост адреса).
 - `indoorValue.hash` — SHA256 unit-канона (`ToCanonical`).
 - `indoorValue.units` — sparse-массив категорий `{ id, name, values }`; пустые категории не включаются.
@@ -186,6 +188,16 @@ docker compose up -d
 `localhost:1435`, БД `AddressNormalizer`, user `sa`. Init: `docker/mssql/init/`.
 
 ## История изменений
+
+### 28.07.2026 — buildingValue.dadata
+
+- Поля `suggest` и `clean` вынесены из корня `buildingValue` в объект `dadata`
+- Добавлен тип `DadataDto`; контракт: `buildingValue.dadata.suggest` и `buildingValue.dadata.clean`
+
+### 28.07.2026 — DadataOutdoorDto → BuildingValueDto
+
+- Класс `DadataOutdoorDto` переименован в `BuildingValueDto` в соответствии с JSON-полем `buildingValue`
+- Контракт API не изменился, обновлены только имена типов в коде
 
 ### 28.07.2026 — health: форматированный uptime
 
