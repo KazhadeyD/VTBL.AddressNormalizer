@@ -286,18 +286,18 @@ namespace VTBL.AddressNormalizer.WebApi.Models
         public DadataAddressDivisionsDto Divisions { get; set; }
 
         [JsonPropertyName("qc_geo")]
-        public string QcGeo { get; set; }
+        public int? QcGeo { get; set; }
 
         [JsonPropertyName("qc_complete")]
-        public string QcComplete { get; set; }
+        public int? QcComplete { get; set; }
 
         [JsonPropertyName("qc_house")]
-        public string QcHouse { get; set; }
+        public int? QcHouse { get; set; }
 
         [JsonPropertyName("unparsed_parts")]
         public string UnparsedParts { get; set; }
 
         [JsonPropertyName("qc")]
-        public string Qc { get; set; }
+        public int? Qc { get; set; }
     }
 }

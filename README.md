@@ -190,6 +190,10 @@ docker compose up -d
 
 ## История изменений
 
+### 03.08.2026 — Clean: qc* как числа
+
+- В `DadataCleanAddressDto` поля `qc`, `qc_geo`, `qc_complete`, `qc_house` приведены к `int?` (в JSON clean/address приходят числа, не строки)
+
 ### 03.08.2026 — Разделение DTO suggest/clean DaData
 
 - Удалён общий `DadataAddressDataDto`
