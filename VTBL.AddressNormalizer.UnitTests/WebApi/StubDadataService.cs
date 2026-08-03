@@ -20,10 +20,8 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
                     {
                         Value = address,
                         UnrestrictedValue = address,
-                        Data = new DadataAddressDataDto
+                        Data = new DadataSuggestAddressDataDto
                         {
-                            Source = address,
-                            Result = address,
                             Country = "Россия",
                             CountryIsoCode = "RU",
                             HouseFiasId = "suggest-house-fias-id"

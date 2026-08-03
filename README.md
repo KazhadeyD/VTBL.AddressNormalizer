@@ -57,7 +57,7 @@ dotnet run --project VTBL.AddressNormalizer.WebApi
             {
               "value": "г Москва, ул Сухонская, д 11",
               "unrestricted_value": "г Москва, ул Сухонская, д 11",
-              "data": { "source": "г Москва, ул Сухонская, д 11", "result": "г Москва, ул Сухонская, д 11", "country": "Россия", "country_iso_code": "RU" }
+              "data": { "country": "Россия", "country_iso_code": "RU", "house_fias_id": null }
             }
           ]
         },
@@ -82,6 +82,7 @@ dotnet run --project VTBL.AddressNormalizer.WebApi
 
 - `buildingValue.fiasId` берётся из `dadata.suggest.suggestions[0].data.house_fias_id`, fallback — `dadata.clean.house_fias_id`.
 - `buildingValue.dadata.suggest` / `buildingValue.dadata.clean` — данные DaData через `IDadataService` (HTTP-реализация заполняется отдельно).
+- Модели `data` suggest и clean разделены: `DadataSuggestAddressDataDto` и `DadataCleanAddressDto` (без общего base), по контрактам DaData.
 - `indoorValue.extracted` — indoor после extract (внутренний хвост адреса).
 - `indoorValue.hash` — SHA256 unit-канона (`ToCanonical`).
 - `indoorValue.units` — sparse-массив категорий `{ id, name, values }`; пустые категории не включаются.
@@ -188,6 +189,13 @@ docker compose up -d
 `localhost:1435`, БД `AddressNormalizer`, user `sa`. Init: `docker/mssql/init/`.
 
 ## История изменений
+
+### 03.08.2026 — Разделение DTO suggest/clean DaData
+
+- Удалён общий `DadataAddressDataDto`
+- Добавлен независимый `DadataSuggestAddressDataDto` для `suggestions[].data` (с `history_values`, `room_fias_id`, `room_cadnum`; без clean-only полей)
+- `DadataCleanAddressDto` заполнен полями clean/address без наследования (с `source`/`result`/`qc*`/`unparsed_parts`; без suggest-only полей)
+- Обновлены stub, тесты и пример JSON в README
 
 ### 28.07.2026 — Startup: Swagger и Health extensions
 

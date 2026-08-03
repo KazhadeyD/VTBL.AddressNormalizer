@@ -102,7 +102,7 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
                 {
                     new DadataSuggestAddressSuggestionDto
                     {
-                        Data = new DadataAddressDataDto
+                        Data = new DadataSuggestAddressDataDto
                         {
                             HouseFiasId = "suggest-id"
                         }
@@ -127,7 +127,7 @@ namespace VTBL.AddressNormalizer.UnitTests.WebApi
                 {
                     new DadataSuggestAddressSuggestionDto
                     {
-                        Data = new DadataAddressDataDto()
+                        Data = new DadataSuggestAddressDataDto()
                     }
                 }
             };

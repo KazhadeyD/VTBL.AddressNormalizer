@@ -4,16 +4,11 @@ using System.Text.Json.Serialization;
 namespace VTBL.AddressNormalizer.WebApi.Models
 {
     /// <summary>
-    /// Унифицированный адресный payload DaData для suggest.data и clean.
+    /// Поля <c>data</c> в ответе DaData suggest/address.
+    /// Без clean-only полей (<c>source</c>, <c>result</c>, <c>qc</c>, <c>qc_complete</c>, <c>qc_house</c>, <c>unparsed_parts</c>).
     /// </summary>
-    public class DadataAddressDataDto
+    public class DadataSuggestAddressDataDto
     {
-        [JsonPropertyName("source")]
-        public string Source { get; set; }
-
-        [JsonPropertyName("result")]
-        public string Result { get; set; }
-
         [JsonPropertyName("postal_code")]
         public string PostalCode { get; set; }
 
@@ -293,19 +288,7 @@ namespace VTBL.AddressNormalizer.WebApi.Models
         [JsonPropertyName("qc_geo")]
         public string QcGeo { get; set; }
 
-        [JsonPropertyName("qc_complete")]
-        public string QcComplete { get; set; }
-
-        [JsonPropertyName("qc_house")]
-        public string QcHouse { get; set; }
-
         [JsonPropertyName("history_values")]
         public IList<string> HistoryValues { get; set; }
-
-        [JsonPropertyName("unparsed_parts")]
-        public string UnparsedParts { get; set; }
-
-        [JsonPropertyName("qc")]
-        public string Qc { get; set; }
     }
 }

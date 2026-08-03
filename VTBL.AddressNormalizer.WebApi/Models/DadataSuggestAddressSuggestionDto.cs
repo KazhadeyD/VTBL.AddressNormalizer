@@ -14,6 +14,6 @@ namespace VTBL.AddressNormalizer.WebApi.Models
         public string UnrestrictedValue { get; set; }
 
         [JsonPropertyName("data")]
-        public DadataAddressDataDto Data { get; set; }
+        public DadataSuggestAddressDataDto Data { get; set; }
     }
 }
