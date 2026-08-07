@@ -190,6 +190,24 @@ docker compose up -d
 
 ## История изменений
 
+### 07.08.2026 — Extract: имена без ярлыков «3a»
+
+- `TryRule3aAfterHouse` → `TryCutAfterHouseWhenKOrApartment`, `AmbiguousKRegex` → `ShortKMarkerRegex`
+- Комментарии/XML/README без нумерации правил из постановки
+
+### 07.08.2026 — ToString для отладки extract/indoor
+
+- `BuildingLocationExtractionResult.ToString`: `Outdoor: «…» | Indoor: «…»`
+- `IndoorValueDto.ToString` / `IndoorMarkDto.ToString` — краткий вид для debugger (hash укорочен)
+
+### 07.08.2026 — Extract: корпус «к.» и cut после дома
+
+- После дома `к`/`к.` сразу за номером — корпус, остаётся в outdoor (больше не режется как комната)
+- `кв` или `к`/`к.` после промежуточных токенов — outdoor обрезается сразу после дома, хвост целиком в indoor
+- При корпусе сразу после дома и дальнейшем `кв` корпус не утаскивается в indoor
+- Пример: `… д. 186, к. 1, эт. 4, пом. 11, ком. 1` → outdoor с `к. 1`, indoor с `эт. 4…`
+- `ShortRoom` (`К.`) убран из extract-паттерна комнаты; unit-парсер без изменений
+
 ### 03.08.2026 — Clean: qc* как числа
 
 - В `DadataCleanAddressDto` поля `qc`, `qc_geo`, `qc_complete`, `qc_house` приведены к `int?` (в JSON clean/address приходят числа, не строки)

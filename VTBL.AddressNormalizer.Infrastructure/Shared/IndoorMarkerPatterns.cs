@@ -25,11 +25,12 @@ namespace VTBL.AddressNormalizer.Infrastructure.Shared
             IndoorMarkerRegexFactory.MarkerOnly(IndoorMarkerLexemes.Premise);
 
         /// <summary>
-        /// Маркер комнаты.
+        /// Маркер комнаты («комната», «комн», «ком», «ко»).
+        /// Короткое «к.» / «к» в extract не indoor: корпус сразу после дома или cut после дома
+        /// при промежуточных токенах — см. <c>BuildingLocationExtractor</c>.
         /// </summary>
-        public static Regex Room { get; } = new Regex(
-            $@"(?<!\p{{L}})(?:{IndoorMarkerLexemes.Room})(?!\p{{L}})|(?<!\p{{L}}){IndoorMarkerLexemes.ShortRoom}(?!\p{{L}})",
-            IndoorMarkerRegexFactory.MarkerOptions);
+        public static Regex Room { get; } =
+            IndoorMarkerRegexFactory.MarkerOnly(IndoorMarkerLexemes.Room);
 
         /// <summary>
         /// Маркер офиса.

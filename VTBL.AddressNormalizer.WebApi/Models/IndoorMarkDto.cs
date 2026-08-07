@@ -25,5 +25,15 @@ namespace VTBL.AddressNormalizer.WebApi.Models
         /// </summary>
         [JsonPropertyName("values")]
         public string[] Values { get; set; } = Array.Empty<string>();
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            var label = !string.IsNullOrEmpty(Name) ? Name : (Id ?? string.Empty);
+            var values = Values == null || Values.Length == 0
+                ? string.Empty
+                : string.Join(",", Values);
+            return label + "=" + values;
+        }
     }
 }

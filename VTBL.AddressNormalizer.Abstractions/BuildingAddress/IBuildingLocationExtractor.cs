@@ -6,10 +6,15 @@ namespace VTBL.AddressNormalizer.Abstractions.BuildingAddress
     public interface IBuildingLocationExtractor
     {
         /// <summary>
-        /// Разбивает адрес на outdoor- и indoor-части:
-        /// outdoor — до точки отсечения indoor-маркера (без хвостовых разделителей);
-        /// indoor — хвост начиная с первого indoor-маркера (маркер входит в строку).
+        /// Разбивает адрес на outdoor- и indoor-части.
         /// </summary>
+        /// <remarks>
+        /// После маркера дома: <c>к</c>/<c>к.</c> сразу после дома — корпус (остаётся в outdoor);
+        /// <c>кв</c> или <c>к</c>/<c>к.</c> после промежуточных токенов — outdoor обрезается сразу после дома,
+        /// весь хвост уходит в indoor; иначе cut перед самым левым прочим indoor-маркером
+        /// (<c>эт</c>, <c>пом</c>, <c>ком</c>, …). Indoor-строка начинается с маркера cut либо с первого
+        /// токена хвоста после cut сразу за домом. Без хвостовых <c>,</c>/<c>;</c>/пробелов в outdoor.
+        /// </remarks>
         /// <param name="input">Сырая адресная строка (может быть null/empty).</param>
         /// <returns>
         /// Результат с <see cref="BuildingLocationExtractionResult.Outdoor"/> и

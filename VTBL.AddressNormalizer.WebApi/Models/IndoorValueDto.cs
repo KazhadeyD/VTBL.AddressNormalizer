@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json.Serialization;
 
 namespace VTBL.AddressNormalizer.WebApi.Models
@@ -26,5 +27,21 @@ namespace VTBL.AddressNormalizer.WebApi.Models
         /// </summary>
         [JsonPropertyName("units")]
         public IList<IndoorMarkDto> Units { get; set; } = new List<IndoorMarkDto>();
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            var hashPreview = string.IsNullOrEmpty(Hash)
+                ? "«»"
+                : Hash.Length <= 8
+                    ? "«" + Hash + "»"
+                    : "«" + Hash.Substring(0, 8) + "…»";
+
+            var units = Units == null || Units.Count == 0
+                ? "[]"
+                : "[" + string.Join(", ", Units.Select(u => u?.ToString() ?? string.Empty)) + "]";
+
+            return "extracted: «" + (Extracted ?? string.Empty) + "»; hash: " + hashPreview + "; units: " + units;
+        }
     }
 }

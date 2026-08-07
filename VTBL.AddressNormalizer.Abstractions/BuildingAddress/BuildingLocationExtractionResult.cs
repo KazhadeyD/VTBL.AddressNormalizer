@@ -25,5 +25,9 @@ namespace VTBL.AddressNormalizer.Abstractions.BuildingAddress
         /// Indoor-часть адреса (никогда не null; при отсутствии маркеров — пустая строка).
         /// </summary>
         public string Indoor { get; }
+
+        /// <inheritdoc />
+        public override string ToString() =>
+            "Outdoor: «" + Outdoor + "» | Indoor: «" + Indoor + "»";
     }
 }
